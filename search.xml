@@ -1,0 +1,998 @@
+<?xml version="1.0" encoding="utf-8"?>
+<search> 
+  
+  
+    
+    <entry>
+      <title>mysql-数据库隔离级别</title>
+      <link href="/2020/01/07/mysql-shu-ju-ku-ge-chi-ji-bie/"/>
+      <url>/2020/01/07/mysql-shu-ju-ku-ge-chi-ji-bie/</url>
+      
+        <content type="html"><![CDATA[]]></content>
+      
+      
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>缓存数据一致性刷新方案</title>
+      <link href="/2019/05/31/huan-cun-shu-ju-yi-zhi-xing-shua-xin-fang-an/"/>
+      <url>/2019/05/31/huan-cun-shu-ju-yi-zhi-xing-shua-xin-fang-an/</url>
+      
+        <content type="html"><![CDATA[<p>这里分享一下缓存和数据库数据一致性刷新的一些方案和实践。<br>主要从一下4个方面进行介绍和分享。</p><h4 id="数据一致性介绍"><a href="#数据一致性介绍" class="headerlink" title="数据一致性介绍"></a>数据一致性介绍</h4><ul><li>随着业务发展，数据需要添加副本以提高可行性；</li><li>为减少db访问压力，需要进行读写分离；</li><li>为提高接口响应时间，一般会将访问数据进行缓存；</li><li>当然还有其他形式的数据，如存储与es搜索引擎以满足特定业务场景（此处主要讨论缓存数据一致性）；</li></ul><h4 id="一些方案"><a href="#一些方案" class="headerlink" title="一些方案"></a>一些方案</h4><ul><li>使用缓存的一些场景：<ul><li>面向用户的接口请求量大，使用缓存提升性能；</li><li>数据强一致性场景（如 库存），直接操作数据库，展示类接口使用缓存；</li></ul></li><li>方案一：<ul><li>查询接口时无缓存数据进行缓存数据的写入；</li><li>缓存失效时间使缓存自动失效；</li><li>数据变动，根据对db从库的监听对缓存进行失效；</li></ul></li><li>方案二：<ul><li>查询接口时无缓存则获取缓存；</li><li>缓存自动失效；</li><li>数据变动触发缓存数据更新；</li></ul></li></ul><h4 id="遇到的问题和解决"><a href="#遇到的问题和解决" class="headerlink" title="遇到的问题和解决"></a>遇到的问题和解决</h4><ul><li>问题：从数据库变动发出消息失效缓存，写入缓存时读取其他从库，导致写入脏数据；<ul><li>解决：所有的从库数据变动都去发送触发缓存失效的消息；<br><img src="/images/多线程缓存读写1.png" alt="多线程缓存读写1"></li></ul></li><li>问题：过期缓存删除存在隐患，无法预知当前是否有线程已持有过期数据正要插入（缓存的读取不是原子操作）；如下图：<ul><li>解决：采用如下图的方案：相关说明如下<br><img src="/images/多线程缓存读写2.png" alt="多线程缓存读写2"></li><li>先删除缓存后删除db数据，防止当前网站线程crash引起数据不一致；</li><li>原子操作前判断缓存是否命中，命中则直接返回，防止热点数据引起的缓存击穿；</li><li>减小缓存数据的颗粒，减小此处锁的颗粒，降低锁开销，锁持有的时间就是一次数据库访问的时间；</li></ul></li></ul><h4 id="一些思考和总结"><a href="#一些思考和总结" class="headerlink" title="一些思考和总结"></a>一些思考和总结</h4><ul><li>任何技术方案都需要根据具体的业务场来考虑，比如缓存方案中，数据变动是去时缓存失效还是刷新缓存，就是可以考虑多个方面；</li><li>缓存多大范围的数据？</li><li>数据的热点程度？</li></ul>]]></content>
+      
+      
+      <categories>
+          
+          <category> redis </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> redis </tag>
+            
+            <tag> 缓存 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>数据库关于分库分表的整理</title>
+      <link href="/2019/05/30/shu-ju-ku-guan-yu-fen-ku-fen-biao-de-zheng-li/"/>
+      <url>/2019/05/30/shu-ju-ku-guan-yu-fen-ku-fen-biao-de-zheng-li/</url>
+      
+        <content type="html"><![CDATA[]]></content>
+      
+      
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>redis学习-使用场景案例（一）</title>
+      <link href="/2019/05/30/redis-xue-xi-shi-yong-chang-jing-an-li-yi/"/>
+      <url>/2019/05/30/redis-xue-xi-shi-yong-chang-jing-an-li-yi/</url>
+      
+        <content type="html"><![CDATA[]]></content>
+      
+      
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>redis学习-支持的数据结构</title>
+      <link href="/2019/05/30/redis-xue-xi-zhi-chi-de-shu-ju-jie-gou/"/>
+      <url>/2019/05/30/redis-xue-xi-zhi-chi-de-shu-ju-jie-gou/</url>
+      
+        <content type="html"><![CDATA[]]></content>
+      
+      
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>java虚拟机即时编译器编译优化技术</title>
+      <link href="/2019/05/29/java-xu-ni-ji-ji-shi-bian-yi-qi-bian-yi-you-hua-ji-zhu/"/>
+      <url>/2019/05/29/java-xu-ni-ji-ji-shi-bian-yi-qi-bian-yi-you-hua-ji-zhu/</url>
+      
+        <content type="html"><![CDATA[]]></content>
+      
+      
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>java虚拟机即时编译器JIT机制</title>
+      <link href="/2019/05/29/java-xu-ni-ji-ji-shi-bian-yi-qi-jit-ji-zhi/"/>
+      <url>/2019/05/29/java-xu-ni-ji-ji-shi-bian-yi-qi-jit-ji-zhi/</url>
+      
+        <content type="html"><![CDATA[]]></content>
+      
+      
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>Elasticsearch学习系列-入门介绍</title>
+      <link href="/2019/05/29/elasticsearch-xue-xi-xi-lie-ru-men-jie-shao/"/>
+      <url>/2019/05/29/elasticsearch-xue-xi-xi-lie-ru-men-jie-shao/</url>
+      
+        <content type="html"><![CDATA[<p>elasticsearch是功能强大的基于Lucene实现的开源搜索引擎。<br>本文主要从以下个方面对其进行入门介绍。<br><a href="https://es.xiaoleilu.com/010_Intro/05_What_is_it.html" target="_blank" rel="noopener">推荐文档</a></p><h4 id="使用场景和优势"><a href="#使用场景和优势" class="headerlink" title="使用场景和优势"></a>使用场景和优势</h4><ul><li>当我们的数据量非常大的时候，我们会考虑进行分库分表，但是分库分表需要考虑依赖拆分的字段，在某些场景下会很复杂。这时候es的优势可以体现出来：<br>支持PB级数据的高效存取；</li><li>当我们的业务数据结构很复杂，表之间的关联关系在关系型数据库中表达困难，表之间的关联错综复杂，我们可以考虑es：他可以以json形式存储结构化和非结构化的数据；</li><li>此外他还是实时文件存储，支持实时分析搜索；</li></ul><h4 id="如何使用"><a href="#如何使用" class="headerlink" title="如何使用"></a>如何使用</h4><ul><li>elasticsearch的使用非常简单。在本地可以很轻松的搭建起来。下面列出简单的步骤（如windows本地）<ul><li><a href="https://www.elastic.co/cn/downloads/elasticsearch" target="_blank" rel="noopener">下载地址</a>下载对应的包，如windows下的biz包</li><li>下载后解压出来，点击es/bin/下的elasticsearch.bat（linux下执行bin/elasticsearch，可<a href="https://juejin.im/post/58d1d7530ce4630057e6053a#heading-2" target="_blank" rel="noopener">参考</a>）</li><li>打开本地：<a href="http://localhost:9200/">http://localhost:9200/</a> 看到正确的json，即安装运行成功</li></ul></li><li>向es内存取数据（具体的字段说明下一节说明）<ul><li><img src="/images/post.png" alt="post保存数据"></li><li><img src="/images/get.png" alt="get查询数据"></li></ul></li></ul><h4 id="基本概念说明"><a href="#基本概念说明" class="headerlink" title="基本概念说明"></a>基本概念说明</h4><ul><li>elasticsearch提供了非常好用的restful api操作数据，如上节我们看到的get post，还有put delete等简单操作；</li><li>这里需要对elasticsearch的一些基本概念介绍下：<ul><li>index：索引，是elasticsearch存储数据的逻辑区域，类似关系型数据库中的database；</li><li>document：文档，elasticsearch用json标示一个对象，类似关系型数据库中的一行数据；</li><li>type：类型，文档归属一种type，类似关系型数据库中的table；</li><li>field：字段，类似关系型数据库中的字段；</li></ul></li><li>在es中可以按照以上概念对数据进行组织，存储，查询，聚合等操作；</li></ul><h4 id="更多特性和优势"><a href="#更多特性和优势" class="headerlink" title="更多特性和优势"></a>更多特性和优势</h4><ul><li>DSL查询： elasticsearch提供了功能十分强大的DSL查询，用于复杂的场景，可以看文档了解这块，基本上可以满足业务的各种要求；</li><li>分布式集群：非常便于扩展，支持大量级的数据存储查询；</li><li>还有排序，搜索…等更多更复杂的特性我们会在后续的使用以及专题中进行更详细的介绍。</li></ul>]]></content>
+      
+      
+      <categories>
+          
+          <category> elasticsearch </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> elasticsearch </tag>
+            
+            <tag> 分布式搜索 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>记一次数据查询的优化</title>
+      <link href="/2019/03/11/ji-yi-ci-shu-ju-cha-xun-de-you-hua/"/>
+      <url>/2019/03/11/ji-yi-ci-shu-ju-cha-xun-de-you-hua/</url>
+      
+        <content type="html"><![CDATA[]]></content>
+      
+      
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>记一次上线后服务器cpu飙升异常问题</title>
+      <link href="/2019/03/11/ji-yi-ci-shang-xian-hou-fu-wu-qi-cpu-biao-sheng-yi-chang-wen-ti/"/>
+      <url>/2019/03/11/ji-yi-ci-shang-xian-hou-fu-wu-qi-cpu-biao-sheng-yi-chang-wen-ti/</url>
+      
+        <content type="html"><![CDATA[]]></content>
+      
+      
+      <categories>
+          
+          <category> java </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> 问题记录 </tag>
+            
+            <tag> java </tag>
+            
+            <tag> jvm </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>记一次线上问题-java内存溢出</title>
+      <link href="/2019/02/08/ji-yi-ci-xian-shang-wen-ti-java-nei-cun-yi-chu/"/>
+      <url>/2019/02/08/ji-yi-ci-xian-shang-wen-ti-java-nei-cun-yi-chu/</url>
+      
+        <content type="html"><![CDATA[<p>这里分享一个线上问题案例及解决过程。<br>小k来到新公司不久，一天早上，小K收到一封报警邮件，提示某项目出现较多异常。小k点击邮件查看详情，发现提示out of menery错误。此时同事们还没来，小k暗自吐槽：“怎么都没来，这个项目代码自己也还不熟悉阿”。但是小k转念一想：“毕竟也是有2年开发经验的人，自己先排查下吧”<br>&nbsp;<br>于是小k开始查看日志系统，发现报错基本集中在个别机器上。小k打开该项目的机器监控，发现有两台机器的内存使用率高于正常水平。进一步发现这两台机器的线程数量远高于其他机器以及此前的正常水平。<br>&nbsp;<br><img src="/images/3.png" alt="服务内存监控（此为正常情况，异常是超过90%）"><br><img src="/images/4.png" alt="线程监控（此为正常情况，异常机器的JMX thread数量有个梯度上升）"><br>小k心中有了方向，进一步针对机器的线程收集监控，获取到异常机器的大量线程来自同一个线程池。此时小k的组长大M来了，小k把相关问题以及排查结果向大M进行了说明，大M找到项目中使用该线程池的地方，小k暗叹：“还是对项目熟悉定位问题比较快哇”。然后两个人一起看起了代码。不一会，就发现了问题，当然代码的创造者早已离开。<br>关键代码如下：</p><pre><code>ExecutorService executor = Executors.newFixedThreadPool(size);</code></pre><p>问题在于这里的size是会根据请求中某参数的数量动态创建的。原先的的请求内参数并没有特别多，创建了定长线程池执行完后可以安全释放。但是现在遇到两个参数过多的请求（并没有对请求方限制批量处理的的数量），导致创建过多线程消耗过多内存，程序异常，也无法执行下面的对线程池的回收和销毁。<br>&nbsp;<br>确定了问题之后，组长让我对这里进行了修改，添加了创建线程数量的限制，防止线程泄露。上线后项目也恢复了正常。<br>&nbsp;<br>小k在这次问题排查中学到了很多：</p><ol><li>创建线程池本身要注意，要合理限制创建线程的最大数量，防止消耗过多的资源；</li><li>线程池使用中要确保在正常和异常情况下对线程池进行释放；</li><li>批量接口最好对最大请求数量进行约定和限制，防止不可控的异常；<br>小k整理了下思路，继续开始一天愉快得工作，直到深夜….</li></ol>]]></content>
+      
+      
+      <categories>
+          
+          <category> java </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> java </tag>
+            
+            <tag> 内存溢出 </tag>
+            
+            <tag> 线程池 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>相对论中的时空</title>
+      <link href="/2019/01/22/xiang-dui-lun-zhong-de-shi-kong/"/>
+      <url>/2019/01/22/xiang-dui-lun-zhong-de-shi-kong/</url>
+      
+        <content type="html"><![CDATA[<p>  相信很多人跟我一样，很早就接触过时空这个词，但是却从没有深究过它。<br>  本文将基于自己最近的阅读简单和大家聊一聊时空这个概念，希望能激发大家对此类科学的兴趣，也希望有高人对此能指点一二。<br>  在讲它之前，我想简单先聊几个概念。  </p><h4 id="狭义相对论"><a href="#狭义相对论" class="headerlink" title="狭义相对论"></a>狭义相对论</h4><p>  爱因斯坦的相对论相信绝大数朋友都听过。当然这一段也不是我们此处的核心。我这里只是简单介绍一下以方便后面对时空的描述。<br>  狭义相对论是基于两个假设前提：</p><ul><li>光速在任何参考系内不变</li><li><p>在任何惯性系内物理规律保持不变</p><p>然后基于牛顿的物理定律和公司，加入这两个假设前提，爱因斯坦推导出狭义相对论的结论：</p></li></ul><ol><li>时间膨胀</li><li>空间收缩（如长度变短）</li><li>速度收缩</li><li>物体运动速度越大，质量越大</li><li>物质的能量m乘c平方</li></ol><h4 id="广义相对论"><a href="#广义相对论" class="headerlink" title="广义相对论"></a>广义相对论</h4><p>  狭义相对论有他的局限性，10年后的广义相对论，爱因斯坦对狭义相对论进行扩展，将理论扩展到非惯性系，根据假设<strong>引力场和加速度是等效的（等效原理），</strong>  得到广义相对论的引力场方程。<br>  广义相对论的核心思想：<strong>物质可以引起时空弯曲，然后物体在弯曲的时空内运动。</strong></p><h4 id="时空"><a href="#时空" class="headerlink" title="时空"></a>时空</h4><p>  简单介绍了相对论（感兴趣的推荐阅读《时间的形状》，后续我也会基于相对论进行思考和分享，欢迎一起讨论），我们引出这个时空概念。通俗的说，时空是时间和空间的结合，是不可分割的一体。爱因斯坦说：<strong>任何物体的运动速度都是光速c-在时空中</strong> 。<em>（以下是我一些发散的思考，用列表的形式记录方便阅读）</em>：</p><ul><li>简单的说就是物体的速度可以分解到三维空间和时间维度，你的速度越快，你的时间维度就过得越慢。所以对光子来说是没有时间概念的。</li><li>太神奇了！我们一直生活在三维的空间世界太久，但是现在，我们来到了四维的时空世界。只是因为我们在空间的速度相对光速而言太慢太慢，我们在时间维度造成的改变太微小。</li><li>时空的概念打开了四维世界的大门，让我们对时间旅行有了新的期待。</li><li>空间不可触摸，但是在我们的认知中他不像时间那样的神秘，但是现在我们并不将他们分开讨论。存在空间的地方自然需要考虑时间。我不禁想到，光在宇宙中的遨游那是怎样的一种体验，他感受不到时间，只是在快速的穿越空间，或者应该说，他并不能体会到两者的区别，他就像我们坐在高铁上在两地间飞驰，时间只是另外一个坐标轴，我们无法想象凌驾时间之上的旅程。</li><li>时空是凹凸不平的，在时空中的运动也受这种弯曲影响，质量越大造成的时空弯曲效应越大；根据相对论速度越快质量越大，光的质量应该无限大，但是光子又是认为没有质量的…</li><li>通过描述4维的时空物体的运动可以得到一个”超光锥””，理论认为事件存在影响的未来光锥和过去光锥，对光锥之外的时空无法造成影响，当然量子不在这个讨论的范畴（量子力学的学习和分享后续也会进行，欢迎一起讨论）；</li><li>我们说的时空更多的是描述三维空间+时间轴，但现代物理认为宇宙之中至少存在10维， 9维空间，加时间维度；有6维空间在基本梨子维度，目前的宏观宇宙暂时是无法进行观测描述的… 那么是不是这个时空在将来会进一步颠覆？</li><li>虽然理论说物体的速度不能超过光速，但是我相信这一点也一定会在未来推翻（粒子的信息传递超光速）。那如果我们的速度超过了光速，我们的运动在这个时空将如何描述？ 时间倒流（若时空弯曲形成莫比乌斯环，当前理论上是可以穿越回到回去的，当然也需要借助虫洞）？ 时间的坐标轴是否也有方向就像长度坐标轴上的正负？希望有天这些疑问可以得到解答。</li></ul><p>本文更多的是简单的介绍，欢迎一起讨论交流~</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> 科学科幻 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> 相对论 </tag>
+            
+            <tag> 科学 </tag>
+            
+            <tag> 时空 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>我的博客说明</title>
+      <link href="/2018/12/28/wo-de-bo-ke-shuo-ming/"/>
+      <url>/2018/12/28/wo-de-bo-ke-shuo-ming/</url>
+      
+        <content type="html"><![CDATA[]]></content>
+      
+      
+      <categories>
+          
+          <category> blog </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> blog </tag>
+            
+            <tag> 介绍 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>java-多线程异常记录1-nullpointerexception</title>
+      <link href="/2018/09/23/java-duo-xian-cheng-yi-chang-ji-lu-1-nullpointerexception/"/>
+      <url>/2018/09/23/java-duo-xian-cheng-yi-chang-ji-lu-1-nullpointerexception/</url>
+      
+        <content type="html"><![CDATA[]]></content>
+      
+      
+      <categories>
+          
+          <category> java </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> java </tag>
+            
+            <tag> 多线程 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>weixin_小程序开发（一）</title>
+      <link href="/2018/09/15/weixin-xiao-cheng-xu-kai-fa-yi/"/>
+      <url>/2018/09/15/weixin-xiao-cheng-xu-kai-fa-yi/</url>
+      
+        <content type="html"><![CDATA[]]></content>
+      
+      
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>java-多线程-线程安全简单介绍</title>
+      <link href="/2018/07/22/java-duo-xian-cheng-xian-cheng-an-quan-jian-dan-jie-shao/"/>
+      <url>/2018/07/22/java-duo-xian-cheng-xian-cheng-an-quan-jian-dan-jie-shao/</url>
+      
+        <content type="html"><![CDATA[<pre><code>本文对多线程的线程安全做一个简单介绍和探讨。在特定场景下，多线程是一把利刃，可以帮助我们提升业务处理的性能，充分利用服务器的性能，甚至在某些情况下会让编程从逻辑上更简单清晰。但是他同时是一把双刃剑，我们早就习惯了艳丽的玫瑰总是带刺的。很多时候他是复杂的，存在安全风险的。本文将简单谈谈线程安全，也就是多线程下，程序运行正确，运行的和我们的预期是保持一致的。</code></pre><h4 id="原子性"><a href="#原子性" class="headerlink" title="原子性"></a>原子性</h4><pre><code>我们在多线程中常常涉及到这个概念。如果我们的操作不是原子操作，那么在多线程下执行，很容易产生预期之外的结果。如* ++count* 类似这样的操作他就不是一个原子操作，包含了&quot;读 改 写&quot;的操作。</code></pre><h4 id="竞争条件"><a href="#竞争条件" class="headerlink" title="竞争条件"></a>竞争条件</h4><p>我们在程序中常常存在竞争条件，如：</p><ul><li>检查再运行： 我们在检查条件后，执行操作的时候，很可能另外的进场已经修改了此前的条件；如代码中常见的惰性初始化；</li></ul><h4 id="锁"><a href="#锁" class="headerlink" title="锁"></a>锁</h4><p>当我们遇到非原子操作，在多线程下可能会遇到问题。此时我们该怎么做呢？我们考虑使用锁。如java中提供的内置锁机制： synchronized块。</p><ul><li>简单说明下他的运作机制，当某个线程进入此代码块，他将获得锁，此时其他进场将无法获得锁，也就无法执行这段代码块，那么这块可以看做我们上面看到的原子操作，线程们串行地执行这个代码块；</li><li>通过上面的解释你也会意识到，</li></ul>]]></content>
+      
+      
+      <categories>
+          
+          <category> java </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> java </tag>
+            
+            <tag> 多线程 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>java虚拟机垃圾收集器介绍</title>
+      <link href="/2018/05/27/java-xu-ni-ji-la-ji-shou-ji-qi-jie-shao/"/>
+      <url>/2018/05/27/java-xu-ni-ji-la-ji-shou-ji-qi-jie-shao/</url>
+      
+        <content type="html"><![CDATA[]]></content>
+      
+      
+      <categories>
+          
+          <category> java </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> java </tag>
+            
+            <tag> jvm </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>java-outofmemoryError异常整理</title>
+      <link href="/2018/04/23/java-outofmemoryerror-yi-chang-zheng-li/"/>
+      <url>/2018/04/23/java-outofmemoryerror-yi-chang-zheng-li/</url>
+      
+        <content type="html"><![CDATA[]]></content>
+      
+      
+      <categories>
+          
+          <category> java </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> java </tag>
+            
+            <tag> jvm </tag>
+            
+            <tag> outofmemoryError </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>java虚拟机内存区域介绍</title>
+      <link href="/2018/04/22/java-xu-ni-ji-nei-cun-qu-yu-jie-shao/"/>
+      <url>/2018/04/22/java-xu-ni-ji-nei-cun-qu-yu-jie-shao/</url>
+      
+        <content type="html"><![CDATA[<p>本文将简单介绍下java内存区域，借此加深对java虚拟机的理解；<br>希望对入门者有一定的引导作用，同时也作为记录帮助自己记忆，若有错误，希望大牛指点一二；</p><h4 id="简述"><a href="#简述" class="headerlink" title="简述"></a>简述</h4><p>java虚拟机所管理的内存包括这几个运行时数据区：程序计数器、java虚拟机栈、本地方法栈、java堆、方法区、直接内存；<br>参考图片（来自《深入理解java虚拟机》，推荐阅读）：<br><img src="/images/jvm1.PNG" alt="java虚拟机运行时数据区"></p><h4 id="程序计数器"><a href="#程序计数器" class="headerlink" title="程序计数器"></a>程序计数器</h4><ul><li>当前线程所执行的字节码的行号指示器，根据这里的值来选取下一条需要执行的字节码指令；</li><li>每个线程都有一个程序计数器，各线程互不影响；</li></ul><h4 id="java虚拟机栈"><a href="#java虚拟机栈" class="headerlink" title="java虚拟机栈"></a>java虚拟机栈</h4><ul><li>线程私有的，线程间互不干扰，生命周期与线程相同；</li><li>描述java方法执行的内存模型，每个方法再执行时会建立一个栈帧用于存储局部变量表、操作数栈、动态连接、方法出口等信息；每个方法调用至完成就对应一个栈帧（栈帧是方法运行时的基础数据结构）再虚拟机栈中入栈到出栈的过程；</li><li>其中局部变量表存放了编译器可知的各种基本数据类型；</li><li>这个区域存在两种异常状况：StackOverflowError（线程请求的栈深度大于虚拟机允许深度）和OutOfMemoryError（扩展时无法申请足够内存）；</li></ul><h4 id="本地方法栈"><a href="#本地方法栈" class="headerlink" title="本地方法栈"></a>本地方法栈</h4><ul><li>与虚拟机栈作用相似， 为虚拟机使用的Native方法服务；</li><li>也会抛出StackOverflowError和OutOfMemoryError；</li></ul><h4 id="java堆"><a href="#java堆" class="headerlink" title="java堆"></a>java堆</h4><ul><li>java虚拟机管理内存中最大的一块， 是所有线程共享的一块内存区域；</li><li>用来存放对象实例；</li><li>是垃圾收集器管理的主要区域，又称为”GC堆”；</li><li>可分为新生代和老年代，再细分为Eden空间 From Survivor和To Survivor空间 ；</li><li>堆无法扩展时会抛出OutOfMemoryError异常；</li></ul><h4 id="方法区"><a href="#方法区" class="headerlink" title="方法区"></a>方法区</h4><ul><li>各个线程共享的内存区域；</li><li>存储虚拟机加载的类信息、常量、静态变量、编译后的代码等；</li><li>内存不满足时抛出OutOfMemoryError异常；</li></ul><h4 id="直接内存"><a href="#直接内存" class="headerlink" title="直接内存"></a>直接内存</h4><ul><li>内存不够会抛出OutOfMemoryError异常；</li><li>不是虚拟机运行时数据区的一部分；</li></ul><h4 id="对象创建"><a href="#对象创建" class="headerlink" title="对象创建"></a>对象创建</h4><ul><li>虚拟机遇到new指令，检查参数是否能在常量池中定位到类的符号引用，若没有，先执行类加载过程（该过程会在后续文章进行分享）；</li><li>类加载检查完，在java堆中为对象分配内存（受不同收集器影响）；</li><li>虚拟机对对象进行一些设置：是哪个类的实例，如何查找类元数据信息，对象哈希码，对象的GC分代年龄等；</li><li>执行init进行初始化；</li></ul><h4 id="对象的访问定位"><a href="#对象的访问定位" class="headerlink" title="对象的访问定位"></a>对象的访问定位</h4><ul><li>需要通过栈上的reference数据来操作栈上的对象；</li><li>两种访问方式：<ul><li>句柄：java堆种一块内存作为句柄池，reference保存对象的句柄地址，句柄再保存对象实例数据和类型数据的具体地址信息；</li><li>直接指针：java堆对象放置访问类型数据，reference种存储对象地址；</li></ul></li></ul><p>以上是对java虚拟机涉及内存以及对象创建、对象访问定位流程的简单介绍，后续会继续进行相关基础和进阶知识的学习整理分享，欢迎一起讨论交流~</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> java </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> java </tag>
+            
+            <tag> jvm </tag>
+            
+            <tag> 垃圾回收 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>mysql源码学习(一)</title>
+      <link href="/2017/10/17/mysql-yuan-ma-xue-xi-yi/"/>
+      <url>/2017/10/17/mysql-yuan-ma-xue-xi-yi/</url>
+      
+        <content type="html"><![CDATA[]]></content>
+      
+      
+      <categories>
+          
+          <category> mysql </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> mysql </tag>
+            
+            <tag> 源码学习 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>redis学习-基本介绍</title>
+      <link href="/2017/05/30/redis-xue-xi-ji-ben-jie-shao/"/>
+      <url>/2017/05/30/redis-xue-xi-ji-ben-jie-shao/</url>
+      
+        <content type="html"><![CDATA[<p>redis是使用简单、性能强大的非关系型数据库。<br>下面简单介绍他的几个特性。<br>后续会进行关于redis支持的数据结构、redis使用场景案例等的分享。</p><p>####</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> redis </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> redis </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>mysql_innodb存储引擎关键特性</title>
+      <link href="/2017/05/23/mysql-innodb-cun-chu-yin-qing-guan-jian-te-xing/"/>
+      <url>/2017/05/23/mysql-innodb-cun-chu-yin-qing-guan-jian-te-xing/</url>
+      
+        <content type="html"><![CDATA[<p>本文将简单介绍mysql innodb存储引擎的关键特性；<br>以帮助大家对innodb以及数据库底层的特效有大致的了解并学习其中的设计，方便后续做更深的学习和问题分析；  </p><p>下面参考《mysql技术内幕 InnoDB存储引擎》，分享innodb引擎的关键特性：</p><h4 id="插入缓冲"><a href="#插入缓冲" class="headerlink" title="插入缓冲"></a>插入缓冲</h4><ul><li>innodb基于聚簇索引的时候插入是顺序的，不需要磁盘的随机读写，但是对于非聚簇索引插入不再是顺序的来，性能会下降；</li><li>对于非聚簇索引的插入或更新操作，不是每一次直接插入到索引页中，而是先判断是否再缓冲池种，在，直接插入，不在，先放到insert buffer中，然后根据情况按一定的频率进行buffer和辅助叶子节点的merge操作，就将多个插入合并到一个操作中，可以相应提升性能；</li><li>使用条件：索引是辅助索引， 不是唯一索引；</li><li>Insert Buffer数据结构是一颗b+树，负责所有辅助索引的插入缓存，存放在共享表空间；</li><li>当发现辅助索引页空间不大时，以及Master 进程定期会进行merge Insert Buffer，将其merge仅进物理内存；</li></ul><h4 id="两次写"><a href="#两次写" class="headerlink" title="两次写"></a>两次写</h4><ul><li>doublewrite两部分组成，内存中的buffer以及物理磁盘上的共享表空间的2MB空间；</li><li>对缓冲池的脏页刷新时，会先copy到内存中的doublewrite buffer，然后分两次写入磁盘上，然后调用fsync同步磁盘；</li><li>当写入失效时（如宕机引起），先通过页的副本还原页，然后通过冲入日志重做，就是doublewrite；</li><li>doublewrite带给存储引擎数据也的可靠性；</li></ul><h4 id="自适应哈希"><a href="#自适应哈希" class="headerlink" title="自适应哈希"></a>自适应哈希</h4><ul><li>存储引擎对访问的热点数据构建自适应哈希，提高速度；</li><li>自适应哈希索引是通过缓冲池的B+树页构造而来，建立速度快；</li><li>要求：对某个页的连续访问模式是一样的；</li></ul><h4 id="异步IO"><a href="#异步IO" class="headerlink" title="异步IO"></a>异步IO</h4><ul><li>异步IO可以进行IOmerge， 提升性能；</li></ul><h3 id="刷新邻接页"><a href="#刷新邻接页" class="headerlink" title="刷新邻接页"></a>刷新邻接页</h3><ul><li>当刷新一个脏页时，检测所在区的所有也，如果是脏页，也一起刷新；</li></ul><h4 id="备注"><a href="#备注" class="headerlink" title="备注"></a>备注</h4><ul><li>以上是对innodb存储引擎关键特性的一些介绍，大部分特效都是可以通过配置进行开关的，可以结合实际情况进行调整；</li><li>如两次写，如果我们有其他高效的写失效防范机制，也可以考虑不适用这个特性；</li><li>像异步的这些思想在我们的程序设计中都可以进行参考；</li><li>同意像刷新邻接页的特性，我们在进行概率抽样处理的时候，也可以参考这个思想扩大抽样范围；</li></ul><p>以上是对innodb关键特效的简单介绍，后续会继续进行相关简单和进阶知识的分享，欢迎一起讨论交流~</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> mysql </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> mysql </tag>
+            
+            <tag> innodb </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>mysql-innodb存储引擎体系结构介绍</title>
+      <link href="/2017/05/22/mysql-innodb-cun-chu-yin-qing-ti-xi-jie-gou-jie-shao/"/>
+      <url>/2017/05/22/mysql-innodb-cun-chu-yin-qing-ti-xi-jie-gou-jie-shao/</url>
+      
+        <content type="html"><![CDATA[<p>  本文简单介绍Innodb存储引擎的体系架构。<br>  Innodb体系内含（参考图）：</p><ul><li>文件系统；</li><li>多个内存块组成的大的内存池；</li><li>后台线程</li></ul><h4 id="文件系统"><a href="#文件系统" class="headerlink" title="文件系统"></a>文件系统</h4><p>   数据存储再磁盘上的最终场所；</p><h4 id="后台线程"><a href="#后台线程" class="headerlink" title="后台线程"></a>后台线程</h4><p>   Innodb是多线程的模型，后台有多个不同的后台线程。</p><ul><li>Master Thread： 核心后台线程，负责将缓冲池中的数据异步刷新到磁盘，保持数据一致性，包括脏页的刷新、合并插入缓冲、UNDO页的回收等；</li><li>IO Thread：Innodb使用AIO来处理IO请求。负责处理io请求的回调；</li><li>Purge Thread：回收已经使用 分配的undo页；</li><li>Page Cleaner Thread： 1.2.x版本引入，将脏页的刷新操作放入单独的线程中完成；减轻Master Thread的工作；</li></ul><h4 id="内存"><a href="#内存" class="headerlink" title="内存"></a>内存</h4><ul><li>缓冲池：Innodb存储引擎虽然是基于磁盘存储，但使用缓冲池来提升性能；缓存查询结果；对于修改操作，先修改缓冲池中的页再异步刷新到磁盘上（checkpoint机制）；</li><li>Innodb缓冲池的管理：使用LRU list，Free List和Flush List；主要可以了解下LRU-最近最少使用算法管理；<br>新数据放在list midpoint的位置；<ul><li>重做日志缓冲：先放到缓冲区，按一定频率刷新到重做日志文件；</li><li>额外的内存池：对内存的管理通过内存堆的方式进行，对一些数据结构本身的内存分配需从额外的内存池中申请；</li><li>checkpoint：前面提到checkpoint，其实就是一种类似定期执行的检查，把一些事情不是无限堆积而是定期执行。checkpoint的目的如下：<ul><li>从checkpoint恢复数据库，缩短故障恢复时间；</li><li>缓冲池不够时将脏页刷新到磁盘；</li><li>重做日志不够时，刷新磁盘；</li></ul></li></ul></li></ul><p>关于Innodb体系的细节以及更多的特性，以及mysql使用中更多的技巧和经验，后续文档会继续更新。<br>若感兴趣推荐阅读《Mysql技术内幕 InnoDB存储引擎》。</p><p>后续会继续分享相关基础和进阶知识，欢迎一起讨论交流~</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> mysql </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> mysql </tag>
+            
+            <tag> innodb </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>java基础学习之string专题</title>
+      <link href="/2017/03/23/java-ji-chu-xue-xi-zhi-string-zhuan-ti/"/>
+      <url>/2017/03/23/java-ji-chu-xue-xi-zhi-string-zhuan-ti/</url>
+      
+        <content type="html"><![CDATA[]]></content>
+      
+      
+      <categories>
+          
+          <category> java </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> java </tag>
+            
+            <tag> string </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>java基础学习之数据类型</title>
+      <link href="/2017/02/17/java-ji-chu-xue-xi-zhi-shu-ju-lei-xing/"/>
+      <url>/2017/02/17/java-ji-chu-xue-xi-zhi-shu-ju-lei-xing/</url>
+      
+        <content type="html"><![CDATA[<p>  java是强类型语言，必须为每一个变量声明一种类型。一共有8种基本类型：</p><h5 id="整型"><a href="#整型" class="headerlink" title="整型"></a>整型</h5><ul><li>int：4字节，（取值范围不在此列出，可google或参考《java核心技术》）</li><li>short：2字节</li><li>long：8字节</li><li>byte：1字节</li></ul><h4 id="浮点类型"><a href="#浮点类型" class="headerlink" title="浮点类型"></a>浮点类型</h4><ul><li>float： 4字节</li><li>double：8字节</li></ul><h4 id="char类型"><a href="#char类型" class="headerlink" title="char类型"></a>char类型</h4><ul><li>char类型</li></ul><h4 id="boolean类型"><a href="#boolean类型" class="headerlink" title="boolean类型"></a>boolean类型</h4><ul><li>booleab类型</li></ul><p>以上是java的基本类型，这里简单扩展一下，java的底层字节码指令。一般是对某种数据类型的某种操作，但是某些数据类型是没有该操作的特定指令，这时候会将该类型转化为其他类型然后进行操作。如：</p><ul><li>大多数对于boolean、byte、short和char类型数据的操作实际上使用相应的int类型作为运算类型；</li><li>大部分的字节码指令都没有支持类型byte char和short；</li></ul><p>本文简单介绍java的基本类型，后续文章会继续整理分享java基础以及进阶知识，欢迎一起讨论交流。</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> java </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> java </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>前后端分离思考</title>
+      <link href="/2017/02/17/qian-hou-duan-fen-chi-si-kao/"/>
+      <url>/2017/02/17/qian-hou-duan-fen-chi-si-kao/</url>
+      
+        <content type="html"><![CDATA[<p>本文主要分享对于前后端分离开发模式的思考(讨论的内容和架构关系不大…)。<br>欢迎讨论和吐槽。</p><h3 id="关于前后端分离"><a href="#关于前后端分离" class="headerlink" title="关于前后端分离"></a>关于前后端分离</h3><ul><li>前后端分离是从开发模式进行的前后端分工开发模式，用约定的数据格式(如json)进行交互。</li><li>前端仅需要关心页面，可以自己去对页面进行模板化等操作，而不关心后端数据的任何细节，只依赖<br>提供的交互文档约定的数据格式，然后自己去渲染页面。</li><li>后端也不去关心前端的渲染，只关心数据层和业务逻辑层的建设和优化，怎样更好的吐出数据，如何优化<br>接口性能，如何节约服务器资源；<h3 id="推荐"><a href="#推荐" class="headerlink" title="推荐"></a>推荐</h3></li><li>基于前后端分离的架构，后端是自由的，go，php任何语言工具都可以，只需要按照约定去返回数据即可；</li><li>前端如何渲染则可以自己去考虑，用angular js，Vue等数据绑定？页面模板化？ 都是自己结合业务优化的方向<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3></li><li>前后端分离对于部分仅会html css，js薄弱的前端老说是有压力的，需要学习成本；</li><li>但是习惯之后，可以提高开发效率，让大家专注自己的关注部分，提高开发的规范性。</li></ul>]]></content>
+      
+      
+      
+        <tags>
+            
+            <tag> 前后端分离 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>webbench-压测</title>
+      <link href="/2016/10/17/webbench-ya-ce/"/>
+      <url>/2016/10/17/webbench-ya-ce/</url>
+      
+        <content type="html"><![CDATA[<p>本文主要和大家分享一个压测工具，webbench，安装和使用都非常方便。<br>欢迎讨论和吐槽。</p><h3 id="使用实例"><a href="#使用实例" class="headerlink" title="使用实例"></a>使用实例</h3><ul><li>下载webbench: wget <a href="http://blog.s135.com/soft/linux/webbench/webbench-1.5.tar.gz" target="_blank" rel="noopener">http://blog.s135.com/soft/linux/webbench/webbench-1.5.tar.gz</a></li><li>解压，安装webbench:<pre class=" language-$xslt"><code class="language-$xslt">tar zxvf webbench-1.5.tar.gzcd webbench-1.5make && make install</code></pre></li><li>应用:<pre class=" language-$xslt"><code class="language-$xslt">webbench -c 300 -t 60 http://***//其中 -c表示并发数， -t表示时间(秒)//返回中的Requests/秒数 = QPS</code></pre><h3 id="写在最后"><a href="#写在最后" class="headerlink" title="写在最后"></a>写在最后</h3>项目上线之前要做全面的测试，包括压测，这样可以避免很多的问题。</li></ul>]]></content>
+      
+      
+      <categories>
+          
+          <category> 测试 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> webbench </tag>
+            
+            <tag> 压测 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>高并发架构思考01</title>
+      <link href="/2016/10/17/gao-bing-fa-jia-gou-si-kao-01/"/>
+      <url>/2016/10/17/gao-bing-fa-jia-gou-si-kao-01/</url>
+      
+        <content type="html"><![CDATA[<p>本文记录对于高并发web架构的一些经验积累和思考，后续会就此话题继续更新。<br>欢迎讨论和吐槽。</p><h3 id="写在前面"><a href="#写在前面" class="headerlink" title="写在前面"></a>写在前面</h3><ul><li>作为web开发工作者，高并发的处理是大家比较关心的问题之一。</li><li>php上手简单，开发业务迭代迅速，但是他的性能一直为人们诟病。</li><li>php7发布后，php的性能有了更近一步的提升，但是相对于c++，java来说还存在差距。</li><li>我们可以通过架构满足业务的高并发需求，本文主要基于此点进行讨论和记录。</li><li>作为php的开发者，希望可以为优化他的性能贡献一份力量，现在swoole的思路个人认为是值得学习的思考方向，</li><li>异步和协程的特性使用可以很好的提高性能，更好的利用服务器资源。</li><li>毕竟php底层是基于c实现的，我相信一定可以更好的将c的高性能和php的高效开发特性很好的结合，在大家的努力下。</li></ul><h3 id="高并发的处理思路"><a href="#高并发的处理思路" class="headerlink" title="高并发的处理思路"></a>高并发的处理思路</h3><p>这里简单总结一些处理高并发的架构思路：</p><ul><li>动态页面和静态资源分离</li><li>前端页面的静态化</li><li>多级缓存提高数据响应速度，减轻数据层压力</li><li>业务逻辑异步处理</li><li>数据分库分表，读写分离</li><li>业务分离，业务服务化<br>……</li></ul><p>后续我会附上一个整体的结构图，对以上内容概括和整理</p><h3 id="部分具体实施讨论"><a href="#部分具体实施讨论" class="headerlink" title="部分具体实施讨论"></a>部分具体实施讨论</h3><ul><li>静分离 页面静态化<ul><li>页面上的图片等静态化资源放在单独的服务器，且资源用不同的域名，提升浏览器获取资源的速率；</li><li>利用cdn，服务器文件缓存，yac缓存等进行静态化缓存，减少后端服务的压力(不推荐cdn，cdn节点的刷新效率较慢)；</li><li>数据上动态的部分，可以在服务器层讲静态页面和从缓存获取的动态数据拼接成模板页面，在请求时直接返回给前端；</li></ul></li><li>多级缓存<ul><li>页面的动态数据通过缓存获取，部分数据可以直接存在yac服务本地内存，减少redis服务器通信损耗；</li><li>数据的缓存分为多级，第一级缓存失效，后面可以放置一层惰性非实时更新的缓存，通过定时任务等手段更新，可能数据量和存储结构较上一层</li><li>缓存数据而言更大更不精准。目的是尽可能的是减少直接访问db的频率；</li><li>可以直接使用内存+磁盘的存储模式，所有数据读取来自内存（如yac），写入的时候会异步写入多处磁盘进行备份；</li></ul></li><li>业务异步处理<ul><li>如使用php的swoole框架将业务更好的分离，提升代码层的执行效率，现在很多编程语言如go都是自带异步和协程的处理特性；</li><li>对于耗时的业务做一些特殊处理，如异步，使用长连接等；</li></ul></li><li>数据层优化<ul><li>高并发的业务往往以为着大数据，db层的瓶颈往往影响整个业务，常用的有合理的分库分表的措施；</li><li>读写分离</li><li>集群优化</li><li>数据监控，监控数据库服务压力<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3></li></ul></li><li>高并发场景复杂且多样化，需要根据业务的具体情况有重点的去调整架构；</li><li>有时候对于很大的请求需求，不得不进行服务降级，减少部分服务质量和少数用户的体验换取业务的可用，下篇会举例讨论。</li><li>后续会继续讨论此问题，并加上详细的处理经历与大家分享。</li></ul>]]></content>
+      
+      
+      <categories>
+          
+          <category> 高并发 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> 高并发 </tag>
+            
+            <tag> 架构思考 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>故事-睡前检查</title>
+      <link href="/2016/10/17/gu-shi-shui-qian-jian-cha/"/>
+      <url>/2016/10/17/gu-shi-shui-qian-jian-cha/</url>
+      
+        <content type="html"><![CDATA[<p>两鬓微白的父亲慈爱的看着床上躺着的4岁的儿子，像往常一样轻声为他读着睡前故事。<br>还是一样的故事，孩子却不像往常一样，依然精神奕奕。<br>父亲还没有摆脱白天工作的疲惫，轻吻儿子的额头。<br>“该睡觉啦。”<br>“好的，daddy。”<br>父亲起身，走到门口欲关灯出去。<br>儿子嘲弄般地笑看着父亲，<br>“daddy,你还没有检查床底呢”<br>睡前故事，亲吻额头，检查床底，是父亲每天睡前都会做的三件事。<br>“好的，亲爱的。”<br>父亲依旧慈爱的声音，漫步走到床边，可能是怕动静太大，可能是白天比较疲劳，他缓缓的弯腰看向床底。<br>床底稍微有点暗，因为房间的灯还亮着所以依旧看得清晰。<br>床下，正躺着自己的儿子。<br>可能因为害怕，可能因为委屈，小脸憋得有点红。<br>儿子也看向自己，发出很轻很轻的喃呢。<br>“daddy,我的床被抢了”<br>眨巴着委屈的眼睛。<br>父亲的后背微微发凉，说不出话……</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> 故事 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> 恐怖故事 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>thinkphp文件静态缓存学习</title>
+      <link href="/2016/08/19/thinkphp-wen-jian-jing-tai-huan-cun-xue-xi/"/>
+      <url>/2016/08/19/thinkphp-wen-jian-jing-tai-huan-cun-xue-xi/</url>
+      
+        <content type="html"><![CDATA[<p>本文分享使用thinkphp框架自带的静态缓存实现文件静态化。<br>欢迎讨论和吐槽。</p><h3 id="目的"><a href="#目的" class="headerlink" title="目的"></a>目的</h3><ul><li>使用的场景是访问活动页面的时候希望进行静态化处理，提升请求效率；</li><li><p>页面静态化有多种解决方案，如使用yac保存在内存中，本文分享的是使用tp自带的缓存功能生成静态化的html文件（可以是其他文件）。</p><h3 id="操作"><a href="#操作" class="headerlink" title="操作"></a>操作</h3><p>使用此功能是比较简单，步骤如下(基于tp3.2)：</p></li><li><p>conf中配置开启静态缓存</p><pre class=" language-$xslt"><code class="language-$xslt">'HTML_CACHE_ON'=>true,//静态化相关 'HTML_CACHE_TIME'   =>    60,   // 全局静态缓存有效期（秒） 'HTML_FILE_SUFFIX'  =>    '.html', // 设置静态缓存文件后缀 'HTML_CACHE_RULES'=> array(     'index:commonindex' => array('{act}', '60'),  //缓存规则 ),</code></pre><p>缓存规则有多种配置方式，可<a href="http://document.thinkphp.cn/manual_3_2.html#html_cache" target="_blank" rel="noopener">参考文档</a>。</p></li><li><p>确认HTML_PATH的路径配置，确认此路径文件夹存在：</p><pre class=" language-$xslt"><code class="language-$xslt">defined('HTML_PATH')    or define('HTML_PATH',      APP_PATH.'Html/'); // 应用静态目录</code></pre><h3 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h3><p>这里阐述下分享过程中遇到的问题：</p></li></ul><ol><li>确保HTML_PATH指定的文件夹存在</li><li>配置的规则方法要用小写，如commonindex(未测试commonIndex是否可以)；</li><li>tp的缓存需要基于display加载的view文件，没有加载view文件直接输入内容无法生成缓存。<h3 id="思考和总结"><a href="#思考和总结" class="headerlink" title="思考和总结"></a>思考和总结</h3></li></ol><ul><li>使用tp自带的缓存功能实现文件静态化比较简单的；</li><li>但是其中也有些限制，在问题模块大致阐述，还可以用以下方案替代：<ol><li>将html内容存在内存(如使用yac，redis)，请求的时候先拿缓存直接输出；</li><li>访问到页面后生成html文件放在服务器某目录，下一次访问在进入项目之前判断存在此文件则直接走缓存文件；</li></ol></li><li>页面静态化的时候，如果页面有内容是需要动态加载的，对于数据少的可以加载页面完了用ajax请求去更新，更好的方法是<br>在服务器端取出静态文件的时候就去更新拼接态内容，这样前端看不到一个刷的过程。</li></ul>]]></content>
+      
+      
+      <categories>
+          
+          <category> php </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> php </tag>
+            
+            <tag> thinkphp </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>swoole-学习使用中遇到的问题记录</title>
+      <link href="/2016/07/13/swoole-xue-xi-shi-yong-zhong-yu-dao-de-wen-ti-ji-lu/"/>
+      <url>/2016/07/13/swoole-xue-xi-shi-yong-zhong-yu-dao-de-wen-ti-ji-lu/</url>
+      
+        <content type="html"><![CDATA[<p>本文分享自己在学习使用swoole中遇到的一些问题，在此记录。<br>欢迎讨论和吐槽。</p><h3 id="疑问-思考"><a href="#疑问-思考" class="headerlink" title="疑问-思考"></a>疑问-思考</h3><ul><li>我们使用swoole server的时候，在前面是否需要设置nginx代理等；</li><li>使用swoole中设置worker进程，设置几个比较合适？<ul><li>个人感觉应该根据业务量级来设置</li></ul></li><li>swoole server 启动后，如何监控启动的server<ul><li>server运动长时间后可能会服务异常，变成僵尸进程，目前我知道的做法可以定时重启swoole进程</li></ul></li><li>swoole server代码更新后如何软重启<ul><li>目前我知道只能直接关闭后重新启动，建议是可以检测将没有处理完请求的worker进程关闭，然后杀死，重新启动，逐个worker进程重启<br>实现软重启。<br>###总结<br>只是个人在使用中遇到的一些问题和思考，后续有更多问题和更好的解答会在此更新。</li></ul></li></ul>]]></content>
+      
+      
+      <categories>
+          
+          <category> swoole </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> 问题记录 </tag>
+            
+            <tag> swoole </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>php文件输出空行</title>
+      <link href="/2016/06/17/php-wen-jian-shu-chu-kong-xing/"/>
+      <url>/2016/06/17/php-wen-jian-shu-chu-kong-xing/</url>
+      
+        <content type="html"><![CDATA[<p>本文分享一次开发中遇到的文件输出空行的问题以及原因。<br>欢迎讨论和吐槽。</p><h3 id="文件输出空行的问题"><a href="#文件输出空行的问题" class="headerlink" title="文件输出空行的问题"></a>文件输出空行的问题</h3><p>一个公共类，用来输出json数据，只要调用这个类中的方法输出，在输出json数据前面多出空行</p><p>###问题原因和解决方法</p><ul><li>使用之前的版本没有这个问题，经过版本对比，发现修改的过程中，在php结束标志的地方?&gt;后面不小心添加了几个空行；</li><li>然后再请求这个文件输出的时候，会在最前面多出几个空行（并没有影响json的解析）;<pre class=" language-$xslt"><code class="language-$xslt">?></code></pre></li><li>去掉文件中的空行后，问题解决。</li></ul><h3 id="问题总结"><a href="#问题总结" class="headerlink" title="问题总结"></a>问题总结</h3><ul><li>针对这种输出额外空行的问题，除了检查文件中是否有额外的空行，还可能是文件编码造成的：如果是notepad编写的php文件，会统一添加UTF-8 + BOM，造成php文件的输出有空行。保存成其他不包含BOM头的编码格式可以解决。</li><li>可以通过脚本检查自己的php文件是否包含空行，将以下脚本放在文件目录下，执行以下脚本查看。<pre class=" language-$xslt"><code class="language-$xslt"><?phpif (isset($_GET['dir'])){//config the basedir  $basedir=$_GET['dir'];}else{    $basedir = '.';}$auto = 1;checkdir($basedir);function checkdir($basedir){  if ($dh = opendir($basedir)) {      while (($file = readdir($dh)) !== false) {          if ($file != '.' && $file != '..'){              if (!is_dir($basedir."/".$file)) {                  echo "filename: $basedir/$file ".checkBOM("$basedir/$file")." <br>";              }else{                  $dirname = $basedir."/".                      $file;                  checkdir($dirname);              }              }      }      closedir($dh);      }}function checkBOM ($filename) {  global $auto;  $contents = file_get_contents($filename);  $charset[1] = substr($contents, 0, 1);  $charset[2] = substr($contents, 1, 1);  $charset[3] = substr($contents, 2, 1);  if (ord($charset[1]) == 239 && ord($charset[2]) == 187 &&      ord($charset[3]) == 191) {      if ($auto == 1) {          $rest = substr($contents, 3);          return ("<font color=red>BOM found,automatically removed.</font>");      } else {          return ("<font color=red>BOM found.</font>");      }      }  else return ("BOM Not Found.");}?></code></pre></li></ul>]]></content>
+      
+      
+      <categories>
+          
+          <category> php </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> 问题记录 </tag>
+            
+            <tag> php </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>jquery-autocompleter使用介绍</title>
+      <link href="/2016/04/17/jquery-autocompleter-shi-yong-jie-shao/"/>
+      <url>/2016/04/17/jquery-autocompleter-shi-yong-jie-shao/</url>
+      
+        <content type="html"><![CDATA[<p>本文分享使用jquery-autocompleter模板。<br>欢迎讨论和吐槽。</p><h4 id="使用场景"><a href="#使用场景" class="headerlink" title="使用场景"></a>使用场景</h4><p>在业务中遇到需求希望可以在输入框中输入游戏名称的一部分，然后自动补全出含游戏id-游戏名称的下拉选项供选择。</p><h4 id="使用案列"><a href="#使用案列" class="headerlink" title="使用案列"></a>使用案列</h4><ul><li>业务中的实现代码如下：<pre class=" language-$xslt"><code class="language-$xslt">var game_id_names = '';   $.ajax({       dataType:'json',       url : 'URL',       async:false,//这里选择异步为false，那么这个程序执行到这里的时候会暂停，等待                   //数据加载完成后才继续执行       success : function(data){           for(var i=0;i<data.length;i++){               var str = '"'+data[i].gameid+','+data[i].gamename+'"';               game_id_names += '{"label":'+str+'},';           }       }   });   game_id_names = eval('['+game_id_names+']');   $('#nope').autocompleter({       // marker for autocomplete matches       highlightMatches: true,       // object to local or url to remote search       source: game_id_names,       // custom template       template: '{{ label }}',       // show hint       hint: true,       // abort source if empty field       empty: false,       // max results       limit: 20,   });});</code></pre></li><li>这里分享一个可查看效果的代码样例：<pre><code>&lt;!DOCTYPE html&gt;&lt;html lang=&quot;en&quot;&gt;&lt;head&gt;  &lt;meta charset=&quot;UTF-8&quot;&gt;  &lt;title&gt;Title&lt;/title&gt;  &lt;link rel=&quot;stylesheet&quot; href=&quot;normalize.css&quot;&gt;  &lt;link rel=&quot;stylesheet&quot; href=&quot;mains.css&quot;&gt;  &lt;script type=&quot;text/javascript&quot; src=&quot;http://img.qidian.com/js/jquery-2.1.1.min.js&quot;&gt;&lt;/script&gt;  &lt;script src=&quot;jquery.autocompleter.js&quot;&gt;&lt;/script&gt;&lt;/head&gt;&lt;body&gt;测试输入框&lt;input id=&quot;test-input&quot; placeholder=&quot;请输入水果&quot; maxlength=&quot;40&quot; /&gt;&lt;/body&gt;&lt;script &gt;  $(function(){      var fruits = eval(&quot;[{&#39;label&#39;:&#39;西瓜&#39;},{&#39;label&#39;:&#39;火龙果&#39;},{&#39;label&#39;:&#39;西瓜2&#39;},{&#39;label&#39;:&#39;西瓜3&#39;}, {&#39;label&#39;:&#39;西瓜4&#39;},{&#39;label&#39;:&#39;苹果&#39;},{&#39;label&#39;:&#39;苹果7&#39;}]&quot;);      $(&#39;#test-input&#39;).autocompleter({          // marker for autocomplete matches          highlightMatches: true,          // object to local or url to remote search          source: fruits,          // custom template          template: &#39;{{ label }}&#39;,          // show hint          hint: true,          // abort source if empty field          empty: false,          // max results          limit: 20,      });  });&lt;/script&gt;&lt;/html&gt;</code></pre></li></ul><h4 id="使用交流"><a href="#使用交流" class="headerlink" title="使用交流"></a>使用交流</h4><p>使用autocompleter模板需要引入jquery.autocompleter.min.js；<br>引入jquery.autocompleter.css（不然效果难看）；</p><p>效果还是不错的，已上实例是非常基本简单的使用，还有更方便、强大的使用方式希望一起交流。</p><h4 id="参考地址"><a href="#参考地址" class="headerlink" title="参考地址"></a>参考地址</h4><p><a href="http://www.jq22.com/jquery-info438" target="_blank" rel="noopener">jQuery自动完成插件autocompleter</a></p>]]></content>
+      
+      
+      <categories>
+          
+          <category> jquery </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> jquery </tag>
+            
+            <tag> autocompleter </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>git-代码开发发布流程</title>
+      <link href="/2016/04/17/git-dai-ma-kai-fa-fa-bu-liu-cheng/"/>
+      <url>/2016/04/17/git-dai-ma-kai-fa-fa-bu-liu-cheng/</url>
+      
+        <content type="html"><![CDATA[<p>本文讨论业务接触到的git发布流程，在此记录和分享。<br>欢迎讨论和吐槽。</p><h4 id="方案1"><a href="#方案1" class="headerlink" title="方案1"></a>方案1</h4><p>这是在我第一家公司的经验，刚开始我们团队的发布系统是内部的发布系统，而后使用的是jenkins发布。<br>以下流程为文字描述，希望可以描述清楚。<br>公司开发分本地，测试，预发，线上环境，相应的项目有master，develop，test远程分支。</p><ol><li>本地pull develop和test分支，在develop分支上切出a分支进行功能开发，在本地环境测试；</li><li>本测试完毕，更新本地test分支，将a分支合并到test，推送远端，然后放到测试环境(这样可以满足多个开发在同一个测试环境测试);</li><li>测试环境测试ok，更新本地develop，合并a分支（有冲突合作解决冲突），推送，然后发到预发环境测试。</li><li><p>预发环境测完后发布上线（用的master分支，开发只有推送远端develop的权限，合并master只有权限更高的人可操作）。</p><h4 id="方案2"><a href="#方案2" class="headerlink" title="方案2"></a>方案2</h4><p>这是我第二家公司了解的发布流程。<br>同样，公司分本地，测试，预发，线上环境，项目有master，develop分支远程分支。</p></li><li><p>开发a拥有远端a分支，用户本地开发，本地测试。</p></li><li>本地测试完成，代码合并推送远端a分支，a拥有自己的测试环境，a分支代码如测试环境1测试，和别人的并行功能互不影响；</li><li>测试环境测试完毕，a代码合并入预发，简单验证后上线。此时可能会同时两个人需要发预发，但是到这一步因流程较快，进行串行操作，a验证完了b才能合进来验证；</li><li>预发确认完毕，上线。</li></ol><h4 id="分析"><a href="#分析" class="headerlink" title="分析"></a>分析</h4><p>两种方案都解决了一定的问题，也都还存在瑕疵。<br>前者开发发布不受别人影响可以在统一环境测试，但是因为在同一环境，测试中还是可能有问题；<br>后者发布测试环境独立，但是预发环境串行可能效率存在问题，而且后一个人的代码和前一个人没有一起在测试环境验证，到了预发合并后，可能存在问题（对前者）。</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> git </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> git </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>最大子序列和问题求解</title>
+      <link href="/2016/03/17/zui-da-zi-xu-lie-he-wen-ti-qiu-jie/"/>
+      <url>/2016/03/17/zui-da-zi-xu-lie-he-wen-ti-qiu-jie/</url>
+      
+        <content type="html"><![CDATA[<p>本系列主要整理分享对一些数据结构和算法问题的总结和思考，供基础相对较差的人渐进地学习，也是自身复习和寻求提升的过程。(代码部分借鉴和取自数据结构和算法书籍)<br>本文主要分享对最大子序列求和问题的求解和思考。<br>欢迎讨论和吐槽。</p><h3 id="问题描述"><a href="#问题描述" class="headerlink" title="问题描述"></a>问题描述</h3><ol><li>给定整数A1，A2…An(包含负数），求某一段(从第i个到第j个）的数字之和的最大值。</li><li>约定：所有整数均为负数，最大值为0(降低复杂度)</li><li>例： 1，-3,3，-2，5，-6，其中最大值是3 到5 ，和为6.<h3 id="问题分析"><a href="#问题分析" class="headerlink" title="问题分析"></a>问题分析</h3></li></ol><ul><li>例子中的数字较少，我们可以直观的观察就得出结论，这其实是变相的穷举法。</li><li>根据问题的分析，我们可以得到下面两个结论<ul><li>若前面的和为最大值，下一个数或者接下来n个数为整数，则接下来几个数应该被算进去；</li><li>若两段的和都为正数，无法合在一起，取和较大的一串。<h3 id="求解思路"><a href="#求解思路" class="headerlink" title="求解思路"></a>求解思路</h3>这里分享3个解决的思路和算法实现(代码为C)。</li></ul></li></ul><ol><li>穷举和，找到最大的结果。<pre class=" language-$xslt"><code class="language-$xslt">int max(int data[], int length) {int sum,maxSum,i,j;maxSum = 0;for(i=0;i<length;i++) { sum = 0;              //依次以某个位置为起点for(j=i;j<length;j++) { sum += data[j];       //逐个叠加计算找到某起点下的最大和 if(sum>maxSum) {   maxSum = sum; }}}return maxSum;}</code></pre></li><li>接来下的方法很好的使用了递归这个武器，上面的方法1比较直观，很容易想到，但是穷举法的效率一般是不高的，我们<br>可以使用分治策略，把问题化小去解决。<br>针对这个问题最核心的思路是这样的：<ul><li>这个序列分为两部分，分别求出左半部分的最大和，右半边的最大和，还有一种可能是结果在两部分中，因为序列是连续的，这种情况下必然包含左边的最后一个元素和右边的第一个元素，然后我们以这两点为起点一直计算下可以得到这种情况下的最大值，将三个最大值进行比较得到最大值即为最后的结果。</li><li>分出的两部分也递归的用上面的思想求出最大值。<pre class=" language-$xslt"><code class="language-$xslt">int max(int data[],int left,int right) {int maxLeftSum,maxRightSum;int maxLeftPart,maxRightPart,leftPartSum,rightPartSum,center,i;if(left==right) {              //分到最小结果的返回if(data[left]>0) { return data[left];} else { return 0;}}center = (left+right)/2;maxLeftSum = max(data,left,center);  //左半部分的最大和maxRightSum = max(data,center+1,right); //右半部分的最大和maxLeftPart = 0;leftPartSum = 0;for(i = center;i>=left;i++) {leftPartSum += data[i];if(leftPartSum>maxLeftPart) {maxLeftPart = leftPartSum;}}maxRightPart = 0;rightPartSum = 0;for(i = center+1;i<=left;i++) {rightPartSum += data[i];if(rightPartSum>maxRightPart) {  maxRightPart = rightPartSum;}}maxCenterSum = maxRightPart+maxLeftPart;return  ;       //返回三个最大值中的最大值}</code></pre>3.这个方法是针对本题目的一种灵活的解法：</li><li>我们每新加一个数，若和增大，则更新最大和；</li><li>若最大和大于0，则继续基于此最大和进行判断，若小于0，则对于后面的序列而言前面应该舍弃，此时从下个元素开始从新开始查找结果与前面的最大和进行比较；</li><li>这个方案的思路简单来说是从第一个元素，然后每次增加一个元素，判断增加前的最大和，与增加后的和比较，然后得出最大值<pre class=" language-$xslt"><code class="language-$xslt">int max(int data[],int length) {int sum,maxSum,i;sum = maxSum = 0;for(i=0; i<length; i++ ){sum += data[i];if(sum>maxSum) { maxSum = sum;} else if(sum<0) { sum = 0;               //从下一个元素开始重新计算}}}</code></pre></li></ul></li></ol><h3 id="总结-amp-思考"><a href="#总结-amp-思考" class="headerlink" title="总结&amp;思考"></a>总结&amp;思考</h3><ul><li>遇到问题应该多思考，判断和分析问题，找到解决问题的思路；</li><li>穷举法可以作为一个思路，但是一般效率较差；</li><li>分治法是很好的策略，将问题大二化小。</li></ul>]]></content>
+      
+      
+      <categories>
+          
+          <category> 数据结构与算法 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> 数据结构与算法 </tag>
+            
+            <tag> 算法题 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>列表项实现上下移动</title>
+      <link href="/2016/02/17/lie-biao-xiang-shi-xian-shang-xia-yi-dong/"/>
+      <url>/2016/02/17/lie-biao-xiang-shi-xian-shang-xia-yi-dong/</url>
+      
+        <content type="html"><![CDATA[<p>本文分享解决一个对一组列表项点击上下移动修改其排序位置的问题。<br>欢迎讨论和吐槽。</p><h3 id="问题描述"><a href="#问题描述" class="headerlink" title="问题描述"></a>问题描述</h3><ul><li>这个问题其实很简单，实现的方式也不止一种，这里主要分享我实现的方法；</li><li>问题是有一列选项，按一定顺序显示，可以通过上下移动修改其显示顺序；</li><li>顺便说一句，曾经有一次面试，面试官问我的就是这个问题，当时并没有回答出来。 = =<h3 id="问题解决"><a href="#问题解决" class="headerlink" title="问题解决"></a>问题解决</h3>这里我当时的考虑是加一个字段order用来排序，觉得上移就减少这个order值，下移就增加这个值，按照这个思考就有点复杂；<br>还是根据这个思路，后来的实现是在移动过滤中，交换应该和它交换的项的order值，就可以实现排序，参考下方：<pre class=" language-$xslt"><code class="language-$xslt">order1B  order2C  order3</code></pre>C上移:<pre class=" language-$xslt"><code class="language-$xslt">A  order1B  order3C  order2</code></pre>这样根据order排序显示就可以达到显示目的。</li></ul><h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><ul><li>这个问题不难，关键要实现的巧妙，单独添加字段用来排序，不影响原有功能。</li><li>继续思考其他方案</li></ul>]]></content>
+      
+      
+      
+        <tags>
+            
+            <tag> 问题记录 </tag>
+            
+            <tag> php </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>记录一次nginx-server返回502的问题排查</title>
+      <link href="/2016/01/17/ji-lu-yi-ci-nginx-server-fan-hui-502-de-wen-ti-pai-cha/"/>
+      <url>/2016/01/17/ji-lu-yi-ci-nginx-server-fan-hui-502-de-wen-ti-pai-cha/</url>
+      
+        <content type="html"><![CDATA[<p>本文记录一次自己在配置nginx+php-fpm时候遇到的问题，访问nginx server一直返回502。<br>欢迎讨论和吐槽。</p><h3 id="问题原因"><a href="#问题原因" class="headerlink" title="问题原因"></a>问题原因</h3><ul><li>这个问题对我来说是由于粗心造成，不过大家以后可能会遇到，我这边分享出来。</li><li>当时我在自己的php.ini中添加因为swoole扩展<pre class=" language-$xslt"><code class="language-$xslt">extension=swoole.so</code></pre></li><li>重启php-fpm<pre class=" language-$xslt"><code class="language-$xslt">service php-fpm restart</code></pre></li><li>然后我这边添加了个nginx server，重启了nginx<pre><code>nginx -tnginx -s reload</code></pre></li><li>问题出现了，访问原先正常的站点直接502.<h3 id="问题解决"><a href="#问题解决" class="headerlink" title="问题解决"></a>问题解决</h3></li><li>我第一反应是自己添加的server配置出问题，删除掉，重启nginx，没有用</li><li>在网上查找，大部分都是是因为配置问题，如进程数配置小了，不过这些问题可能生产环境会遇到，我这个是自己的测试环境，应该不会出现这些问题。网上很多解答</li><li>查看nginx log ，发现提示connect fail （111 connect refused）</li><li>在网上找到一个类似的问题：connect refused<pre class=" language-$xslt"><code class="language-$xslt">location ~ \.php {         root  /data/danmu-demo-master;         fastcgi_pass   127.0.0.1:9000;         #fastcgi_pass  unix:/dev/shm/php7.sock;         fastcgi_index  index.php;         fastcgi_param  SCRIPT_FILENAME  $document_root$fastcgi_script_name;         fastcgi_split_path_info  ^(.+\.php)(/.*)$;         fastcgi_param  PATH_INFO $fastcgi_path_info;         include        fastcgi_params;     }</code></pre></li><li>在我的php-fpm中配置的是<pre class=" language-$xslt"><code class="language-$xslt">listen = /dev/shm/php7.sock</code></pre></li><li>我把php-fpm中配置改为<pre class=" language-$xslt"><code class="language-$xslt">listen = 9000</code></pre></li><li>重启fpm，问题解决！</li></ul><h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><ul><li>nginx+php-fpm的配置有很多需要注意的地方，遇到问题结合日志，以及网上的答案排查问题；</li><li>nginx返回502的原因有很多很多种，大家遇到问题最好记录下来，这就是所谓的经验。</li></ul><h3 id="延伸"><a href="#延伸" class="headerlink" title="延伸"></a>延伸</h3>]]></content>
+      
+      
+      <categories>
+          
+          <category> nginx </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> 问题记录 </tag>
+            
+            <tag> nginx </tag>
+            
+            <tag> fpm </tag>
+            
+            <tag> 502 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>ajax-jsonp请求学习</title>
+      <link href="/2016/01/17/ajax-jsonp-qing-qiu-xue-xi/"/>
+      <url>/2016/01/17/ajax-jsonp-qing-qiu-xue-xi/</url>
+      
+        <content type="html"><![CDATA[<h3 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h3><p>在ajax请求jsonp获取跨域接口数据的时候，发现以下两个问题</p><ol><li>在chrome的调试处发现js报错提示：success_jsonpCallback function not found</li><li>接口返回json数据为a，console.log显示结果为b<br>当时的ajax请求代码如下：<pre class=" language-$xslt"><code class="language-$xslt">$.ajax({        url:"****",        data:{},        dataType :"jsonp",        jsonp:"callback",        jsonpCallback:"success_jsonpCallback",        type:"POST",        success:function(res) {          console.log(res)        }</code></pre>后端接口返回数据如下：<pre class=" language-$xslt"><code class="language-$xslt">echo "success_jsonpCallback" ."(".jsonData.")";</code></pre>当时是在页面加载的时候就请求获取数据(一共有两个请求-这也是问题的关键所在)<h3 id="解决过程"><a href="#解决过程" class="headerlink" title="解决过程"></a>解决过程</h3><h4 id="尝试一"><a href="#尝试一" class="headerlink" title="尝试一"></a>尝试一</h4></li></ol><ul><li>因为页面还有点击按钮时候做ajax-jsonp请求，是正常的，所以仔细对比了请求的代码，未发现差异，返回的数据格式进行对比也正常；</li><li>然后发现出问题的ajax请求返回数据较长，然后调试换上一样的返回，问题依然存在。<h4 id="尝试二"><a href="#尝试二" class="headerlink" title="尝试二"></a>尝试二</h4></li><li>在网上查阅大量资料后，发现也曾遇到这个问题，没有能解决我遇到的问题；</li><li>尝试给请求做同步请求，问题依然存在<br><code>`</code>$xslt<br>async:false,</li></ul><pre><code>#### 尝试三- 将页面其中一个ajax请求注释，刷新页面，问题解决。### 总结- 整理了代码，继续查阅了一些资料，总结问题如下：页面加载时发起两次ajax请求，但是定义的callback方法是一样的，这样导致异常。- 我遇到问题的解决方法有两种   1. 将两次请求数据放到一个接口返回，只做一次ajax请求   2. ajax请求不规定回调方法名，生成随机回调方法名，可以解决此问题（更优）- 修改后代码如下：ajax请求：```$xslt$.ajax({      url:&quot;**&quot;,      data:{},      dataType :&quot;JSONP&quot;,      type:&quot;GET&quot;,      success:function(activeData) {          //      }  });</code></pre><p>后端返回如下：</p><pre class=" language-$xslt"><code class="language-$xslt">echo $callback ."(".$rd->getJson().")";  //callback通过参数接受</code></pre><p>这里第一次代码中callback写死是很不推荐的（我这么做是测试阶段基于其他原因），但是问题的关键在于不能写死同一个回调方法名（当可能同时出现多个请求回调时）。</p><ul><li>遇到问题要善于思考和排查，以及利用网上的资源。</li><li>这里关于jquery ajax请求的实现原理和问题的真正原因稍后会进行补充。</li></ul>]]></content>
+      
+      
+      <categories>
+          
+          <category> ajax </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> ajax </tag>
+            
+            <tag> jsonp </tag>
+            
+            <tag> 问题记录 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>linux下安装nginx_mysql_php</title>
+      <link href="/2016/01/01/linux-xia-an-zhuang-nginx-mysql-php/"/>
+      <url>/2016/01/01/linux-xia-an-zhuang-nginx-mysql-php/</url>
+      
+        <content type="html"><![CDATA[<p>本文分享下安装lnmp环境的详细步骤。<br>欢迎讨论和吐槽。</p><h3 id="简单说明"><a href="#简单说明" class="headerlink" title="简单说明"></a>简单说明</h3><ul><li>本文是基于Centos 7，于命令行下安装php7+nginx+mysql;</li><li>其中php+nginx的安装步骤来自我的好朋友以及是我的前公司开发组组长的分享（很帅技术很强），亲测ok；</li><li>mysql的安装是基于网上的博客分享。<h3 id="php-nginx安装"><a href="#php-nginx安装" class="headerlink" title="php+nginx安装"></a>php+nginx安装</h3><pre class=" language-$xslt"><code class="language-$xslt">yum update --skip-broken//安装相关依赖库yum -y install php-mcrypt libmcrypt libmcrypt-devel libxml2-devel openssl-devel libcurl-devel libjpeg.x86_64 libpng.x86_64 freetype.x86_64 libjpeg-devel.x86_64 libpng-devel.x86_64 freetype-devel.x86_64 libjpeg-turbo-devel libmcrypt-devel mysql-devel libicu-devel glibc-headers libxslt-devel gcc-c++ pcre-develmkdir ~/Soft && cd Softwget http://jaist.dl.sourceforge.net/project/mcrypt/Libmcrypt/2.5.8/libmcrypt-2.5.8.tar.gztar zxvf libmcrypt-2.5.8.tar.gzcd libmcrypt-2.5.8./configuremake && make installcd ..//卸载预装PHPyum remove phprpm -qa | grep php | xargs rpm -e// 编译安装PHP7.0.9wget http://cn2.php.net/distributions/php-7.0.9.tar.gztar zxvf php-7.0.9.tar.gzcd php-7.0.9./configure --prefix=/usr/local/php --with-config-file-path=/etc/php --enable-fpm --with-fpm-user=webid --with-fpm-group=webid --enable-mysqlnd --with-mysqli=mysqlnd --with-pdo-mysql=mysqlnd --with-iconv-dir --with-freetype-dir=/usr/local/freetype --with-jpeg-dir --with-png-dir --with-zlib --with-libxml-dir=/usr --enable-xml --disable-rpath --enable-bcmath --enable-shmop --enable-sysvsem --enable-inline-optimization --with-curl --enable-mbregex --enable-mbstring --enable-intl --enable-pcntl --with-mcrypt --enable-ftp --with-gd --enable-gd-native-ttf --with-openssl --with-mhash --enable-pcntl --enable-sockets --with-xmlrpc --enable-zip --enable-soap --with-gettext --disable-fileinfo --enable-opcache --with-xsl --enable-sysvmsg --with-imap-sslmake && make install// 建立软连接ln -s /usr/local/php/bin/php /usr/bin/phpmkdir /etc/phpcp php.ini-production /etc/php/php.inicp sapi/fpm/init.d.php-fpm /etc/init.d/php-fpmchmod +x /etc/init.d/php-fpmcp /usr/local/php/etc/php-fpm.conf.default /usr/local/php/etc/php-fpm.confgroupadd webiduseradd -s /sbin/nologin -g webid webidcp /usr/local/php/etc/php-fpm.d/www.conf.default /usr/local/php/etc/php-fpm.d/www.confcd ..// 安装redis扩展wget -c https://github.com/phpredis/phpredis/archive/php7.zipunzip php7.zipcd phpredis-php7//usr/local/php/bin/phpize//执行上一步如果出现“Cannot find autoconf”，则需要执行yum install m4yum install autoconf/usr/local/php/bin/phpize./configure --with-php-config=/usr/local/php/bin/php-configmake && make installcd ..// vim /etc/php/php.ini// extension=redis.soservice php-fpm restart// 安装swoole扩展wget -c https://github.com/swoole/swoole-src/archive/1.8.7-stable.tar.gztar zxvf 1.8.7-stable.tar.gzcd swoole-src-1.8.7-stable//usr/local/php/bin/phpize./configure --with-php-config=/usr/local/php/bin/php-configmake && make installcd ..// vim /etc/php/php.ini// extension=swoole.soservice php-fpm restart//安装nginxwget http://nginx.org/download/nginx-1.10.1.tar.gztar zxvf nginx-1.10.1.tar.gzcd nginx-1.10.1./configure --user=webid --group=webid --prefix=/usr/local/nginx --with-http_stub_status_module --with-http_ssl_module --with-http_v2_module --with-http_gzip_static_module --with-ipv6 --with-http_sub_modulemake && make installcd ..ln -s /usr/local/nginx/sbin/nginx /usr/sbin/nginxln -s /usr/local/nginx/conf /etc/nginxmkdir /usr/local/nginx/conf/vhost// 配置优化vim /usr/local/php/etc/php-fpm.d/www.conflisten = /dev/shm/php7.sockchown webid:webid /dev/shm/php7.sock// 开机启动chmod +x /etc/init.d/php-fpmchkconfig --add /etc/init.d/php-fpmchkconfig php-fpm on// 创建文件 /etc/init.d/nginxchmod +x /etc/init.d/nginxchkconfig --add /etc/init.d/nginxchkconfig nginx onmkdir -p /data/logs/www/nginxmkdir -p /data/webserverpassenger + nginx 安装(Centos 7)yum install -y epel-release yum-utilsyum-config-manager --enable epelsudo yum install -y pygpgme curlsudo curl --fail -sSLo /etc/yum.repos.d/passenger.repo https://oss-binaries.phusionpassenger.com/yum/definitions/el-passenger.repoyum install -y nginx passengersystemctl start nginx.servicegitlab install (centos 7 )yum install curl policycoreutils openssh-server openssh-clientssystemctl enable sshdsystemctl start sshdyum install postfixsystemctl enable postfixsystemctl start postfixfirewall-cmd --permanent --add-service=httpsystemctl reload firewalldcurl -sS https://packages.gitlab.com/install/repositories/gitlab/gitlab-ce/script.rpm.sh | sudo bashsudo yum install gitlab-cegitlab-ctl reconfigure</code></pre></li></ul><h3 id="mysql安装"><a href="#mysql安装" class="headerlink" title="mysql安装"></a>mysql安装</h3><p>可以参考这个教程，步骤比较详细：<a href="http://www.cnblogs.com/fnlingnzb-learner/p/5830622.html" target="_blank" rel="noopener">安装mysql</a></p><h3 id="写在最后"><a href="#写在最后" class="headerlink" title="写在最后"></a>写在最后</h3><p>我在刚开始搭建环境的时候遇到过问题，基本网上一搜都能找到答案；<br>自己使用推荐的php+nginx安装命令是安装成功的。</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> php </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> mysql </tag>
+            
+            <tag> php </tag>
+            
+            <tag> linux </tag>
+            
+            <tag> nginx </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>php魔术方法__call的使用</title>
+      <link href="/2015/12/12/php-mo-zhu-fang-fa-call-de-shi-yong/"/>
+      <url>/2015/12/12/php-mo-zhu-fang-fa-call-de-shi-yong/</url>
+      
+        <content type="html"><![CDATA[<p>本篇主要简单介绍php魔术方法__call的作用，并提供一个应用场景，分享对此方法的使用心得。<br>欢迎讨论和吐槽。</p><h3 id="call方法简介"><a href="#call方法简介" class="headerlink" title="__call方法简介"></a>__call方法简介</h3><p>为了避免当调用的方法不存在时产生错误，可以使用 __call() 方法。该方法在调用的方法不存在时会自动调用，程序仍会继续执行下去。详见文档：<a href="http://php.net/manual/zh/language.oop5.overloading.php#object.call" target="_blank" rel="noopener">php魔术方法</a></p><h3 id="call使用分享"><a href="#call使用分享" class="headerlink" title="__call使用分享"></a>__call使用分享</h3><ul><li>使用场景是在做一个活动库的时候，需要提供多个跟活动有关的接口供前段调用，包括获取活动展示的相关信息，活动参与记录，以及活动逻辑处理。</li><li>设计的时候，活动分为模板活动和特殊活动，接口通过一个通用控制器提供，同一个接口对于不同的模板和不同活动返回数据的含义相近，但是处理各不相同，可以根据参数决定调用接口的时候具体去执行什么样的操作。</li><li>问题在于扩展的时候，可能出现额外的模板或特殊活动需要特定的接口，专门在控制器中添加此接口并针对去实现显得浪费而且不利于维护。</li><li>可以在把特殊接口的实现写在特点模板或者特殊活动类内部，然后对外的控制器通过提供call方法实现。这样避免了控制器内不断增多的接口方法，也避免了混乱，形成了公共接口在控制器内，大家一起实现；特殊接口自己实现，通过call调用。<h4 id="参考代码如下"><a href="#参考代码如下" class="headerlink" title="参考代码如下"></a>参考代码如下</h4><pre class=" language-$xslt"><code class="language-$xslt">public function __call($name,$arr) {  //获取请求参数 进行业务上的参数判断 ...  //根据参数得知此活动应该调用哪个类处理(特殊活动类or某个模板类) $actClassName   if(!$actClassName||!class_exists($actClassName)) {        //判断类是否存在      //类不存在 返回异常   }   $actClass = new $actClassName();   if(!in_array($name,get_class_methods($actClass))) {       //判断要请求的方法是可访问，是否存在      //方法不存在 返回异常   }   //调用此特定方法   $actClass->$name($params);}</code></pre><h3 id="分享心得"><a href="#分享心得" class="headerlink" title="分享心得"></a>分享心得</h3></li><li>此处控制器不需要管理非通用的接口，而是通过__call丢给实际处理逻辑类让他们自己去找实现方法；</li><li>合理利用php中的魔术方法，可以编写相对更加优雅的代码。</li></ul>]]></content>
+      
+      
+      <categories>
+          
+          <category> php </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> php </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>hexo+github建立个人blog</title>
+      <link href="/2015/10/17/hexo-github-jian-li-ge-ren-blog/"/>
+      <url>/2015/10/17/hexo-github-jian-li-ge-ren-blog/</url>
+      
+        <content type="html"><![CDATA[<p>本文将根据我的个人博客，给大家分享基于hexo+github建立个人博客的过程。<br>欢迎讨论和吐槽。</p><h3 id="完整过程"><a href="#完整过程" class="headerlink" title="完整过程"></a>完整过程</h3><h3 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h3><p><a href="https://hexo.io/zh-cn/docs/writing.html" target="_blank" rel="noopener">参考1</a><br><a href="http://www.cnblogs.com/jarson-7426/p/5430757.html" target="_blank" rel="noopener">参考2</a></p><h3 id="建好之后"><a href="#建好之后" class="headerlink" title="建好之后"></a>建好之后</h3><p>不管是建立自己的博客站还是用已有的博客社区，重点在于坚持创作，坚持学习。</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> hexo </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> hexo </tag>
+            
+            <tag> blog </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+  
+  
+</search>
