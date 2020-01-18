@@ -21,9 +21,23 @@
       <link href="/2020/01/15/elasticsearch-xue-xi-xi-lie-sou-suo-qian-chang/"/>
       <url>/2020/01/15/elasticsearch-xue-xi-xi-lie-sou-suo-qian-chang/</url>
       
-        <content type="html"><![CDATA[]]></content>
+        <content type="html"><![CDATA[<p>本文简单介绍ES搜索的一些简单尝试</p><h4 id="检索文档"><a href="#检索文档" class="headerlink" title="检索文档"></a>检索文档</h4><pre><code>GET /_index/_type/_id</code></pre><p>根据库、类型、id搜索数据</p><h4 id="简单搜索"><a href="#简单搜索" class="headerlink" title="简单搜索"></a>简单搜索</h4><pre><code>GET /_index/_type/_search</code></pre><p>搜索索引_index内类型_type内的所有数据，默认返回10条</p><h4 id="查询表达式搜索"><a href="#查询表达式搜索" class="headerlink" title="查询表达式搜索"></a>查询表达式搜索</h4><pre><code>GET /_index/_type/_search{    &quot;query&quot; : {        &quot;match&quot; : {            &quot;name&quot; : &quot;Smith&quot;        }    }}</code></pre><p>搜索name=Smith的数据</p><h4 id="复杂搜索"><a href="#复杂搜索" class="headerlink" title="复杂搜索"></a>复杂搜索</h4><pre><code>GET /_index/_type/_search{    &quot;query&quot; : {        &quot;bool&quot;: {            &quot;must&quot;: {                &quot;match&quot; : {                    &quot;name&quot; : &quot;smith&quot;                }            },            &quot;filter&quot;: {                &quot;range&quot; : {                    &quot;age&quot; : { &quot;gt&quot; : 30 }                }            }        }    }}</code></pre><p>查找name=Smith，age大于30的数据</p><h4 id="全文搜索"><a href="#全文搜索" class="headerlink" title="全文搜索"></a>全文搜索</h4><pre><code>GET /_index/_type/_search{    &quot;query&quot; : {        &quot;match&quot; : {            &quot;about&quot; : &quot;abc def&quot;        }    }}</code></pre><p>搜索数据包含 abc def，或abd 、 def的数据</p><h4 id="短语搜索"><a href="#短语搜索" class="headerlink" title="短语搜索"></a>短语搜索</h4><pre><code>GET /_index/_type/_search{    &quot;query&quot; : {        &quot;match_phrase&quot; : {            &quot;about&quot; : &quot;abc def&quot;        }    }}</code></pre><p>搜索数据包含 abc def的数据，不可拆分</p>]]></content>
       
       
+      <categories>
+          
+          <category> elasticsearch </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> elasticsearch </tag>
+            
+            <tag> 分布式搜索 </tag>
+            
+        </tags>
       
     </entry>
     

@@ -5,7 +5,11 @@
 <head><meta name="generator" content="Hexo 3.9.0">
     <meta charset="utf-8">
     <meta name="keywords" content="elasticsearch学习系列-搜索浅尝, Hexo">
-    <meta name="description" content="elasticsearch学习系列-搜索浅尝 | Hexo">
+    <meta name="description" content="本文简单介绍ES搜索的一些简单尝试
+检索文档GET /_index/_type/_id
+根据库、类型、id搜索数据
+简单搜索GET /_index/_type/_search
+搜索索引_index内类型_type内的所有数据，默认返回10条">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <meta name="renderer" content="webkit|ie-stand|ie-comp">
@@ -423,12 +427,29 @@
             <div class="row tag-cate">
                 <div class="col s7">
                     
-                          <div class="article-tag">
-                            <span class="chip bg-color">无标签</span>
-                          </div>
+                    <div class="article-tag">
+                        
+                            <a href="/tags/elasticsearch/">
+                                <span class="chip bg-color">elasticsearch</span>
+                            </a>
+                        
+                            <a href="/tags/分布式搜索/">
+                                <span class="chip bg-color">分布式搜索</span>
+                            </a>
+                        
+                    </div>
                     
                 </div>
                 <div class="col s5 right-align">
+                    
+                    <div class="post-cate">
+                        <i class="fas fa-bookmark fa-fw icon-category"></i>
+                        
+                            <a href="/categories/elasticsearch/" class="post-category">
+                                elasticsearch
+                            </a>
+                        
+                    </div>
                     
                 </div>
             </div>
@@ -454,7 +475,57 @@
         <hr class="clearfix">
         <div class="card-content article-card-content">
             <div id="articleContent">
-                
+                <p>本文简单介绍ES搜索的一些简单尝试</p>
+<h4 id="检索文档"><a href="#检索文档" class="headerlink" title="检索文档"></a>检索文档</h4><pre><code>GET /_index/_type/_id
+</code></pre><p>根据库、类型、id搜索数据</p>
+<h4 id="简单搜索"><a href="#简单搜索" class="headerlink" title="简单搜索"></a>简单搜索</h4><pre><code>GET /_index/_type/_search
+</code></pre><p>搜索索引_index内类型_type内的所有数据，默认返回10条</p>
+<h4 id="查询表达式搜索"><a href="#查询表达式搜索" class="headerlink" title="查询表达式搜索"></a>查询表达式搜索</h4><pre><code>GET /_index/_type/_search
+{
+    &quot;query&quot; : {
+        &quot;match&quot; : {
+            &quot;name&quot; : &quot;Smith&quot;
+        }
+    }
+}
+</code></pre><p>搜索name=Smith的数据</p>
+<h4 id="复杂搜索"><a href="#复杂搜索" class="headerlink" title="复杂搜索"></a>复杂搜索</h4><pre><code>GET /_index/_type/_search
+{
+    &quot;query&quot; : {
+        &quot;bool&quot;: {
+            &quot;must&quot;: {
+                &quot;match&quot; : {
+                    &quot;name&quot; : &quot;smith&quot;
+                }
+            },
+            &quot;filter&quot;: {
+                &quot;range&quot; : {
+                    &quot;age&quot; : { &quot;gt&quot; : 30 }
+                }
+            }
+        }
+    }
+}
+</code></pre><p>查找name=Smith，age大于30的数据</p>
+<h4 id="全文搜索"><a href="#全文搜索" class="headerlink" title="全文搜索"></a>全文搜索</h4><pre><code>GET /_index/_type/_search
+{
+    &quot;query&quot; : {
+        &quot;match&quot; : {
+            &quot;about&quot; : &quot;abc def&quot;
+        }
+    }
+}
+</code></pre><p>搜索数据包含 abc def，或abd 、 def的数据</p>
+<h4 id="短语搜索"><a href="#短语搜索" class="headerlink" title="短语搜索"></a>短语搜索</h4><pre><code>GET /_index/_type/_search
+{
+    &quot;query&quot; : {
+        &quot;match_phrase&quot; : {
+            &quot;about&quot; : &quot;abc def&quot;
+        }
+    }
+}
+</code></pre><p>搜索数据包含 abc def的数据，不可拆分</p>
+
             </div>
             <hr/>
 
@@ -516,7 +587,15 @@
                 <div class="post-meta__tag-list" style="display: inline-block;">
                     
                         <div class="article-tag">
-                            <span class="chip bg-color">无标签</span>
+                            
+                                <a href="/tags/elasticsearch/">
+                                    <span class="chip bg-color">elasticsearch</span>
+                                </a>
+                            
+                                <a href="/tags/分布式搜索/">
+                                    <span class="chip bg-color">分布式搜索</span>
+                                </a>
+                            
                         </div>
                     
                 </div>
