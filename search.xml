@@ -4,9 +4,22 @@
   
     
     <entry>
-      <title>mysql-数据库隔离级别</title>
-      <link href="/2020/01/07/mysql-shu-ju-ku-ge-chi-ji-bie/"/>
-      <url>/2020/01/07/mysql-shu-ju-ku-ge-chi-ji-bie/</url>
+      <title>mysql-innodb存储引擎中的锁</title>
+      <link href="/2020/01/15/mysql-innodb-cun-chu-yin-qing-zhong-de-suo/"/>
+      <url>/2020/01/15/mysql-innodb-cun-chu-yin-qing-zhong-de-suo/</url>
+      
+        <content type="html"><![CDATA[]]></content>
+      
+      
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>lasticsearch学习系列-搜索浅尝</title>
+      <link href="/2020/01/15/lasticsearch-xue-xi-xi-lie-sou-suo-qian-chang/"/>
+      <url>/2020/01/15/lasticsearch-xue-xi-xi-lie-sou-suo-qian-chang/</url>
       
         <content type="html"><![CDATA[]]></content>
       
@@ -407,6 +420,33 @@
             <tag> jvm </tag>
             
             <tag> 垃圾回收 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>mysql-数据库隔离级别</title>
+      <link href="/2018/02/07/mysql-shu-ju-ku-ge-chi-ji-bie/"/>
+      <url>/2018/02/07/mysql-shu-ju-ku-ge-chi-ji-bie/</url>
+      
+        <content type="html"><![CDATA[<p>介绍下数据库隔离级别以及各隔离下的问题，以及mysql的默认隔离级别</p><h4 id="隔离级别"><a href="#隔离级别" class="headerlink" title="隔离级别"></a>隔离级别</h4><ul><li>Serializable：串行化<ul><li>强制事务排序，串行化读写，避免冲突</li></ul></li><li>Repeatable read：可重复读<ul><li>同一事务的多个实例在并发读取事务时，会“看到同样的”数据行</li></ul></li><li>Read committed：读已提交<ul><li>一个事务开始时，只能“看见”已经提交事务所做的改变</li><li>一个事务从开始到提交前，所做的任何数据改变都是不可见的，除非已经提交</li></ul></li><li>Read uncommitted：读未提交<ul><li>所有事务都可以“看到”未提交事务的执行结果</li></ul></li></ul><h4 id="各隔离级别下的问题"><a href="#各隔离级别下的问题" class="headerlink" title="各隔离级别下的问题"></a>各隔离级别下的问题</h4><p>见以下表格：</p><table><thead><tr><th>隔离级别 问题</th><th>脏读</th><th>不可重复读</th><th>幻读</th><th>加锁读</th></tr></thead><tbody><tr><td>Serializable</td><td>no</td><td>no</td><td>no</td><td>yes</td></tr><tr><td>Repeatable read</td><td>no</td><td>no</td><td>yes</td><td>no</td></tr><tr><td>Read committed</td><td>no</td><td>yes</td><td>yes</td><td>no</td></tr><tr><td>Read uncommitted</td><td>yes</td><td>yes</td><td>yes</td><td>no</td></tr></tbody></table><ul><li>脏读：一个事务处理过程里读取了另一个未提交的事务中的数据</li><li>不可重复读：在一个事务的两次查询中数据不一致</li><li>幻读：幻读是事务非独立执行时发生的一种现象，如事务T1批量对一个表中某一列列值为1的数据修改为2的变更，<br>但是在这时，事务T2对这张表插入了一条列值为1的数据，并完成提交<br>此时，如果事务T1查看刚刚完成操作的数据，发现还有一条列值为1的数据没有进行修改</li></ul><h4 id="默认隔离级别"><a href="#默认隔离级别" class="headerlink" title="默认隔离级别"></a>默认隔离级别</h4><p>Mysql默认隔离级别：Repeatable read<br>sql server默认隔离级别：Read committed</p><h4 id="如何设置隔离级别"><a href="#如何设置隔离级别" class="headerlink" title="如何设置隔离级别"></a>如何设置隔离级别</h4><p>（1）方法一</p><ol><li>使用vi打开mysql配置文件<br>sudo vi /etc/mysql/mysql.conf.d/mysqld.cnf</li><li>在文件的最末尾添加如下配置， 指定mysql数据库的隔离级别为READ-COMMITTED（transaction-isolation=READ-COMMITTED）；可选参数有：READ-UNCOMMITTED, READ-COMMITTED, REPEATABLE-READ, SERIALIZABLE.</li><li>在终端中重启mysql服务<br>sudo service mysql restart</li></ol><p>（2）方法二：</p><ol><li>进入mysql终端</li><li>设置隔离级别，可选的参数READ UNCOMMITTED  | REPEATABLE READ | SERIALIZABLE<br> SET GLOBAL TRANSACTION ISOLATION LEVEL READ COMMITTED;</li></ol>]]></content>
+      
+      
+      <categories>
+          
+          <category> mysql </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> mysql </tag>
+            
+            <tag> 隔离级别 </tag>
             
         </tags>
       
@@ -928,9 +968,9 @@
       
         <tags>
             
-            <tag> linux </tag>
-            
             <tag> php </tag>
+            
+            <tag> linux </tag>
             
             <tag> nginx </tag>
             
