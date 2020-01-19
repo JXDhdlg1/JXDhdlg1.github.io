@@ -4,6 +4,59 @@
   
     
     <entry>
+      <title>qmq消息队列-高可用</title>
+      <link href="/2020/01/19/qmq-xiao-xi-dui-lie-gao-ke-yong/"/>
+      <url>/2020/01/19/qmq-xiao-xi-dui-lie-gao-ke-yong/</url>
+      
+        <content type="html"><![CDATA[<p>今天分享下qmq高可用的特性</p><h4 id="高可用说明"><a href="#高可用说明" class="headerlink" title="高可用说明"></a>高可用说明</h4><p>qmq高可用主要从两个角度提供：</p><ul><li>分片：qmq不是基于partition，可以很容易通过添加更多的记起提高一个subject的可用性，消息按照一定的负载均衡策略分布在不同的机器上，某台机器离线后producer将不再将消息发送给该Server</li><li>复制：QMQ通过主从复制来提高单机可用性。QMQ将服务端集群划分为多个group，每个group包含一个master和一个slave。消息的发送和消费全部指向master，slave只为保证可用性</li></ul><h4 id="主从切换"><a href="#主从切换" class="headerlink" title="主从切换"></a>主从切换</h4><ul><li>不支持自动主从切换，需要人工介入；</li><li>切换步骤：<ul><li>将某组设置为readonly，设置readonly之后，该组将不再接受新的消息；</li><li>等待主从完全同步，可以通过观察master的slaveMessageLogLag监控了解；</li><li>停止slave， 停止master；</li><li>执行ReplaceBroker命令切换角色(该步骤一定要在停止应用之后执行)；</li><li>启动slave， 启动master；</li></ul></li></ul><h4 id="部署方案实例"><a href="#部署方案实例" class="headerlink" title="部署方案实例"></a>部署方案实例</h4><ul><li>metaserver：部署两台应用，然后配置nginx作为负载均衡，确保mysql可用；</li><li>broker：部署两组，每组为一主一从两台，则至少部署4台；</li><li>delay server：同broker部署方式(如没有延时消息可以不部署)；</li><li>watchdog：建议部署两台，但某个时刻只有一台工作，当一台故障会自动切换(如无事务或持久化消息可以不部署)； </li></ul>]]></content>
+      
+      
+      <categories>
+          
+          <category> qmq </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> qmq </tag>
+            
+            <tag> 消息队列 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>qmq消息队列-架构学习</title>
+      <link href="/2020/01/19/qmq-xiao-xi-dui-lie-jia-gou-xue-xi/"/>
+      <url>/2020/01/19/qmq-xiao-xi-dui-lie-jia-gou-xue-xi/</url>
+      
+        <content type="html"><![CDATA[]]></content>
+      
+      
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>elasticsearch学习系列-乐观并发控制</title>
+      <link href="/2020/01/18/elasticsearch-xue-xi-xi-lie-le-guan-bing-fa-kong-zhi/"/>
+      <url>/2020/01/18/elasticsearch-xue-xi-xi-lie-le-guan-bing-fa-kong-zhi/</url>
+      
+        <content type="html"><![CDATA[]]></content>
+      
+      
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>mysql-innodb存储引擎中的锁</title>
       <link href="/2020/01/15/mysql-innodb-cun-chu-yin-qing-zhong-de-suo/"/>
       <url>/2020/01/15/mysql-innodb-cun-chu-yin-qing-zhong-de-suo/</url>
@@ -982,13 +1035,13 @@
       
         <tags>
             
-            <tag> php </tag>
+            <tag> mysql </tag>
             
             <tag> linux </tag>
             
-            <tag> nginx </tag>
+            <tag> php </tag>
             
-            <tag> mysql </tag>
+            <tag> nginx </tag>
             
         </tags>
       
