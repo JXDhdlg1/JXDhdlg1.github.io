@@ -4,8 +4,8 @@
 
 <head><meta name="generator" content="Hexo 3.9.0">
     <meta charset="utf-8">
-    <meta name="keywords" content="归档: 2016/1, Hexo">
-    <meta name="description" content="归档: 2016/1 | Hexo">
+    <meta name="keywords" content="归档: 2020/2, Hexo">
+    <meta name="description" content="归档: 2020/2 | Hexo">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <meta name="renderer" content="webkit|ie-stand|ie-comp">
@@ -13,7 +13,7 @@
     <meta name="format-detection" content="telephone=no">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>归档: 2016/1 | Hexo</title>
+    <title>归档: 2020/2 | Hexo</title>
     <link rel="icon" type="image/png" href="/favicon.png">
 
     <link rel="stylesheet" type="text/css" href="/libs/awesome/css/all.css">
@@ -437,7 +437,7 @@
             
             
             <div class="cd-timeline-img year" data-aos="zoom-in-up">
-                <a href="/archives/2016">2016</a>
+                <a href="/archives/2020">2020</a>
             </div>
             
 
@@ -445,64 +445,45 @@
             
             
             <div class="cd-timeline-img month" data-aos="zoom-in-up">
-                <a href="/archives/2016/01">01</a>
+                <a href="/archives/2020/02">02</a>
             </div>
             
 
             
             <div class="cd-timeline-img day" data-aos="zoom-in-up">
-                <span>17</span>
+                <span>11</span>
             </div>
             <article class="cd-timeline-content" data-aos="fade-up">
                 <div class="article col s12 m6">
                     <div class="card">
-                        <a href="/2016/01/17/ji-lu-yi-ci-nginx-server-fan-hui-502-de-wen-ti-pai-cha/">
+                        <a href="/2020/02/11/redis-xue-xi-fu-zhi-gong-neng/">
                             <div class="card-image">
                                 
                                 
-                                <img src="/medias/featureimages/16.jpg" class="responsive-img" alt="记录一次nginx-server返回502的问题排查">
+                                <img src="/medias/featureimages/17.jpg" class="responsive-img" alt="redis学习-复制功能">
                                 
-                                <span class="card-title">记录一次nginx-server返回502的问题排查</span>
+                                <span class="card-title">redis学习-复制功能</span>
                             </div>
                         </a>
                         <div class="card-content article-content">
                             <div class="summary block-with-text">
                                 
-                                    本文记录一次自己在配置nginx+php-fpm时候遇到的问题，访问nginx server一直返回502。欢迎讨论和吐槽。
-问题原因
-这个问题对我来说是由于粗心造成，不过大家以后可能会遇到，我这边分享出来。
-当时我在自己的php.ini中
+                                    
                                 
                             </div>
                             <div class="publish-info">
                                 <span class="publish-date">
-                                    <i class="far fa-clock fa-fw icon-date"></i>2016-01-17
+                                    <i class="far fa-clock fa-fw icon-date"></i>2020-02-11
                                 </span>
                                 <span class="publish-author">
                                     
-                                    <i class="fas fa-bookmark fa-fw icon-category"></i>
-                                    
-                                    <a href="/categories/nginx/" class="post-category">
-                                    nginx
-                                    </a>
-                                    
+                                    <i class="fas fa-user fa-fw"></i>
+                                    Xudong Jiang
                                     
                                 </span>
                             </div>
                         </div>
 
-                        
-                        <div class="card-action article-tags">
-                            
-                            <a href="/tags/问题记录/"><span class="chip bg-color">问题记录</span></a>
-                            
-                            <a href="/tags/nginx/"><span class="chip bg-color">nginx</span></a>
-                            
-                            <a href="/tags/fpm/"><span class="chip bg-color">fpm</span></a>
-                            
-                            <a href="/tags/502/"><span class="chip bg-color">502</span></a>
-                            
-                        </div>
                         
                     </div>
                 </div>
@@ -519,39 +500,39 @@
 
             
             <div class="cd-timeline-img day" data-aos="zoom-in-up">
-                <span>17</span>
+                <span>11</span>
             </div>
             <article class="cd-timeline-content" data-aos="fade-up">
                 <div class="article col s12 m6">
                     <div class="card">
-                        <a href="/2016/01/17/ajax-jsonp-qing-qiu-xue-xi/">
+                        <a href="/2020/02/11/elasticsearch-xue-xi-xi-lie-fen-bu-shi-xi-tong-zhong-shen-du-fen-ye/">
                             <div class="card-image">
                                 
                                 
-                                <img src="/medias/featureimages/8.jpg" class="responsive-img" alt="ajax-jsonp请求学习">
+                                <img src="/medias/featureimages/19.jpg" class="responsive-img" alt="elasticsearch学习系列-分布式系统中深度分页">
                                 
-                                <span class="card-title">ajax-jsonp请求学习</span>
+                                <span class="card-title">elasticsearch学习系列-分布式系统中深度分页</span>
                             </div>
                         </a>
                         <div class="card-content article-content">
                             <div class="summary block-with-text">
                                 
-                                    问题在ajax请求jsonp获取跨域接口数据的时候，发现以下两个问题
-
-在chrome的调试处发现js报错提示：success_jsonpCallback function not found
-接口返回json数据为a，console.lo
+                                    本文介绍下ES中搜索的分页功能，据此也引出分布式系统中深度分页的问题
+ES分页功能
+elasticsearch接收form（开始返回的结果位置，从0开始）和size（返回的数量）参数；
+结果集在返回之前先排序，每个分片产生自己的排序结果，再
                                 
                             </div>
                             <div class="publish-info">
                                 <span class="publish-date">
-                                    <i class="far fa-clock fa-fw icon-date"></i>2016-01-17
+                                    <i class="far fa-clock fa-fw icon-date"></i>2020-02-11
                                 </span>
                                 <span class="publish-author">
                                     
                                     <i class="fas fa-bookmark fa-fw icon-category"></i>
                                     
-                                    <a href="/categories/ajax/" class="post-category">
-                                    ajax
+                                    <a href="/categories/elasticsearch/" class="post-category">
+                                    elasticsearch
                                     </a>
                                     
                                     
@@ -562,79 +543,9 @@
                         
                         <div class="card-action article-tags">
                             
-                            <a href="/tags/ajax/"><span class="chip bg-color">ajax</span></a>
+                            <a href="/tags/elasticsearch/"><span class="chip bg-color">elasticsearch</span></a>
                             
-                            <a href="/tags/jsonp/"><span class="chip bg-color">jsonp</span></a>
-                            
-                            <a href="/tags/问题记录/"><span class="chip bg-color">问题记录</span></a>
-                            
-                        </div>
-                        
-                    </div>
-                </div>
-            </article>
-        </div>
-        
-        <div class="cd-timeline-block">
-
-            
-            
-
-            
-            
-
-            
-            <div class="cd-timeline-img day" data-aos="zoom-in-up">
-                <span>01</span>
-            </div>
-            <article class="cd-timeline-content" data-aos="fade-up">
-                <div class="article col s12 m6">
-                    <div class="card">
-                        <a href="/2016/01/01/linux-xia-an-zhuang-nginx-mysql-php/">
-                            <div class="card-image">
-                                
-                                
-                                <img src="/medias/featureimages/13.jpg" class="responsive-img" alt="linux下安装nginx_mysql_php">
-                                
-                                <span class="card-title">linux下安装nginx_mysql_php</span>
-                            </div>
-                        </a>
-                        <div class="card-content article-content">
-                            <div class="summary block-with-text">
-                                
-                                    本文分享下安装lnmp环境的详细步骤。欢迎讨论和吐槽。
-简单说明
-本文是基于Centos 7，于命令行下安装php7+nginx+mysql;
-其中php+nginx的安装步骤来自我的好朋友以及是我的前公司开发组组长的分享（很帅技术很强），
-                                
-                            </div>
-                            <div class="publish-info">
-                                <span class="publish-date">
-                                    <i class="far fa-clock fa-fw icon-date"></i>2016-01-01
-                                </span>
-                                <span class="publish-author">
-                                    
-                                    <i class="fas fa-bookmark fa-fw icon-category"></i>
-                                    
-                                    <a href="/categories/php/" class="post-category">
-                                    php
-                                    </a>
-                                    
-                                    
-                                </span>
-                            </div>
-                        </div>
-
-                        
-                        <div class="card-action article-tags">
-                            
-                            <a href="/tags/php/"><span class="chip bg-color">php</span></a>
-                            
-                            <a href="/tags/linux/"><span class="chip bg-color">linux</span></a>
-                            
-                            <a href="/tags/nginx/"><span class="chip bg-color">nginx</span></a>
-                            
-                            <a href="/tags/mysql/"><span class="chip bg-color">mysql</span></a>
+                            <a href="/tags/分布式搜索/"><span class="chip bg-color">分布式搜索</span></a>
                             
                         </div>
                         

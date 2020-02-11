@@ -356,7 +356,7 @@
                     <div class="post-statis col l4 hide-on-med-and-down" data-aos="zoom-in-right">
                         
 <div class="statis">
-    <span class="count"><a href="/">46</a></span>
+    <span class="count"><a href="/">48</a></span>
     <span class="name">文章</span>
 </div>
 
@@ -386,7 +386,7 @@
                                 <div class="post-statis hide-on-large-only" data-aos="zoom-in-right">
                                     
 <div class="statis">
-    <span class="count"><a href="/">46</a></span>
+    <span class="count"><a href="/">48</a></span>
     <span class="name">文章</span>
 </div>
 
@@ -534,7 +534,7 @@
         },
         xAxis: {
             type: 'category',
-            data: ["2019-01","2019-02","2019-03","2019-04","2019-05","2019-06","2019-07","2019-08","2019-09","2019-10","2019-11","2019-12","2020-01"]
+            data: ["2019-02","2019-03","2019-04","2019-05","2019-06","2019-07","2019-08","2019-09","2019-10","2019-11","2019-12","2020-01","2020-02"]
         },
         yAxis: {
             type: 'value',
@@ -544,7 +544,7 @@
                 name: '文章篇数',
                 type: 'line',
                 color: ['#6772e5'],
-                data: [1,1,2,0,7,0,0,0,0,0,0,0,5],
+                data: [1,2,0,7,0,0,0,0,0,0,0,5,2],
                 markPoint: {
                     symbolSize: 45,
                     color: ['#fa755a','#3ecf8e','#82d3f4'],
@@ -586,7 +586,7 @@
                 type: 'pie',
                 radius: '50%',
                 color: ['#6772e5', '#ff9e0f', '#fa755a', '#3ecf8e', '#82d3f4', '#ab47bc', '#525f7f', '#f51c47', '#26A69A'],
-                data: [{"name":"ajax","value":1},{"name":"git","value":1},{"name":"hexo","value":1},{"name":"java","value":9},{"name":"jquery","value":1},{"name":"mysql","value":4},{"name":"php","value":4},{"name":"swoole","value":1},{"name":"测试","value":1},{"name":"故事","value":1},{"name":"数据结构与算法","value":1},{"name":"nginx","value":1},{"name":"高并发","value":1},{"name":"blog","value":1},{"name":"科学科幻","value":1},{"name":"elasticsearch","value":2},{"name":"redis","value":2},{"name":"qmq","value":1}],
+                data: [{"name":"ajax","value":1},{"name":"git","value":1},{"name":"hexo","value":1},{"name":"java","value":9},{"name":"php","value":4},{"name":"jquery","value":1},{"name":"mysql","value":4},{"name":"swoole","value":1},{"name":"测试","value":1},{"name":"故事","value":1},{"name":"数据结构与算法","value":1},{"name":"nginx","value":1},{"name":"高并发","value":1},{"name":"blog","value":1},{"name":"科学科幻","value":1},{"name":"elasticsearch","value":3},{"name":"redis","value":2},{"name":"qmq","value":1}],
                 itemStyle: {
                     emphasis: {
                         shadowBlur: 10,
@@ -610,7 +610,7 @@
         xAxis: [
             {
                 type: 'category',
-                data: ["java","问题记录","mysql","php","jvm","blog","nginx","多线程","innodb","elasticsearch"]
+                data: ["java","问题记录","php","mysql","jvm","elasticsearch","分布式搜索","blog","nginx","innodb"]
             }
         ],
         yAxis: [
@@ -623,7 +623,7 @@
                 type: 'bar',
                 color: ['#82d3f4'],
                 barWidth : 18,
-                data: [9,6,5,5,4,2,2,2,2,2],
+                data: [9,6,5,5,4,3,3,2,2,2],
                 markPoint: {
                     symbolSize: 45,
                     data: [{
@@ -833,6 +833,30 @@
             
             
             
+            <a href="/tags/php/">
+                <span class="chip center-align waves-effect waves-light chip-default">php</span>
+            </a>
+            
+            
+            
+            <a href="/tags/linux/">
+                <span class="chip center-align waves-effect waves-light chip-default">linux</span>
+            </a>
+            
+            
+            
+            <a href="/tags/nginx/">
+                <span class="chip center-align waves-effect waves-light chip-default">nginx</span>
+            </a>
+            
+            
+            
+            <a href="/tags/mysql/">
+                <span class="chip center-align waves-effect waves-light chip-default">mysql</span>
+            </a>
+            
+            
+            
             <a href="/tags/jquery/">
                 <span class="chip center-align waves-effect waves-light chip-default">jquery</span>
             </a>
@@ -845,32 +869,8 @@
             
             
             
-            <a href="/tags/mysql/">
-                <span class="chip center-align waves-effect waves-light chip-default">mysql</span>
-            </a>
-            
-            
-            
             <a href="/tags/源码学习/">
                 <span class="chip center-align waves-effect waves-light chip-default">源码学习</span>
-            </a>
-            
-            
-            
-            <a href="/tags/linux/">
-                <span class="chip center-align waves-effect waves-light chip-default">linux</span>
-            </a>
-            
-            
-            
-            <a href="/tags/php/">
-                <span class="chip center-align waves-effect waves-light chip-default">php</span>
-            </a>
-            
-            
-            
-            <a href="/tags/nginx/">
-                <span class="chip center-align waves-effect waves-light chip-default">nginx</span>
             </a>
             
             
@@ -953,14 +953,26 @@
             
             
             
+            <a href="/tags/innodb/">
+                <span class="chip center-align waves-effect waves-light chip-default">innodb</span>
+            </a>
+            
+            
+            
             <a href="/tags/多线程/">
                 <span class="chip center-align waves-effect waves-light chip-default">多线程</span>
             </a>
             
             
             
-            <a href="/tags/innodb/">
-                <span class="chip center-align waves-effect waves-light chip-default">innodb</span>
+            <a href="/tags/jvm/">
+                <span class="chip center-align waves-effect waves-light chip-default">jvm</span>
+            </a>
+            
+            
+            
+            <a href="/tags/垃圾回收/">
+                <span class="chip center-align waves-effect waves-light chip-default">垃圾回收</span>
             </a>
             
             
@@ -979,18 +991,6 @@
             
             <a href="/tags/时空/">
                 <span class="chip center-align waves-effect waves-light chip-default">时空</span>
-            </a>
-            
-            
-            
-            <a href="/tags/jvm/">
-                <span class="chip center-align waves-effect waves-light chip-default">jvm</span>
-            </a>
-            
-            
-            
-            <a href="/tags/垃圾回收/">
-                <span class="chip center-align waves-effect waves-light chip-default">垃圾回收</span>
             </a>
             
             
@@ -1043,6 +1043,12 @@
             
             
             
+            <a href="/tags/隔离级别/">
+                <span class="chip center-align waves-effect waves-light chip-default">隔离级别</span>
+            </a>
+            
+            
+            
             <a href="/tags/qmq/">
                 <span class="chip center-align waves-effect waves-light chip-default">qmq</span>
             </a>
@@ -1051,12 +1057,6 @@
             
             <a href="/tags/消息队列/">
                 <span class="chip center-align waves-effect waves-light chip-default">消息队列</span>
-            </a>
-            
-            
-            
-            <a href="/tags/隔离级别/">
-                <span class="chip center-align waves-effect waves-light chip-default">隔离级别</span>
             </a>
             
             

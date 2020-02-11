@@ -4,6 +4,46 @@
   
     
     <entry>
+      <title>redis学习-复制功能</title>
+      <link href="/2020/02/11/redis-xue-xi-fu-zhi-gong-neng/"/>
+      <url>/2020/02/11/redis-xue-xi-fu-zhi-gong-neng/</url>
+      
+        <content type="html"><![CDATA[]]></content>
+      
+      
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>elasticsearch学习系列-分布式系统中深度分页</title>
+      <link href="/2020/02/11/elasticsearch-xue-xi-xi-lie-fen-bu-shi-xi-tong-zhong-shen-du-fen-ye/"/>
+      <url>/2020/02/11/elasticsearch-xue-xi-xi-lie-fen-bu-shi-xi-tong-zhong-shen-du-fen-ye/</url>
+      
+        <content type="html"><![CDATA[<p>本文介绍下ES中搜索的分页功能，据此也引出分布式系统中深度分页的问题</p><h4 id="ES分页功能"><a href="#ES分页功能" class="headerlink" title="ES分页功能"></a>ES分页功能</h4><ul><li>elasticsearch接收form（开始返回的结果位置，从0开始）和size（返回的数量）参数；</li><li>结果集在返回之前先排序，每个分片产生自己的排序结果，再集中排序保证整体顺序；</li></ul><h4 id="深度分页"><a href="#深度分页" class="headerlink" title="深度分页"></a>深度分页</h4><ul><li>在分布式系统中，对结果排序的成本随分页的深度成指数上升；</li><li>例：如我们有10个分片，要获取第1000页的数据，默认size为10，则没个分片产生100010个数据，最后<br>对全部的1000100个结果排序并丢弃掉其中大部分的数据；</li><li>参考大部分web搜索引擎对任何查询都不返回过多的结果；</li></ul><h4 id="游标查询-scoll"><a href="#游标查询-scoll" class="headerlink" title="游标查询 scoll"></a>游标查询 scoll</h4><ul><li>es可使用scoll进行大批量的文档查询，而不需要付出深度分页的代价；</li><li>游标查询会取某个时间点的快照数据。 查询初始化之后索引上的任何变化会被它忽略。 它通过保存旧的数据文件来实现这个特性，结果就像保留初始化时的索引视图一样；</li><li>深度分页的代价根源是结果集全局排序，如果去掉全局排序的特性的话查询结果的成本就会很低。 游标查询用字段 _doc 来排序。这个指令让 Elasticsearch 仅仅从还有结果的分片返回下一批结果</li></ul>]]></content>
+      
+      
+      <categories>
+          
+          <category> elasticsearch </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> elasticsearch </tag>
+            
+            <tag> 分布式搜索 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>qmq消息队列-高可用</title>
       <link href="/2020/01/19/qmq-xiao-xi-dui-lie-gao-ke-yong/"/>
       <url>/2020/01/19/qmq-xiao-xi-dui-lie-gao-ke-yong/</url>
@@ -1035,13 +1075,13 @@
       
         <tags>
             
-            <tag> mysql </tag>
+            <tag> php </tag>
             
             <tag> linux </tag>
             
-            <tag> php </tag>
-            
             <tag> nginx </tag>
+            
+            <tag> mysql </tag>
             
         </tags>
       

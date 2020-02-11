@@ -4,11 +4,8 @@
 
 <head><meta name="generator" content="Hexo 3.9.0">
     <meta charset="utf-8">
-    <meta name="keywords" content="ajax-jsonp请求学习, Hexo">
-    <meta name="description" content="问题在ajax请求jsonp获取跨域接口数据的时候，发现以下两个问题
-
-在chrome的调试处发现js报错提示：success_jsonpCallback function not found
-接口返回json数据为a，console.lo">
+    <meta name="keywords" content="redis学习-复制功能, Hexo">
+    <meta name="description" content="redis学习-复制功能 | Hexo">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <meta name="renderer" content="webkit|ie-stand|ie-comp">
@@ -16,7 +13,7 @@
     <meta name="format-detection" content="telephone=no">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>ajax-jsonp请求学习 | Hexo</title>
+    <title>redis学习-复制功能 | Hexo</title>
     <link rel="icon" type="image/png" href="/favicon.png">
 
     <link rel="stylesheet" type="text/css" href="/libs/awesome/css/all.css">
@@ -306,12 +303,12 @@
 
 
 
-<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/8.jpg')">
+<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/17.jpg')">
     <div class="container" style="right: 0px;left: 0px;">
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
-                    <h1 class="description center-align post-title">ajax-jsonp请求学习</h1>
+                    <h1 class="description center-align post-title">redis学习-复制功能</h1>
                 </div>
             </div>
         </div>
@@ -426,33 +423,12 @@
             <div class="row tag-cate">
                 <div class="col s7">
                     
-                    <div class="article-tag">
-                        
-                            <a href="/tags/ajax/">
-                                <span class="chip bg-color">ajax</span>
-                            </a>
-                        
-                            <a href="/tags/jsonp/">
-                                <span class="chip bg-color">jsonp</span>
-                            </a>
-                        
-                            <a href="/tags/问题记录/">
-                                <span class="chip bg-color">问题记录</span>
-                            </a>
-                        
-                    </div>
+                          <div class="article-tag">
+                            <span class="chip bg-color">无标签</span>
+                          </div>
                     
                 </div>
                 <div class="col s5 right-align">
-                    
-                    <div class="post-cate">
-                        <i class="fas fa-bookmark fa-fw icon-category"></i>
-                        
-                            <a href="/categories/ajax/" class="post-category">
-                                ajax
-                            </a>
-                        
-                    </div>
                     
                 </div>
             </div>
@@ -461,7 +437,7 @@
                 
                 <div class="post-date info-break-policy">
                     <i class="far fa-calendar-minus fa-fw"></i>发布日期:&nbsp;&nbsp;
-                    2016-01-17
+                    2020-02-11
                 </div>
                 
 
@@ -478,59 +454,7 @@
         <hr class="clearfix">
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <h3 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h3><p>在ajax请求jsonp获取跨域接口数据的时候，发现以下两个问题</p>
-<ol>
-<li>在chrome的调试处发现js报错提示：success_jsonpCallback function not found</li>
-<li>接口返回json数据为a，console.log显示结果为b<br>当时的ajax请求代码如下：<pre class=" language-$xslt"><code class="language-$xslt">$.ajax({
-        url:"****",
-        data:{},
-        dataType :"jsonp",
-        jsonp:"callback",
-        jsonpCallback:"success_jsonpCallback",
-        type:"POST",
-        success:function(res) {
-          console.log(res)
-        }
-</code></pre>
-后端接口返回数据如下：<pre class=" language-$xslt"><code class="language-$xslt">echo "success_jsonpCallback" ."(".jsonData.")";
-</code></pre>
-当时是在页面加载的时候就请求获取数据(一共有两个请求-这也是问题的关键所在)<h3 id="解决过程"><a href="#解决过程" class="headerlink" title="解决过程"></a>解决过程</h3><h4 id="尝试一"><a href="#尝试一" class="headerlink" title="尝试一"></a>尝试一</h4></li>
-</ol>
-<ul>
-<li>因为页面还有点击按钮时候做ajax-jsonp请求，是正常的，所以仔细对比了请求的代码，未发现差异，返回的数据格式进行对比也正常；</li>
-<li>然后发现出问题的ajax请求返回数据较长，然后调试换上一样的返回，问题依然存在。<h4 id="尝试二"><a href="#尝试二" class="headerlink" title="尝试二"></a>尝试二</h4></li>
-<li>在网上查阅大量资料后，发现也曾遇到这个问题，没有能解决我遇到的问题；</li>
-<li>尝试给请求做同步请求，问题依然存在<br><code>`</code>$xslt<br>async:false,</li>
-</ul>
-<pre><code>#### 尝试三
-- 将页面其中一个ajax请求注释，刷新页面，问题解决。
-### 总结
-- 整理了代码，继续查阅了一些资料，总结问题如下：页面加载时发起两次ajax请求，但是定义的callback方法是一样的，这样导致异常。
-- 我遇到问题的解决方法有两种
-   1. 将两次请求数据放到一个接口返回，只做一次ajax请求
-   2. ajax请求不规定回调方法名，生成随机回调方法名，可以解决此问题（更优）
-- 修改后代码如下：
-ajax请求：
-```$xslt
-$.ajax({
-      url:&quot;**&quot;,
-      data:{},
-      dataType :&quot;JSONP&quot;,
-      type:&quot;GET&quot;,
-      success:function(activeData) {
-          //
-      }
-  });
-</code></pre><p>后端返回如下：</p>
-<pre class=" language-$xslt"><code class="language-$xslt">echo $callback ."(".$rd->getJson().")";  //callback通过参数接受
-
-</code></pre>
-<p>这里第一次代码中callback写死是很不推荐的（我这么做是测试阶段基于其他原因），但是问题的关键在于不能写死同一个回调方法名（当可能同时出现多个请求回调时）。</p>
-<ul>
-<li>遇到问题要善于思考和排查，以及利用网上的资源。</li>
-<li>这里关于jquery ajax请求的实现原理和问题的真正原因稍后会进行补充。</li>
-</ul>
-
+                
             </div>
             <hr/>
 
@@ -555,7 +479,7 @@ $.ajax({
                     </i>
                 </span>
                 <span class="reprint-info">
-                    <a href="http://localhost:4000/2016/01/17/ajax-jsonp-qing-qiu-xue-xi/">http://localhost:4000/2016/01/17/ajax-jsonp-qing-qiu-xue-xi/</a>
+                    <a href="http://localhost:4000/2020/02/11/redis-xue-xi-fu-zhi-gong-neng/">http://localhost:4000/2020/02/11/redis-xue-xi-fu-zhi-gong-neng/</a>
                 </span>
             </div>
             <div class="reprint__notice">
@@ -592,19 +516,7 @@ $.ajax({
                 <div class="post-meta__tag-list" style="display: inline-block;">
                     
                         <div class="article-tag">
-                            
-                                <a href="/tags/ajax/">
-                                    <span class="chip bg-color">ajax</span>
-                                </a>
-                            
-                                <a href="/tags/jsonp/">
-                                    <span class="chip bg-color">jsonp</span>
-                                </a>
-                            
-                                <a href="/tags/问题记录/">
-                                    <span class="chip bg-color">问题记录</span>
-                                </a>
-                            
+                            <span class="chip bg-color">无标签</span>
                         </div>
                     
                 </div>
@@ -768,64 +680,39 @@ $.ajax({
 <article id="prenext-posts" class="prev-next articles">
     <div class="row article-row">
         
-        <div class="article col s12 m6" data-aos="fade-up">
+        <div class="article col s12 m6" data-aos="fade-up" data-aos="fade-up">
             <div class="article-badge left-badge text-color">
-                <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
+                <i class="far fa-dot-circle"></i>&nbsp;本篇
+            </div>
             <div class="card">
-                <a href="/2016/01/17/ji-lu-yi-ci-nginx-server-fan-hui-502-de-wen-ti-pai-cha/">
+                <a href="/2020/02/11/redis-xue-xi-fu-zhi-gong-neng/">
                     <div class="card-image">
                         
                         
-                        <img src="/medias/featureimages/16.jpg" class="responsive-img" alt="记录一次nginx-server返回502的问题排查">
+                        <img src="/medias/featureimages/17.jpg" class="responsive-img" alt="redis学习-复制功能">
                         
-                        <span class="card-title">记录一次nginx-server返回502的问题排查</span>
+                        <span class="card-title">redis学习-复制功能</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
                     <div class="summary block-with-text">
                         
-                            本文记录一次自己在配置nginx+php-fpm时候遇到的问题，访问nginx server一直返回502。欢迎讨论和吐槽。
-问题原因
-这个问题对我来说是由于粗心造成，不过大家以后可能会遇到，我这边分享出来。
-当时我在自己的php.ini中
+                            
                         
                     </div>
                     <div class="publish-info">
-                        <span class="publish-date">
-                            <i class="far fa-clock fa-fw icon-date"></i>2016-01-17
-                        </span>
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2020-02-11
+                            </span>
                         <span class="publish-author">
                             
-                            <i class="fas fa-bookmark fa-fw icon-category"></i>
-                            
-                            <a href="/categories/nginx/" class="post-category">
-                                    nginx
-                                </a>
-                            
+                            <i class="fas fa-user fa-fw"></i>
+                            Xudong Jiang
                             
                         </span>
                     </div>
                 </div>
-                
-                <div class="card-action article-tags">
-                    
-                    <a href="/tags/问题记录/">
-                        <span class="chip bg-color">问题记录</span>
-                    </a>
-                    
-                    <a href="/tags/nginx/">
-                        <span class="chip bg-color">nginx</span>
-                    </a>
-                    
-                    <a href="/tags/fpm/">
-                        <span class="chip bg-color">fpm</span>
-                    </a>
-                    
-                    <a href="/tags/502/">
-                        <span class="chip bg-color">502</span>
-                    </a>
-                    
-                </div>
+
                 
             </div>
         </div>
@@ -836,34 +723,34 @@ $.ajax({
                 下一篇&nbsp;<i class="fas fa-chevron-right"></i>
             </div>
             <div class="card">
-                <a href="/2016/01/01/linux-xia-an-zhuang-nginx-mysql-php/">
+                <a href="/2020/02/11/elasticsearch-xue-xi-xi-lie-fen-bu-shi-xi-tong-zhong-shen-du-fen-ye/">
                     <div class="card-image">
                         
                         
-                        <img src="/medias/featureimages/13.jpg" class="responsive-img" alt="linux下安装nginx_mysql_php">
+                        <img src="/medias/featureimages/19.jpg" class="responsive-img" alt="elasticsearch学习系列-分布式系统中深度分页">
                         
-                        <span class="card-title">linux下安装nginx_mysql_php</span>
+                        <span class="card-title">elasticsearch学习系列-分布式系统中深度分页</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
                     <div class="summary block-with-text">
                         
-                            本文分享下安装lnmp环境的详细步骤。欢迎讨论和吐槽。
-简单说明
-本文是基于Centos 7，于命令行下安装php7+nginx+mysql;
-其中php+nginx的安装步骤来自我的好朋友以及是我的前公司开发组组长的分享（很帅技术很强），
+                            本文介绍下ES中搜索的分页功能，据此也引出分布式系统中深度分页的问题
+ES分页功能
+elasticsearch接收form（开始返回的结果位置，从0开始）和size（返回的数量）参数；
+结果集在返回之前先排序，每个分片产生自己的排序结果，再
                         
                     </div>
                     <div class="publish-info">
                             <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2016-01-01
+                                <i class="far fa-clock fa-fw icon-date"></i>2020-02-11
                             </span>
                         <span class="publish-author">
                             
                             <i class="fas fa-bookmark fa-fw icon-category"></i>
                             
-                            <a href="/categories/php/" class="post-category">
-                                    php
+                            <a href="/categories/elasticsearch/" class="post-category">
+                                    elasticsearch
                                 </a>
                             
                             
@@ -873,20 +760,12 @@ $.ajax({
                 
                 <div class="card-action article-tags">
                     
-                    <a href="/tags/php/">
-                        <span class="chip bg-color">php</span>
+                    <a href="/tags/elasticsearch/">
+                        <span class="chip bg-color">elasticsearch</span>
                     </a>
                     
-                    <a href="/tags/linux/">
-                        <span class="chip bg-color">linux</span>
-                    </a>
-                    
-                    <a href="/tags/nginx/">
-                        <span class="chip bg-color">nginx</span>
-                    </a>
-                    
-                    <a href="/tags/mysql/">
-                        <span class="chip bg-color">mysql</span>
+                    <a href="/tags/分布式搜索/">
+                        <span class="chip bg-color">分布式搜索</span>
                     </a>
                     
                 </div>
