@@ -4,6 +4,97 @@
   
     
     <entry>
+      <title>java容器类-总览</title>
+      <link href="/2020/03/05/java-rong-qi-lei-zong-lan/"/>
+      <url>/2020/03/05/java-rong-qi-lei-zong-lan/</url>
+      
+        <content type="html"><![CDATA[]]></content>
+      
+      
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>分布式系统中的一些设计策略</title>
+      <link href="/2020/02/13/fen-bu-shi-xi-tong-zhong-de-yi-xie-she-ji-ce-lue/"/>
+      <url>/2020/02/13/fen-bu-shi-xi-tong-zhong-de-yi-xie-she-ji-ce-lue/</url>
+      
+        <content type="html"><![CDATA[]]></content>
+      
+      
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>分布式系统-2PC和3PC介绍</title>
+      <link href="/2020/02/13/fen-bu-shi-xi-tong-2pc-he-3pc-jie-shao/"/>
+      <url>/2020/02/13/fen-bu-shi-xi-tong-2pc-he-3pc-jie-shao/</url>
+      
+        <content type="html"><![CDATA[]]></content>
+      
+      
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>分布式系统-paxos算法</title>
+      <link href="/2020/02/13/fen-bu-shi-xi-tong-paxos-suan-fa/"/>
+      <url>/2020/02/13/fen-bu-shi-xi-tong-paxos-suan-fa/</url>
+      
+        <content type="html"><![CDATA[]]></content>
+      
+      
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>分布式系统理论介绍</title>
+      <link href="/2020/02/13/fen-bu-shi-xi-tong-li-lun-jie-shao/"/>
+      <url>/2020/02/13/fen-bu-shi-xi-tong-li-lun-jie-shao/</url>
+      
+        <content type="html"><![CDATA[]]></content>
+      
+      
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>分布式系统下的一些概念介绍</title>
+      <link href="/2020/02/13/fen-bu-shi-xi-tong-xia-de-yi-xie-gai-nian-jie-shao/"/>
+      <url>/2020/02/13/fen-bu-shi-xi-tong-xia-de-yi-xie-gai-nian-jie-shao/</url>
+      
+        <content type="html"><![CDATA[]]></content>
+      
+      
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>缓存策略-缓存算法介绍</title>
+      <link href="/2020/02/12/huan-cun-ce-lue-huan-cun-suan-fa-jie-shao/"/>
+      <url>/2020/02/12/huan-cun-ce-lue-huan-cun-suan-fa-jie-shao/</url>
+      
+        <content type="html"><![CDATA[]]></content>
+      
+      
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>redis学习-复制功能</title>
       <link href="/2020/02/11/redis-xue-xi-fu-zhi-gong-neng/"/>
       <url>/2020/02/11/redis-xue-xi-fu-zhi-gong-neng/</url>
@@ -298,6 +389,33 @@
     
     
     <entry>
+      <title>java并发专题-线程池介绍</title>
+      <link href="/2019/03/08/java-bing-fa-zhuan-ti-xian-cheng-chi-xiang-jie/"/>
+      <url>/2019/03/08/java-bing-fa-zhuan-ti-xian-cheng-chi-xiang-jie/</url>
+      
+        <content type="html"><![CDATA[<p>今天介绍下java中的线程池应用，主要介绍java中的Excutor框架</p><h3 id="线程池的好处"><a href="#线程池的好处" class="headerlink" title="线程池的好处"></a>线程池的好处</h3><ul><li>提高响应速度，处理任务时无需等待线程创建；</li><li>提高线程管理性，对线程池内线程统一分配、调度、管理；</li><li>降低资源消耗，通过重复利用已创建的线程降低线程创建和销毁造成的消耗；</li></ul><h3 id="线程池的处理流程"><a href="#线程池的处理流程" class="headerlink" title="线程池的处理流程"></a>线程池的处理流程</h3><ul><li>线程池判断核心线程池里的线程是否都在执行任务。如果不是，则创建一个新的工作线程来执行任务。如果核心线程池里的线程都在执行任务，则进入下个流程</li><li>线程池判断工作队列是否已经满。如果工作队列没有满，则将新提交的任务存储在这个工作队列里。如果工作队列满了，则进入下个流程</li><li>线程池判断线程池的线程是否都处于工作状态。如果没有，则创建一个新的工作线程来执行</li></ul><h3 id="ThreadPoolExecutor详解"><a href="#ThreadPoolExecutor详解" class="headerlink" title="ThreadPoolExecutor详解"></a>ThreadPoolExecutor详解</h3><ul><li>ThreadPoolExecutor：<pre><code>new ThreadPoolExecutor(int corePoolSize,                int maximumPoolSize,                long keepAliveTime,                TimeUnit unit,                BlockingQueue&lt;Runnable&gt; workQueue,                ThreadFactory threadFactory,                RejectedExecutionHandler handler)</code></pre><ul><li>corePoolSize: 当提交一个任务到线程池时，线程池会创建一个线程来执行任务，即使其他空闲的基本线程能够执行新任务也会创建线程，等到需要执行的任务数大于线程池corePoolSize大小时就不再创建；</li><li>maximumPoolSize： 线程池允许创建的最大线程数。如果队列满了，并且已创建的线程数小于最大线程数，则线程池会再创建新的线程执行任务。值得注意的是，如果使用了无界的任务队列这个参数就没什么效果;</li><li>keepAliveTime：线程最大空闲时间</li><li>TimeUnit：时间单位</li><li>workQueue：用于保存等待执行的任务队列；（下方详细介绍）</li><li>threadFactory： 用于设置创建线程的工厂，可以通过线程工厂给每个创建出来的线程设置更有意义的名字；</li><li>handler：当队列和线程池都满了，说明线程池处于饱和状态，那么必须采取一种策略处理提交的新任务（下方详细介绍）</li></ul></li><li>FixedThreadPool<pre><code>   new ThreadPoolExecutor(nThreads, nThreads, 0L, TimeUnit.MILLISECONDS, new LinkedBlockingQueue&lt;Runnable&gt;())</code></pre><ul><li>FixedThreadPool的corePoolSize和maximumPoolSize都被设置为创建FixedThreadPool时指定的参数nThreads</li><li>如果当前运行的线程数少于corePoolSize，则创建新线程来执行任务</li><li>在线程池完成预热之后（当前运行的线程数等于corePoolSize），将任务加入LinkedBlockingQueue</li><li>线程执行完1中的任务后，会在循环中反复从LinkedBlockingQueue获取任务来执行</li><li>FixedThreadPool使用无界队列LinkedBlockingQueue作为线程池的工作队列（队列的容量为Integer.MAX_VALUE）,所以maximumPoolSize是一个无效参数，线程池的线程数量不超过corePoolSize，有oom风险</li></ul></li><li>SingleThreadExecutor<pre><code>new ThreadPoolExecutor(1, 1, 0L, TimeUnit.MILLISECONDS, new LinkedBlockingQueue&lt;Runnable&gt;())</code></pre><ul><li>SingleThreadExecutor的corePoolSize和maximumPoolSize被设置为1</li><li>其他参数与FixedThreadPool相同</li></ul></li><li>CachedThreadPool<pre><code>new ThreadPoolExecutor(0, Integer.MAX_VALUE, 60L, TimeUnit.SECONDS, new SynchronousQueue&lt;Runnable&gt;())</code></pre><ul><li>CachedThreadPool的corePoolSize被设置为0，即corePool为空；maximumPoolSize被设置为Integer.MAX_VALUE，即maximumPool是无界的</li><li>keepAliveTime设置为60L，意味着CachedThreadPool中的空闲线程等待新任务的最长时间为60秒，空闲线程超过60秒后将会被终止</li><li>CachedThreadPool使用没有容量的SynchronousQueue作为线程池的工作队列，但CachedThreadPool的maximumPool是无界的。这意味着，如果主线程提交任务的速度高于maximumPool中线程处理任务的速度时，CachedThreadPool会不断创建新线程(极端情况下，CachedThreadPool会因为创建过多线程而耗尽CPU和内存资源)</li></ul></li><li>线程等待队列<ul><li>直接提交： 工作队列的默认选项是 SynchronousQueue，它将任务直接提交给线程而不保持它们。在此，如果不存在可用于立即运行任务的线程，则试图把任务加入队列将失败，因此会构造一个新的线程。此策略可以避免在处理可能具有内部依赖性的请求集时出现锁。直接提交通常要求无界 maximumPoolSizes 以避免拒绝新提交的任务。当命令以超过队列所能处理的平均数连续到达时，此策略允许无界线程具有增长的可能性；</li><li>无界队列： 使用无界队列（例如，不具有预定义容量的 LinkedBlockingQueue）将导致在所有 corePoolSize 线程都忙时新任务在队列中等待。这样，创建的线程就不会超过 corePoolSize。（因此，maximumPoolSize 的值也就无效了。）当每个任务完全独立于其他任务，即任务执行互不影响时，适合于使用无界队列；例如，在 Web 页服务器中。这种排队可用于处理瞬态突发请求，当命令以超过队列所能处理的平均数连续到达时，此策略允许无界线程具有增长的可能性</li><li>有界队列：当使用有限的 maximumPoolSizes 时，有界队列（如 ArrayBlockingQueue）有助于防止资源耗尽，但是可能较难调整和控制。队列大小和最大池大小可能需要相互折衷：使用大型队列和小型池可以最大限度地降低 CPU 使用率、操作系统资源和上下文切换开销，但是可能导致人工降低吞吐量。如果任务频繁阻塞（例如，如果它们是 I/O 边界），则系统可能为超过您许可的更多线程安排时间。使用小型队列通常要求较大的池大小，CPU 使用率较高，但是可能遇到不可接受的调度开销，这样也会降低吞吐量</li></ul></li><li>决绝策略<ul><li>AbortPolicy：直接抛出异常；</li><li>CallerRunsPolicy：只用调用者所在线程来运行任务；</li><li>DiscardPolicy：不处理，丢弃掉；</li><li>DiscardOldestPolicy：丢弃队列里最近的一个任务，并执行当前任务；</li></ul></li></ul><h3 id="ScheduledThreadPoolExecutor介绍"><a href="#ScheduledThreadPoolExecutor介绍" class="headerlink" title="ScheduledThreadPoolExecutor介绍"></a>ScheduledThreadPoolExecutor介绍</h3><ul><li>ScheduledThreadPoolExecutor运动介绍<ul><li>使用DelayQueue是一个无界队列，所以ThreadPoolExecutor的maximumPoolSize在Scheduled-ThreadPoolExecutor中没有意义;</li><li>当调用ScheduledThreadPoolExecutor的scheduleAtFixedRate()方法或者scheduleWith-FixedDelay()方法时，会向ScheduledThreadPoolExecutor的DelayQueue添加一个实现了RunnableScheduledFutur接口的ScheduledFutureTask</li><li>线程池中的线程从DelayQueue中获取ScheduledFutureTask，然后执行任务</li></ul></li><li>ScheduledThreadPoolExecutor实现<ul><li>DelayQueue封装了一个PriorityQueue，这个PriorityQueue会对队列中的Scheduled-FutureTask进行排序。排序时，time小的排在前面（时间早的任务将被先执行）。如果两个ScheduledFutureTask的time相同，就比较sequenceNumber，sequenceNumber小的排在前面</li><li>线程执行周期任务<ul><li>线程从DelayQueue中获取已到期的ScheduledFutureTask（DelayQueue. take()）。到期任务是指ScheduledFutureTask的time大于等于当前时间</li><li>线程执行这个ScheduledFutureTask</li><li>线程修改ScheduledFutureTask的time变量为下次将要被执行的时间</li><li>线程把这个修改time之后的ScheduledFutureTask放回DelayQueue中（Delay-Queue.add())</li></ul></li><li>获取任务<ul><li>获取Lock</li><li>获取周期任务</li><li>释放Lock</li></ul></li><li>添加任务 类似获取任务</li></ul></li></ul><h3 id="特别提醒"><a href="#特别提醒" class="headerlink" title="特别提醒"></a>特别提醒</h3><ul><li>使用new ThreadPoolExecutor自行创建线程池，更好的管理线程数，队列，避免使用中存在无界问题导致oom；</li><li>线程池消耗一定的系统资源，结合实际避免创建过多线程池，如创建static 线程池</li></ul>]]></content>
+      
+      
+      <categories>
+          
+          <category> java </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> java </tag>
+            
+            <tag> 并发 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>记一次线上问题-java内存溢出</title>
       <link href="/2019/02/08/ji-yi-ci-xian-shang-wen-ti-java-nei-cun-yi-chu/"/>
       <url>/2019/02/08/ji-yi-ci-xian-shang-wen-ti-java-nei-cun-yi-chu/</url>
@@ -414,9 +532,36 @@
       <link href="/2018/09/15/weixin-xiao-cheng-xu-kai-fa-yi/"/>
       <url>/2018/09/15/weixin-xiao-cheng-xu-kai-fa-yi/</url>
       
-        <content type="html"><![CDATA[]]></content>
+        <content type="html"><![CDATA[<p>TODO</p>]]></content>
       
       
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>java并发专题-线程介绍</title>
+      <link href="/2018/09/08/java-bing-fa-zhuan-ti-xian-cheng-jie-shao/"/>
+      <url>/2018/09/08/java-bing-fa-zhuan-ti-xian-cheng-jie-shao/</url>
+      
+        <content type="html"><![CDATA[<p>今天介绍下并发中使用的线程概念</p><h3 id="线程简介"><a href="#线程简介" class="headerlink" title="线程简介"></a>线程简介</h3><ul><li>会创建一个Java进程。现代操作系统调度的最小单元是线程，也叫轻量级进程（Light WeightProcess），在一个进程里可以创建多个线程，这些线程都拥有各自的计数器、堆栈和局部变量等属性，并且能够访问共享的内存变量。处理器在这些线程上高速切换，让使用者感觉到这些线程在同时执行</li><li>多线程的优势：<ul><li>更多的处理器核心，充分利用</li><li>更快的响应时间</li><li>更好的编程模型</li></ul></li><li>线程优先级<ul><li>线程优先级就是决定线程需要多或者少分配一些处理器资源的线程属性</li><li>线程优先级不能作为程序正确性的依赖，因为操作系统可以完全不用理会Java线程对于优先级的设定</li></ul></li><li></li></ul><h3 id="操作线程（启停）"><a href="#操作线程（启停）" class="headerlink" title="操作线程（启停）"></a>操作线程（启停）</h3><h3 id="线程间通信"><a href="#线程间通信" class="headerlink" title="线程间通信"></a>线程间通信</h3><h3 id="线程应用"><a href="#线程应用" class="headerlink" title="线程应用"></a>线程应用</h3>]]></content>
+      
+      
+      <categories>
+          
+          <category> java </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> java </tag>
+            
+            <tag> 线程 </tag>
+            
+        </tags>
       
     </entry>
     
@@ -1075,9 +1220,9 @@
       
         <tags>
             
-            <tag> php </tag>
-            
             <tag> linux </tag>
+            
+            <tag> php </tag>
             
             <tag> nginx </tag>
             
