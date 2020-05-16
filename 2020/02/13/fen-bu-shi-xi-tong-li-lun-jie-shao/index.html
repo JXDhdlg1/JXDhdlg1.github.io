@@ -5,7 +5,10 @@
 <head><meta name="generator" content="Hexo 3.9.0">
     <meta charset="utf-8">
     <meta name="keywords" content="分布式系统理论介绍, Hexo">
-    <meta name="description" content="分布式系统理论介绍 | Hexo">
+    <meta name="description" content="本文介绍关于分布式系统的一些理论，后续还会涉及到
+CAP理论
+一致性（C）：在分布式系统中的所有数据备份，在同一时刻是否有同样的值。（等同于所有节点访问同一份最新的数据副本
+可用性（A）：在集群中一部分节点故障后，集群整体是否还能响应客户端">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <meta name="renderer" content="webkit|ie-stand|ie-comp">
@@ -423,12 +426,25 @@
             <div class="row tag-cate">
                 <div class="col s7">
                     
-                          <div class="article-tag">
-                            <span class="chip bg-color">无标签</span>
-                          </div>
+                    <div class="article-tag">
+                        
+                            <a href="/tags/分布式系统/">
+                                <span class="chip bg-color">分布式系统</span>
+                            </a>
+                        
+                    </div>
                     
                 </div>
                 <div class="col s5 right-align">
+                    
+                    <div class="post-cate">
+                        <i class="fas fa-bookmark fa-fw icon-category"></i>
+                        
+                            <a href="/categories/分布式系统/" class="post-category">
+                                分布式系统
+                            </a>
+                        
+                    </div>
                     
                 </div>
             </div>
@@ -454,7 +470,65 @@
         <hr class="clearfix">
         <div class="card-content article-card-content">
             <div id="articleContent">
-                
+                <p>本文介绍关于分布式系统的一些理论，后续还会涉及到</p>
+<h3 id="CAP理论"><a href="#CAP理论" class="headerlink" title="CAP理论"></a>CAP理论</h3><ul>
+<li>一致性（C）：在分布式系统中的所有数据备份，在同一时刻是否有同样的值。（等同于所有节点访问同一份最新的数据副本</li>
+<li>可用性（A）：在集群中一部分节点故障后，集群整体是否还能响应客户端的读写请求。（对数据更新具备高可用性）</li>
+<li>分区容忍性（P）：以实际效果而言，分区相当于对通信的时限要求。系统如果不能在一定时限内达成数据一致性，就意味着发生了分区的情况，必须就当前操作在C和A之间做出选择</li>
+<li>三者很难同时满足，一般根据系统处理业务场景在某一点上进行折中</li>
+</ul>
+<h3 id="BASE理论"><a href="#BASE理论" class="headerlink" title="BASE理论"></a>BASE理论</h3><ul>
+<li>Basically Available, Soft state, Eventually consistent（基本可用、软状态、最终一致性）</li>
+</ul>
+<h3 id="Paxos"><a href="#Paxos" class="headerlink" title="Paxos"></a>Paxos</h3><ul>
+<li>是一个解决分布式系统中，多个节点之间就某个值（提案）达成一致（决议）的通信协议</li>
+<li>两阶段协议，分为Prepare阶段和Accept阶段<ul>
+<li>Prepare阶段<ul>
+<li>Proposer生成全局唯一且递增的提案ID（生成方法很多，比如时间戳+IP+序列号等），向Paxos集群的所有机器发送请求，这里无须携带提案内容，只携带提案ID即可（且把提案id叫作Pn，也有一种说法ID其实代表版本version）</li>
+<li>Acceptor收到提案请求后，做出以下约定：1）不再应答&lt;=Pn的Prepare请求 2）对于&lt;Pn的Accept请求亦不处</li>
+</ul>
+</li>
+<li>Accept阶段<ul>
+<li>Proposer收集到多数派应答（这里的多数派，就是超过n/2+1, n是集群数）Prepare阶段的返回值后，从中选择proposalID最大的提案内容，作为要发起Accept的提案，如果这个提案为空值，则可以自己随意决定提案内容。然后携带上当前proposalID，向Paxos集群的所有机器发送Accpet请求</li>
+<li>Accpetor收到Accpet请求后，检查不违背自己之前做出约定的情况下，持久化当前Proposal ID和提案内容。最后Proposer收集到多数派应答的Accept回复后，形成决议</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="2PC"><a href="#2PC" class="headerlink" title="2PC"></a>2PC</h3><ul>
+<li>在事务处理、关系型数据库及计算机网络中，2阶段提交协议（2PC）是一种典型的原子提交协议（atomic commitment protocol）。它是一种由协调器来处理分布式原子参与者是提交或者回滚事务的分布式算法</li>
+<li>协议包括2个阶段<ul>
+<li>提交请求阶段或者叫投票阶段：该阶段的任务是确定相关参与者对于事务处理是否准备就绪，YES代表可以commit, NO则反之</li>
+<li>提交阶段：基于投票结果，由协调器决定提交事务抑或是退出事务处理；各事务参与者遵循指示，对本地事务资源做需要的动作</li>
+</ul>
+</li>
+<li>最大的不足是提交协议是阻塞型协议，如果事务协调器宕机，某些参与者将无法解决他们的事务：一个参与者发送确认消息给协调器，因协调器无法工作而导致事务未处理完而处于悬挂状态</li>
+</ul>
+<h3 id="3PC"><a href="#3PC" class="headerlink" title="3PC"></a>3PC</h3><ul>
+<li>第一阶段，投票，事务协调器询问参与者是否能提交（canCommit），都得到肯定回答后，继续第二阶段。第二阶段是预提交，都确认预提交成功后，进行第三阶段。第三阶段就是真实的提交，成功则完成事务；失败则继续重试</li>
+<li>3PC是在2PC的基础上增加了一次交互，也就是preCommit（又称预提交）。只要预提交都成功，则一定要保证doCommit提交成功，即使协调器在下一阶段不可用，或者调用超时</li>
+</ul>
+<h3 id="Raft"><a href="#Raft" class="headerlink" title="Raft"></a>Raft</h3><ul>
+<li>Paxos和Raft都是为了实现一致性（Consensus）这个目标，这个过程如同选举一样，参选者需要说服大多数选民（服务器）投票给他，一旦选定后就跟随其操作。Paxos和Raft的区别在于选举的具体过程不同</li>
+<li>选举过程：<ul>
+<li>任何一个服务器都可以成为一个候选者，它向其他服务器（选民）发出要求选举自己的请求</li>
+<li>其他服务器同意了，回复OK（同意）指令</li>
+<li>这样，这个候选者就成为领导者，它可以向选民们发出要执行具体操作动作的指令，比如进行日志复制</li>
+<li>如果一旦这个Leader宕机崩溃了，那么Follower中会有一个成为候选者，发出邀票选举，相当于再次执行1）～2）的步骤</li>
+</ul>
+</li>
+</ul>
+<h3 id="解决脑裂问题"><a href="#解决脑裂问题" class="headerlink" title="解决脑裂问题"></a>解决脑裂问题</h3><ul>
+<li>指在一个高可用（HA）系统中，当联系着的两个节点断开联系时，本来为一个整体的系统，分裂为两个独立节点，这时两个节点开始争抢共享资源，结果会导致系统混乱，数据损坏</li>
+<li>通过心跳检测做主备切换的时候，就存在不确定性。心跳检测的不确定性是发生脑裂问题的一个非常重要的原因。比如Slave提供服务了，但此前被判死的Master又“复活”了，还在继续工作，则对应用程序逻辑带来未知因素，其中就包括抢夺资源</li>
+<li>有一种做法称为设置仲裁机制，例如设置第三方检测服务器（Monitor），当Slave确定准备接管Master时，让Monitor也ping一下Master，如果没有通讯，则判断其“死亡”；同时Master在对外提供服务时，每隔一段时间比如10s由Master服务器ping Slave服务器和Monitor，如果均出现异常，则暂定业务操作，重试。重试多次之后则退出程序执行或者执行服务器重启操作</li>
+<li>通过Lease机制也可以进一步处理双主脑裂问题。我们假设Slave已经在提供服务了，对应的Server服务器则获得Slave颁发的Lease。假设老Master仍在提供服务，则Lease必然是过期的，因此请求失效，老Master请求频繁时效的情况下，可以通过配置监控点触发报警，以人工介入让老Master放弃身份，转换为Slave</li>
+</ul>
+<h3 id="MVCC"><a href="#MVCC" class="headerlink" title="MVCC"></a>MVCC</h3><ul>
+<li>基于多版本并发控制，乐观机制</li>
+</ul>
+
             </div>
             <hr/>
 
@@ -516,7 +590,11 @@
                 <div class="post-meta__tag-list" style="display: inline-block;">
                     
                         <div class="article-tag">
-                            <span class="chip bg-color">无标签</span>
+                            
+                                <a href="/tags/分布式系统/">
+                                    <span class="chip bg-color">分布式系统</span>
+                                </a>
+                            
                         </div>
                     
                 </div>
@@ -684,19 +762,23 @@
             <div class="article-badge left-badge text-color">
                 <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
             <div class="card">
-                <a href="/2020/02/13/fen-bu-shi-xi-tong-paxos-suan-fa/">
+                <a href="/2020/02/13/fen-bu-shi-xi-tong-zhong-de-yi-xie-she-ji-ce-lue/">
                     <div class="card-image">
                         
                         
-                        <img src="/medias/featureimages/10.jpg" class="responsive-img" alt="分布式系统-paxos算法">
+                        <img src="/medias/featureimages/10.jpg" class="responsive-img" alt="分布式系统中的一些设计策略">
                         
-                        <span class="card-title">分布式系统-paxos算法</span>
+                        <span class="card-title">分布式系统中的一些设计策略</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
                     <div class="summary block-with-text">
                         
-                            
+                            今天介绍分布式系统下的一些通用的设计策略
+心跳检测
+多个节点分担任务的运行、计算或者程序逻辑处理，需要检测一个节点出现了故障乃至无法工作
+可使用周期检测心跳机制、累计失效检测机制
+周期检测心跳机制：Server端每间隔t秒向Node集群发起
                         
                     </div>
                     <div class="publish-info">
@@ -705,11 +787,23 @@
                         </span>
                         <span class="publish-author">
                             
-                            <i class="fas fa-user fa-fw"></i>
-                            Xudong Jiang
+                            <i class="fas fa-bookmark fa-fw icon-category"></i>
+                            
+                            <a href="/categories/分布式系统/" class="post-category">
+                                    分布式系统
+                                </a>
+                            
                             
                         </span>
                     </div>
+                </div>
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/分布式系统/">
+                        <span class="chip bg-color">分布式系统</span>
+                    </a>
+                    
                 </div>
                 
             </div>
@@ -733,7 +827,9 @@
                 <div class="card-content article-content">
                     <div class="summary block-with-text">
                         
-                            
+                            进程与线程
+进程是具有一定独立功能的程序关于某个数据集合上的一次运行活动，进程是系统进行资源分配和调度的一个独立单位。线程是进程的一个实体，是CPU调度和分派的基本单位，它是比进程更小的能独立运行的基本单位。
+线程自己基本上不拥有系统资源，
                         
                     </div>
                     <div class="publish-info">
@@ -742,11 +838,23 @@
                             </span>
                         <span class="publish-author">
                             
-                            <i class="fas fa-user fa-fw"></i>
-                            Xudong Jiang
+                            <i class="fas fa-bookmark fa-fw icon-category"></i>
+                            
+                            <a href="/categories/分布式系统/" class="post-category">
+                                    分布式系统
+                                </a>
+                            
                             
                         </span>
                     </div>
+                </div>
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/分布式系统/">
+                        <span class="chip bg-color">分布式系统</span>
+                    </a>
+                    
                 </div>
                 
             </div>

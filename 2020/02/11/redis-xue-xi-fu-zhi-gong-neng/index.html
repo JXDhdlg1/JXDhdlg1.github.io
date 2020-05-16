@@ -5,7 +5,11 @@
 <head><meta name="generator" content="Hexo 3.9.0">
     <meta charset="utf-8">
     <meta name="keywords" content="redis学习-复制功能, Hexo">
-    <meta name="description" content="redis学习-复制功能 | Hexo">
+    <meta name="description" content="今天介绍下redis的复制功能
+复制配置
+参与复制的Redis实例划分为主节点(master)和从节点(slave)
+复制的数据流是单向的，只能由主节点复制到从节 点。配置复制的方式有以下三种
+在配置文件中加入slaveof{masterH">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <meta name="renderer" content="webkit|ie-stand|ie-comp">
@@ -423,12 +427,25 @@
             <div class="row tag-cate">
                 <div class="col s7">
                     
-                          <div class="article-tag">
-                            <span class="chip bg-color">无标签</span>
-                          </div>
+                    <div class="article-tag">
+                        
+                            <a href="/tags/redis/">
+                                <span class="chip bg-color">redis</span>
+                            </a>
+                        
+                    </div>
                     
                 </div>
                 <div class="col s5 right-align">
+                    
+                    <div class="post-cate">
+                        <i class="fas fa-bookmark fa-fw icon-category"></i>
+                        
+                            <a href="/categories/redis/" class="post-category">
+                                redis
+                            </a>
+                        
+                    </div>
                     
                 </div>
             </div>
@@ -454,7 +471,51 @@
         <hr class="clearfix">
         <div class="card-content article-card-content">
             <div id="articleContent">
-                
+                <p>今天介绍下redis的复制功能</p>
+<h3 id="复制配置"><a href="#复制配置" class="headerlink" title="复制配置"></a>复制配置</h3><ul>
+<li>参与复制的Redis实例划分为主节点(master)和从节点(slave)</li>
+<li>复制的数据流是单向的，只能由主节点复制到从节 点。配置复制的方式有以下三种<ul>
+<li>在配置文件中加入slaveof{masterHost}{masterPort}随Redis启动生 效</li>
+<li>在redis-server启动命令后加入–slaveof{masterHost}{masterPort}生 效</li>
+<li>直接使用命令:slaveof{masterHost}{masterPort}生效</li>
+</ul>
+</li>
+</ul>
+<h3 id="拓扑介绍"><a href="#拓扑介绍" class="headerlink" title="拓扑介绍"></a>拓扑介绍</h3><ul>
+<li>一主一从结构<ul>
+<li>最简单的复制拓扑结构，用于主节点出现宕机时从节点 提供故障转移支持</li>
+<li>当应用写命令并发量较高且需要持久 化时，可以只在从节点上开启AOF，这样既保证数据安全性同时也避免了持 久化对主节点的性能干扰</li>
+<li>当主节点关闭持久化功能时， 如果主节点脱机要避免自动重启操作。因为主节点之前没有开启持久化功能 自动重启后数据集为空，这时从节点如果继续复制主节点会导致从节点数据 也被清空的情况，丧失了持久化的意义。安全的做法是在从节点上执行 slaveof no one断开与主节点的复制关系，再重启主节点从而避免这一问题</li>
+</ul>
+</li>
+<li>一主多从结构<ul>
+<li>一主多从结构(又称为星形拓扑结构)使得应用端可以利用多个从节点 实现读写分离</li>
+<li>对于读占比较大的场景，可以把读命令发送到 从节点来分担主节点压力。同时在日常开发中如果需要执行一些比较耗时的 读命令，如:keys、sort等，可以在其中一台从节点上执行，防止慢查询对 主节点造成阻塞从而影响线上服务的稳定性</li>
+</ul>
+</li>
+<li>树状主从结构<ul>
+<li>树状主从结构(又称为树状拓扑结构)使得从节点不但可以复制主节点 数据，同时可以作为其他从节点的主节点继续向下层复制</li>
+<li>通过引入复制中 间层，可以有效降低主节点负载和需要传送给从节点的数据量</li>
+</ul>
+</li>
+</ul>
+<h3 id="原理"><a href="#原理" class="headerlink" title="原理"></a>原理</h3><ul>
+<li>复制过程<ul>
+<li>保存主节点(master)信息：</li>
+<li>从节点(slave)内部通过每秒运行的定时任务维护复制相关逻辑， 当定时任务发现存在新的主节点后，会尝试与该节点建立网络连接</li>
+<li>发送ping命令</li>
+<li>权限验证。如果主节点设置了requirepass参数，则需要密码验证， 从节点必须配置masterauth参数保证与主节点相同的密码才能通过验证;如 果验证失败复制将终止，从节点重新发起复制流程</li>
+<li>同步数据集。（主从复制连接正常通信后，对于首次建立复制的场 景，主节点会把持有的数据全部发送给从节点，这部分操作是耗时最长的步 骤。Redis在2.8版本以后采用新复制命令psync进行数据同步，原来的sync命 令依然支持，保证新旧版本的兼容性。新版同步划分两种情况:全量同步和 部分同步）</li>
+<li>命令持续复制。当主节点把当前的数据同步给从节点后，便完成了 复制的建立流程。接下来主节点会持续地把写命令发送给从节点，保证主从 数据一致性</li>
+</ul>
+</li>
+<li>数据同步<ul>
+<li>全量复制:一般用于初次复制场景，Redis早期支持的复制功能只有全 量复制，它会把主节点全部数据一次性发送给从节点，当数据量较大时，会 对主从节点和网络造成很大的开销</li>
+<li>部分复制:用于处理在主从复制中因网络闪断等原因造成的数据丢失 场景，当从节点再次连上主节点后，如果条件允许，主节点会补发丢失数据 给从节点。因为补发的数据远远小于全量数据，可以有效避免全量复制的过 高开销</li>
+</ul>
+</li>
+</ul>
+
             </div>
             <hr/>
 
@@ -516,7 +577,11 @@
                 <div class="post-meta__tag-list" style="display: inline-block;">
                     
                         <div class="article-tag">
-                            <span class="chip bg-color">无标签</span>
+                            
+                                <a href="/tags/redis/">
+                                    <span class="chip bg-color">redis</span>
+                                </a>
+                            
                         </div>
                     
                 </div>
@@ -696,7 +761,10 @@
                 <div class="card-content article-content">
                     <div class="summary block-with-text">
                         
-                            
+                            今天介绍下缓存算法
+FIFO算法
+进先出（FIFO，队列），是最简单、最公平的一种思想，即如果一个数据是最先进入的，那么可以认为在将来它被访问的可能性很小。空间满的时候，最先进入的数据会被最早置换（淘汰）掉
+实现：维护一个FIFO队列，按照
                         
                     </div>
                     <div class="publish-info">
@@ -705,11 +773,23 @@
                         </span>
                         <span class="publish-author">
                             
-                            <i class="fas fa-user fa-fw"></i>
-                            Xudong Jiang
+                            <i class="fas fa-bookmark fa-fw icon-category"></i>
+                            
+                            <a href="/categories/redis/" class="post-category">
+                                    redis
+                                </a>
+                            
                             
                         </span>
                     </div>
+                </div>
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/redis/">
+                        <span class="chip bg-color">redis</span>
+                    </a>
+                    
                 </div>
                 
             </div>

@@ -749,78 +749,32 @@
             <div class="article-badge left-badge text-color">
                 <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
             <div class="card">
-                <a href="/2020/05/13/elasticsearch-sheng-ji-transportclient-zhuan-highlevelrestclient/">
+                <a href="/2020/05/13/shang-pin-zhong-tai-xi-tong-de-yi-xie-she-ji-si-kao/">
                     <div class="card-image">
                         
                         
-                        <img src="/medias/featureimages/17.jpg" class="responsive-img" alt="elasticsearch升级-transportClient转HighLevelRestClient">
+                        <img src="/medias/featureimages/22.jpg" class="responsive-img" alt="商品中台系统的一些设计思考">
                         
-                        <span class="card-title">elasticsearch升级-transportClient转HighLevelRestClient</span>
+                        <span class="card-title">商品中台系统的一些设计思考</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
                     <div class="summary block-with-text">
                         
-                            今天分享下项目中进行elasticsearch升级，同时伴随着transport Client转换位High Level Rest Client.
-升级迁移步骤
-es 集群升级（DBA操作）
-数据全量迁移
-使用High Level Rest
+                            今天分享实现中台系统中的一些设计思考
+系统目标
+搭建商品中心系统和服务，支持多个业务线产品的统一存储和输出
+数据进去中台系统到可用，延迟不超过5分钟
+满足接收消息qps超过2000
+
+系统设计
+系统分三个模块，分别负责数据落地，数据搜索和数
                         
                     </div>
                     <div class="publish-info">
                         <span class="publish-date">
                             <i class="far fa-clock fa-fw icon-date"></i>2020-05-13
                         </span>
-                        <span class="publish-author">
-                            
-                            <i class="fas fa-bookmark fa-fw icon-category"></i>
-                            
-                            <a href="/categories/elasticsearch/" class="post-category">
-                                    elasticsearch
-                                </a>
-                            
-                            
-                        </span>
-                    </div>
-                </div>
-                
-                <div class="card-action article-tags">
-                    
-                    <a href="/tags/elasticsearch/">
-                        <span class="chip bg-color">elasticsearch</span>
-                    </a>
-                    
-                </div>
-                
-            </div>
-        </div>
-        
-        
-        <div class="article col s12 m6" data-aos="fade-up">
-            <div class="article-badge right-badge text-color">
-                下一篇&nbsp;<i class="fas fa-chevron-right"></i>
-            </div>
-            <div class="card">
-                <a href="/2020/03/05/java-rong-qi-lei-zong-lan/">
-                    <div class="card-image">
-                        
-                        
-                        <img src="/medias/featureimages/8.jpg" class="responsive-img" alt="java容器类-总览">
-                        
-                        <span class="card-title">java容器类-总览</span>
-                    </div>
-                </a>
-                <div class="card-content article-content">
-                    <div class="summary block-with-text">
-                        
-                            
-                        
-                    </div>
-                    <div class="publish-info">
-                            <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2020-03-05
-                            </span>
                         <span class="publish-author">
                             
                             <i class="fas fa-bookmark fa-fw icon-category"></i>
@@ -838,6 +792,59 @@ es 集群升级（DBA操作）
                     
                     <a href="/tags/java/">
                         <span class="chip bg-color">java</span>
+                    </a>
+                    
+                </div>
+                
+            </div>
+        </div>
+        
+        
+        <div class="article col s12 m6" data-aos="fade-up">
+            <div class="article-badge right-badge text-color">
+                下一篇&nbsp;<i class="fas fa-chevron-right"></i>
+            </div>
+            <div class="card">
+                <a href="/2020/02/13/fen-bu-shi-xi-tong-zhong-de-yi-xie-she-ji-ce-lue/">
+                    <div class="card-image">
+                        
+                        
+                        <img src="/medias/featureimages/10.jpg" class="responsive-img" alt="分布式系统中的一些设计策略">
+                        
+                        <span class="card-title">分布式系统中的一些设计策略</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary block-with-text">
+                        
+                            今天介绍分布式系统下的一些通用的设计策略
+心跳检测
+多个节点分担任务的运行、计算或者程序逻辑处理，需要检测一个节点出现了故障乃至无法工作
+可使用周期检测心跳机制、累计失效检测机制
+周期检测心跳机制：Server端每间隔t秒向Node集群发起
+                        
+                    </div>
+                    <div class="publish-info">
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2020-02-13
+                            </span>
+                        <span class="publish-author">
+                            
+                            <i class="fas fa-bookmark fa-fw icon-category"></i>
+                            
+                            <a href="/categories/分布式系统/" class="post-category">
+                                    分布式系统
+                                </a>
+                            
+                            
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/分布式系统/">
+                        <span class="chip bg-color">分布式系统</span>
                     </a>
                     
                 </div>

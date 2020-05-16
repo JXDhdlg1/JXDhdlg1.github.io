@@ -5,7 +5,15 @@
 <head><meta name="generator" content="Hexo 3.9.0">
     <meta charset="utf-8">
     <meta name="keywords" content="java-outofmemoryError异常整理, Hexo">
-    <meta name="description" content="java-outofmemoryError异常整理 | Hexo">
+    <meta name="description" content="今天介绍java中的一些outofmemoryError
+介绍
+java虚拟机栈
+
+StackOverflowError：如果线程请求的栈深度大于虚拟机所允许的深度
+OutOfMemoryError：当栈扩展时无法申请到足够的内存
+
+
+本地">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <meta name="renderer" content="webkit|ie-stand|ie-comp">
@@ -467,7 +475,42 @@
         <hr class="clearfix">
         <div class="card-content article-card-content">
             <div id="articleContent">
-                
+                <p>今天介绍java中的一些outofmemoryError</p>
+<h3 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h3><ul>
+<li><p>java虚拟机栈</p>
+<ul>
+<li>StackOverflowError：如果线程请求的栈深度大于虚拟机所允许的深度</li>
+<li>OutOfMemoryError：当栈扩展时无法申请到足够的内存</li>
+</ul>
+</li>
+<li><p>本地方法栈</p>
+<ul>
+<li>StackOverflowError</li>
+<li>OutOfMemoryError</li>
+</ul>
+</li>
+<li><p>java堆</p>
+<ul>
+<li>OutOfMemoryError</li>
+</ul>
+</li>
+<li><p>方法区</p>
+<ul>
+<li>OutOfMemoryError</li>
+</ul>
+</li>
+<li><p>运动时常量池</p>
+<ul>
+<li>OutOfMemoryError</li>
+</ul>
+</li>
+<li><p>直接内存</p>
+<ul>
+<li>OutOfMemoryError</li>
+</ul>
+</li>
+</ul>
+
             </div>
             <hr/>
 
@@ -701,19 +744,23 @@
             <div class="article-badge left-badge text-color">
                 <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
             <div class="card">
-                <a href="/2018/05/27/java-xu-ni-ji-la-ji-shou-ji-qi-jie-shao/">
+                <a href="/2018/05/27/java-xu-ni-ji-la-ji-shou-ji-suan-fa-jie-shao/">
                     <div class="card-image">
                         
                         
-                        <img src="/medias/featureimages/12.jpg" class="responsive-img" alt="java虚拟机垃圾收集器介绍">
+                        <img src="/medias/featureimages/18.jpg" class="responsive-img" alt="java虚拟机垃圾收集算法介绍">
                         
-                        <span class="card-title">java虚拟机垃圾收集器介绍</span>
+                        <span class="card-title">java虚拟机垃圾收集算法介绍</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
                     <div class="summary block-with-text">
                         
-                            
+                            今天介绍下java虚拟机内的垃圾收集算法
+分代收集理论
+分代假设：
+弱分代假说（Weak Generational Hypothesis）：绝大多数对象都是朝生夕灭的
+强分代假说（Strong Generational Hypothesis
                         
                     </div>
                     <div class="publish-info">

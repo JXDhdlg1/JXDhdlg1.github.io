@@ -5,7 +5,13 @@
 <head><meta name="generator" content="Hexo 3.9.0">
     <meta charset="utf-8">
     <meta name="keywords" content="java基础学习之string专题, Hexo">
-    <meta name="description" content="java基础学习之string专题 | Hexo">
+    <meta name="description" content="今天介绍下java中的String
+用法
+定义String变量String a = &amp;quot;test&amp;quot;;
+
+new 创建String b = new String(&amp;quot;test&amp;quot;);
+
+可以直接使用+ += ">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <meta name="renderer" content="webkit|ie-stand|ie-comp">
@@ -467,7 +473,30 @@
         <hr class="clearfix">
         <div class="card-content article-card-content">
             <div id="articleContent">
-                
+                <p>今天介绍下java中的String</p>
+<h3 id="用法"><a href="#用法" class="headerlink" title="用法"></a>用法</h3><ul>
+<li>定义String变量<pre><code>String a = &quot;test&quot;;
+</code></pre></li>
+<li>new 创建<pre><code>String b = new String(&quot;test&quot;);
+</code></pre></li>
+<li>可以直接使用+ += 运算</li>
+</ul>
+<h3 id="内部原理"><a href="#内部原理" class="headerlink" title="内部原理"></a>内部原理</h3><ul>
+<li>String类内部用一个字符数组表示字符串</li>
+<li>String会根据参数新创建一个数组，并复制内容，而不会直接用参数中的字符数组。String中的大部分方法内部也都是操作的这个字符数组</li>
+</ul>
+<h3 id="不可变性"><a href="#不可变性" class="headerlink" title="不可变性"></a>不可变性</h3><ul>
+<li>String类也是不可变类，即对象一旦创建，就没有办法修改了。String类也声明为了final，不能被继承，内部char数组value也是final的，初始化后就不能再变了</li>
+<li>String类中提供修改的方法，是通过创建新的String对象来实现的，原来的String对象不会被修改</li>
+</ul>
+<h3 id="常量字符串"><a href="#常量字符串" class="headerlink" title="常量字符串"></a>常量字符串</h3><ul>
+<li>字符串常量放在字符串常量池</li>
+<li>直接使用常量的定义引用的是常量池内同一个对象，相等，new 出来的则是新的对象</li>
+</ul>
+<h3 id="特别说明"><a href="#特别说明" class="headerlink" title="特别说明"></a>特别说明</h3><ul>
+<li>如果频繁修改字符串，而每次修改都新建一个字符串，那么性能太低，这时，应该考虑Java中的另两个类StringBuilder和StringBuffer<br>-</li>
+</ul>
+
             </div>
             <hr/>
 

@@ -424,35 +424,37 @@
             
             <div class="article col s12 m6 l4" data-aos="zoom-in">
                 <div class="card">
-                    <a href="/2020/01/19/qmq-xiao-xi-dui-lie-gao-ke-yong/">
+                    <a href="/2020/01/11/ji-yi-ci-shang-xian-hou-fu-wu-qi-cpu-biao-sheng-yi-chang-wen-ti/">
                         <div class="card-image">
                             
                             
-                            <img src="/medias/featureimages/0.jpg" class="responsive-img" alt="qmq消息队列-高可用">
+                            <img src="/medias/featureimages/18.jpg" class="responsive-img" alt="记一次上线后服务器cpu飙升异常问题">
                             
-                            <span class="card-title">qmq消息队列-高可用</span>
+                            <span class="card-title">记一次上线后服务器cpu飙升异常问题</span>
                         </div>
                     </a>
 
                     <div class="card-content article-content">
                         <div class="summary block-with-text">
                             
-                                今天分享下qmq高可用的特性
-高可用说明qmq高可用主要从两个角度提供：
-
-分片：qmq不是基于partition，可以很容易通过添加更多的记起提高一个subject的可用性，消息按照一定的负载均衡策略分布在不同的机器上，某台机器离线后pr
+                                今天记录分享一次服务上线后cpu飙升问题
+问题经过和分析
+项目的场景是接收各个系统的消息进行处理，
+项目消费上线前，一些发消息的业务逻辑先上线，消息在消息队列内大量挤压
+服务上线，没有对消息队列内消息reset处理，大量消息涌入
+服务内部并
                             
                         </div>
                         <div class="publish-info">
                             <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2020-01-19
+                                <i class="far fa-clock fa-fw icon-date"></i>2020-01-11
                             </span>
                             <span class="publish-author">
                                 
                                 <i class="fas fa-bookmark fa-fw icon-category"></i>
                                 
-                                <a href="/categories/qmq/" class="post-category">
-                                    qmq
+                                <a href="/categories/java/" class="post-category">
+                                    java
                                 </a>
                                 
                                 
@@ -463,12 +465,12 @@
                     
                     <div class="card-action article-tags">
                         
-                        <a href="/tags/qmq/">
-                            <span class="chip bg-color">qmq</span>
+                        <a href="/tags/问题记录/">
+                            <span class="chip bg-color">问题记录</span>
                         </a>
                         
-                        <a href="/tags/消息队列/">
-                            <span class="chip bg-color">消息队列</span>
+                        <a href="/tags/java/">
+                            <span class="chip bg-color">java</span>
                         </a>
                         
                     </div>
@@ -478,134 +480,186 @@
             
             <div class="article col s12 m6 l4" data-aos="zoom-in">
                 <div class="card">
-                    <a href="/2020/01/19/qmq-xiao-xi-dui-lie-jia-gou-xue-xi/">
+                    <a href="/2019/12/16/java-rong-qi-dui-he-you-xian-dui-lie/">
                         <div class="card-image">
                             
                             
-                            <img src="/medias/featureimages/23.jpg" class="responsive-img" alt="qmq消息队列-架构学习">
+                            <img src="/medias/featureimages/10.jpg" class="responsive-img" alt="java容器-堆和优先队列">
                             
-                            <span class="card-title">qmq消息队列-架构学习</span>
+                            <span class="card-title">java容器-堆和优先队列</span>
                         </div>
                     </a>
 
                     <div class="card-content article-content">
                         <div class="summary block-with-text">
                             
-                                
+                                今天介绍一些java内的容器-堆和优先队列，有些容器会在后续案例中更详细介绍
+堆
+是完全二叉树，给定任意一个节点，可以根据其编号直接快速计算出其父节点和孩子节点编号
+根据顺序分为两种堆：一种是最大堆，另一种是最小堆
+可以实现优先级队列，解决
                             
                         </div>
                         <div class="publish-info">
                             <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2020-01-19
+                                <i class="far fa-clock fa-fw icon-date"></i>2019-12-16
                             </span>
                             <span class="publish-author">
                                 
-                                <i class="fas fa-user fa-fw"></i>
-                                Xudong Jiang
+                                <i class="fas fa-bookmark fa-fw icon-category"></i>
+                                
+                                <a href="/categories/java/" class="post-category">
+                                    java
+                                </a>
+                                
                                 
                             </span>
                         </div>
                     </div>
 
                     
-                </div>
-            </div>
-            
-            <div class="article col s12 m6 l4" data-aos="zoom-in">
-                <div class="card">
-                    <a href="/2020/01/18/elasticsearch-xue-xi-xi-lie-le-guan-bing-fa-kong-zhi/">
-                        <div class="card-image">
-                            
-                            
-                            <img src="/medias/featureimages/22.jpg" class="responsive-img" alt="elasticsearch学习系列-乐观并发控制">
-                            
-                            <span class="card-title">elasticsearch学习系列-乐观并发控制</span>
-                        </div>
-                    </a>
-
-                    <div class="card-content article-content">
-                        <div class="summary block-with-text">
-                            
-                                
-                            
-                        </div>
-                        <div class="publish-info">
-                            <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2020-01-18
-                            </span>
-                            <span class="publish-author">
-                                
-                                <i class="fas fa-user fa-fw"></i>
-                                Xudong Jiang
-                                
-                            </span>
-                        </div>
+                    <div class="card-action article-tags">
+                        
+                        <a href="/tags/java/">
+                            <span class="chip bg-color">java</span>
+                        </a>
+                        
                     </div>
-
                     
                 </div>
             </div>
             
             <div class="article col s12 m6 l4" data-aos="zoom-in">
                 <div class="card">
-                    <a href="/2020/01/15/mysql-innodb-cun-chu-yin-qing-zhong-de-suo/">
+                    <a href="/2019/12/08/java-bing-fa-zhuan-ti-xian-cheng-chi-xiang-jie/">
                         <div class="card-image">
                             
                             
-                            <img src="/medias/featureimages/22.jpg" class="responsive-img" alt="mysql-innodb存储引擎中的锁">
+                            <img src="/medias/featureimages/13.jpg" class="responsive-img" alt="java并发专题-线程池介绍">
                             
-                            <span class="card-title">mysql-innodb存储引擎中的锁</span>
+                            <span class="card-title">java并发专题-线程池介绍</span>
                         </div>
                     </a>
 
                     <div class="card-content article-content">
                         <div class="summary block-with-text">
                             
-                                
+                                今天介绍下java中的线程池应用，主要介绍java中的Excutor框架
+线程池的好处
+提高响应速度，处理任务时无需等待线程创建；
+提高线程管理性，对线程池内线程统一分配、调度、管理；
+降低资源消耗，通过重复利用已创建的线程降低线程创建和销
                             
                         </div>
                         <div class="publish-info">
                             <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2020-01-15
+                                <i class="far fa-clock fa-fw icon-date"></i>2019-12-08
                             </span>
                             <span class="publish-author">
                                 
-                                <i class="fas fa-user fa-fw"></i>
-                                Xudong Jiang
+                                <i class="fas fa-bookmark fa-fw icon-category"></i>
+                                
+                                <a href="/categories/java/" class="post-category">
+                                    java
+                                </a>
+                                
                                 
                             </span>
                         </div>
                     </div>
 
                     
+                    <div class="card-action article-tags">
+                        
+                        <a href="/tags/java/">
+                            <span class="chip bg-color">java</span>
+                        </a>
+                        
+                        <a href="/tags/并发/">
+                            <span class="chip bg-color">并发</span>
+                        </a>
+                        
+                    </div>
+                    
                 </div>
             </div>
             
             <div class="article col s12 m6 l4" data-aos="zoom-in">
                 <div class="card">
-                    <a href="/2020/01/15/elasticsearch-xue-xi-xi-lie-sou-suo-qian-chang/">
+                    <a href="/2019/11/15/java-rong-qi-map-he-set/">
                         <div class="card-image">
                             
                             
-                            <img src="/medias/featureimages/8.jpg" class="responsive-img" alt="elasticsearch学习系列-搜索浅尝">
+                            <img src="/medias/featureimages/10.jpg" class="responsive-img" alt="java容器-Map和Set">
                             
-                            <span class="card-title">elasticsearch学习系列-搜索浅尝</span>
+                            <span class="card-title">java容器-Map和Set</span>
                         </div>
                     </a>
 
                     <div class="card-content article-content">
                         <div class="summary block-with-text">
                             
-                                本文简单介绍ES搜索的一些简单尝试
-检索文档GET /_index/_type/_id
-根据库、类型、id搜索数据
-简单搜索GET /_index/_type/_search
-搜索索引_index内类型_type内的所有数据，默认返回10条
+                                今天介绍一些java内的容器-Map和Set，有些容器会在后续案例中更详细介绍
+Map
+HashMap
+实现map接口， key value键值对
+内部实例变量size表示实际键值对的个数。table是一个Entry类型的数组，称为哈希表或
                             
                         </div>
                         <div class="publish-info">
                             <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2020-01-15
+                                <i class="far fa-clock fa-fw icon-date"></i>2019-11-15
+                            </span>
+                            <span class="publish-author">
+                                
+                                <i class="fas fa-bookmark fa-fw icon-category"></i>
+                                
+                                <a href="/categories/java/" class="post-category">
+                                    java
+                                </a>
+                                
+                                
+                            </span>
+                        </div>
+                    </div>
+
+                    
+                    <div class="card-action article-tags">
+                        
+                        <a href="/tags/java/">
+                            <span class="chip bg-color">java</span>
+                        </a>
+                        
+                    </div>
+                    
+                </div>
+            </div>
+            
+            <div class="article col s12 m6 l4" data-aos="zoom-in">
+                <div class="card">
+                    <a href="/2019/11/02/elasticsearch-sheng-ji-transportclient-zhuan-highlevelrestclient/">
+                        <div class="card-image">
+                            
+                            
+                            <img src="/medias/featureimages/17.jpg" class="responsive-img" alt="elasticsearch升级-transportClient转HighLevelRestClient">
+                            
+                            <span class="card-title">elasticsearch升级-transportClient转HighLevelRestClient</span>
+                        </div>
+                    </a>
+
+                    <div class="card-content article-content">
+                        <div class="summary block-with-text">
+                            
+                                今天分享下项目中进行elasticsearch升级，同时伴随着transport Client转换位High Level Rest Client.
+升级迁移步骤
+es 集群升级（DBA操作）
+数据全量迁移
+使用High Level Rest
+                            
+                        </div>
+                        <div class="publish-info">
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2019-11-02
                             </span>
                             <span class="publish-author">
                                 
@@ -634,29 +688,30 @@
             
             <div class="article col s12 m6 l4" data-aos="zoom-in">
                 <div class="card">
-                    <a href="/2019/08/08/java-bing-fa-zhuan-ti-xian-cheng-chi-xiang-jie/">
+                    <a href="/2019/07/05/java-rong-qi-lie-biao-he-dui-lie/">
                         <div class="card-image">
                             
                             
-                            <img src="/medias/featureimages/13.jpg" class="responsive-img" alt="java并发专题-线程池介绍">
+                            <img src="/medias/featureimages/15.jpg" class="responsive-img" alt="java容器-列表和队列">
                             
-                            <span class="card-title">java并发专题-线程池介绍</span>
+                            <span class="card-title">java容器-列表和队列</span>
                         </div>
                     </a>
 
                     <div class="card-content article-content">
                         <div class="summary block-with-text">
                             
-                                今天介绍下java中的线程池应用，主要介绍java中的Excutor框架
-线程池的好处
-提高响应速度，处理任务时无需等待线程创建；
-提高线程管理性，对线程池内线程统一分配、调度、管理；
-降低资源消耗，通过重复利用已创建的线程降低线程创建和销
+                                今天介绍一些java内的容器-列表和队列，有些容器会在后续案例中更详细介绍
+列表和队列
+ArrayList
+实现了Iterable接口，可迭代，
+内部有一个数组elementData，一般有些预留空间，有整数size记录实际元素个数；
+添加
                             
                         </div>
                         <div class="publish-info">
                             <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2019-08-08
+                                <i class="far fa-clock fa-fw icon-date"></i>2019-07-05
                             </span>
                             <span class="publish-author">
                                 
@@ -676,10 +731,6 @@
                         
                         <a href="/tags/java/">
                             <span class="chip bg-color">java</span>
-                        </a>
-                        
-                        <a href="/tags/并发/">
-                            <span class="chip bg-color">并发</span>
                         </a>
                         
                     </div>
@@ -740,125 +791,22 @@
             
             <div class="article col s12 m6 l4" data-aos="zoom-in">
                 <div class="card">
-                    <a href="/2019/05/30/shu-ju-ku-guan-yu-fen-ku-fen-biao-de-zheng-li/">
+                    <a href="/2019/05/29/elasticsearch-xue-xi-xi-lie-ru-men-jie-shao/">
                         <div class="card-image">
                             
                             
-                            <img src="/medias/featureimages/17.jpg" class="responsive-img" alt="数据库关于分库分表的整理">
+                            <img src="/medias/featureimages/17.jpg" class="responsive-img" alt="Elasticsearch学习系列-入门介绍">
                             
-                            <span class="card-title">数据库关于分库分表的整理</span>
+                            <span class="card-title">Elasticsearch学习系列-入门介绍</span>
                         </div>
                     </a>
 
                     <div class="card-content article-content">
                         <div class="summary block-with-text">
                             
-                                
-                            
-                        </div>
-                        <div class="publish-info">
-                            <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2019-05-30
-                            </span>
-                            <span class="publish-author">
-                                
-                                <i class="fas fa-user fa-fw"></i>
-                                Xudong Jiang
-                                
-                            </span>
-                        </div>
-                    </div>
-
-                    
-                </div>
-            </div>
-            
-            <div class="article col s12 m6 l4" data-aos="zoom-in">
-                <div class="card">
-                    <a href="/2019/05/30/redis-xue-xi-shi-yong-chang-jing-an-li-yi/">
-                        <div class="card-image">
-                            
-                            
-                            <img src="/medias/featureimages/16.jpg" class="responsive-img" alt="redis学习-使用场景案例（一）">
-                            
-                            <span class="card-title">redis学习-使用场景案例（一）</span>
-                        </div>
-                    </a>
-
-                    <div class="card-content article-content">
-                        <div class="summary block-with-text">
-                            
-                                
-                            
-                        </div>
-                        <div class="publish-info">
-                            <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2019-05-30
-                            </span>
-                            <span class="publish-author">
-                                
-                                <i class="fas fa-user fa-fw"></i>
-                                Xudong Jiang
-                                
-                            </span>
-                        </div>
-                    </div>
-
-                    
-                </div>
-            </div>
-            
-            <div class="article col s12 m6 l4" data-aos="zoom-in">
-                <div class="card">
-                    <a href="/2019/05/30/redis-xue-xi-zhi-chi-de-shu-ju-jie-gou/">
-                        <div class="card-image">
-                            
-                            
-                            <img src="/medias/featureimages/15.jpg" class="responsive-img" alt="redis学习-支持的数据结构">
-                            
-                            <span class="card-title">redis学习-支持的数据结构</span>
-                        </div>
-                    </a>
-
-                    <div class="card-content article-content">
-                        <div class="summary block-with-text">
-                            
-                                
-                            
-                        </div>
-                        <div class="publish-info">
-                            <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2019-05-30
-                            </span>
-                            <span class="publish-author">
-                                
-                                <i class="fas fa-user fa-fw"></i>
-                                Xudong Jiang
-                                
-                            </span>
-                        </div>
-                    </div>
-
-                    
-                </div>
-            </div>
-            
-            <div class="article col s12 m6 l4" data-aos="zoom-in">
-                <div class="card">
-                    <a href="/2019/05/29/java-xu-ni-ji-ji-shi-bian-yi-qi-bian-yi-you-hua-ji-zhu/">
-                        <div class="card-image">
-                            
-                            
-                            <img src="/medias/featureimages/1.jpg" class="responsive-img" alt="java虚拟机即时编译器编译优化技术">
-                            
-                            <span class="card-title">java虚拟机即时编译器编译优化技术</span>
-                        </div>
-                    </a>
-
-                    <div class="card-content article-content">
-                        <div class="summary block-with-text">
-                            
-                                
+                                elasticsearch是功能强大的基于Lucene实现的开源搜索引擎。本文主要从以下个方面对其进行入门介绍。推荐文档
+使用场景和优势
+当我们的数据量非常大的时候，我们会考虑进行分库分表，但是分库分表需要考虑依赖拆分的字段，在某些场景下会
                             
                         </div>
                         <div class="publish-info">
@@ -867,43 +815,205 @@
                             </span>
                             <span class="publish-author">
                                 
-                                <i class="fas fa-user fa-fw"></i>
-                                Xudong Jiang
+                                <i class="fas fa-bookmark fa-fw icon-category"></i>
+                                
+                                <a href="/categories/elasticsearch/" class="post-category">
+                                    elasticsearch
+                                </a>
+                                
                                 
                             </span>
                         </div>
                     </div>
 
                     
+                    <div class="card-action article-tags">
+                        
+                        <a href="/tags/elasticsearch/">
+                            <span class="chip bg-color">elasticsearch</span>
+                        </a>
+                        
+                    </div>
+                    
                 </div>
             </div>
             
             <div class="article col s12 m6 l4" data-aos="zoom-in">
                 <div class="card">
-                    <a href="/2019/05/29/java-xu-ni-ji-ji-shi-bian-yi-qi-jit-ji-zhi/">
+                    <a href="/2019/02/18/elasticsearch-xue-xi-xi-lie-le-guan-bing-fa-kong-zhi/">
                         <div class="card-image">
                             
                             
-                            <img src="/medias/featureimages/18.jpg" class="responsive-img" alt="java虚拟机即时编译器JIT机制">
+                            <img src="/medias/featureimages/22.jpg" class="responsive-img" alt="elasticsearch学习系列-乐观并发控制">
                             
-                            <span class="card-title">java虚拟机即时编译器JIT机制</span>
+                            <span class="card-title">elasticsearch学习系列-乐观并发控制</span>
                         </div>
                     </a>
 
                     <div class="card-content article-content">
                         <div class="summary block-with-text">
                             
-                                
+                                今天介绍下elasticsearch中的乐观并发控制机制
+并发控制
+并发控制分为悲观的和乐观的，对应有我们的乐观锁和悲观锁。
+悲观锁假设冲突随时发生，在处理前必须获得排他的锁再处理
+乐观锁则认为不存在冲突，先处理，若最后发现在处理过程中发生
                             
                         </div>
                         <div class="publish-info">
                             <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2019-05-29
+                                <i class="far fa-clock fa-fw icon-date"></i>2019-02-18
+                            </span>
+                            <span class="publish-author">
+                                
+                                <i class="fas fa-bookmark fa-fw icon-category"></i>
+                                
+                                <a href="/categories/elasticsearch/" class="post-category">
+                                    elasticsearch
+                                </a>
+                                
+                                
+                            </span>
+                        </div>
+                    </div>
+
+                    
+                    <div class="card-action article-tags">
+                        
+                        <a href="/tags/elasticsearch/">
+                            <span class="chip bg-color">elasticsearch</span>
+                        </a>
+                        
+                    </div>
+                    
+                </div>
+            </div>
+            
+            <div class="article col s12 m6 l4" data-aos="zoom-in">
+                <div class="card">
+                    <a href="/2019/02/08/ji-yi-ci-xian-shang-wen-ti-java-nei-cun-yi-chu/">
+                        <div class="card-image">
+                            
+                            
+                            <img src="/medias/featureimages/20.jpg" class="responsive-img" alt="记一次线上问题-java内存溢出">
+                            
+                            <span class="card-title">记一次线上问题-java内存溢出</span>
+                        </div>
+                    </a>
+
+                    <div class="card-content article-content">
+                        <div class="summary block-with-text">
+                            
+                                这里分享一个线上问题案例及解决过程。小k来到新公司不久，一天早上，小K收到一封报警邮件，提示某项目出现较多异常。小k点击邮件查看详情，发现提示out of menery错误。此时同事们还没来，小k暗自吐槽：“怎么都没来，这个项目代码自己也还
+                            
+                        </div>
+                        <div class="publish-info">
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2019-02-08
+                            </span>
+                            <span class="publish-author">
+                                
+                                <i class="fas fa-bookmark fa-fw icon-category"></i>
+                                
+                                <a href="/categories/java/" class="post-category">
+                                    java
+                                </a>
+                                
+                                
+                            </span>
+                        </div>
+                    </div>
+
+                    
+                    <div class="card-action article-tags">
+                        
+                        <a href="/tags/问题记录/">
+                            <span class="chip bg-color">问题记录</span>
+                        </a>
+                        
+                        <a href="/tags/java/">
+                            <span class="chip bg-color">java</span>
+                        </a>
+                        
+                    </div>
+                    
+                </div>
+            </div>
+            
+            <div class="article col s12 m6 l4" data-aos="zoom-in">
+                <div class="card">
+                    <a href="/2019/01/22/xiang-dui-lun-zhong-de-shi-kong/">
+                        <div class="card-image">
+                            
+                            
+                            <img src="/medias/featureimages/4.jpg" class="responsive-img" alt="相对论中的时空">
+                            
+                            <span class="card-title">相对论中的时空</span>
+                        </div>
+                    </a>
+
+                    <div class="card-content article-content">
+                        <div class="summary block-with-text">
+                            
+                                  相信很多人跟我一样，很早就接触过时空这个词，但是却从没有深究过它。  本文将基于自己最近的阅读简单和大家聊一聊时空这个概念，希望能激发大家对此类科学的兴趣，也希望有高人对此能指点一二。  在讲它之前，我想简单先聊几个概念。  
+狭义相对
+                            
+                        </div>
+                        <div class="publish-info">
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2019-01-22
+                            </span>
+                            <span class="publish-author">
+                                
+                                <i class="fas fa-bookmark fa-fw icon-category"></i>
+                                
+                                <a href="/categories/科学科幻/" class="post-category">
+                                    科学科幻
+                                </a>
+                                
+                                
+                            </span>
+                        </div>
+                    </div>
+
+                    
+                    <div class="card-action article-tags">
+                        
+                        <a href="/tags/科学科幻/">
+                            <span class="chip bg-color">科学科幻</span>
+                        </a>
+                        
+                    </div>
+                    
+                </div>
+            </div>
+            
+            <div class="article col s12 m6 l4" data-aos="zoom-in">
+                <div class="card">
+                    <a href="/2018/12/28/wo-de-bo-ke-shuo-ming/">
+                        <div class="card-image">
+                            
+                            <img src="/images/1.jpg" class="responsive-img" alt="我的博客说明">
+                            
+                            <span class="card-title">我的博客说明</span>
+                        </div>
+                    </a>
+
+                    <div class="card-content article-content">
+                        <div class="summary block-with-text">
+                            
+                                   做一件事，要学会倾尽全力
+
+                            
+                        </div>
+                        <div class="publish-info">
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2018-12-28
                             </span>
                             <span class="publish-author">
                                 
                                 <i class="fas fa-user fa-fw"></i>
-                                Xudong Jiang
+                                xudongj
                                 
                             </span>
                         </div>

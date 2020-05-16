@@ -572,46 +572,14 @@
                     <div class="card-content article-content">
                         <div class="summary block-with-text">
                             
-                                
-                            
-                        </div>
-                        <div class="publish-info">
-                            <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2020-05-13
-                            </span>
-                            <span class="publish-author">
-                                
-                                <i class="fas fa-user fa-fw"></i>
-                                Xudong Jiang
-                                
-                            </span>
-                        </div>
-                    </div>
+                                今天分享实现中台系统中的一些设计思考
+系统目标
+搭建商品中心系统和服务，支持多个业务线产品的统一存储和输出
+数据进去中台系统到可用，延迟不超过5分钟
+满足接收消息qps超过2000
 
-                    
-                </div>
-            </div>
-            
-            <div class="article col s12 m6 l4" data-aos="zoom-in">
-                <div class="card">
-                    <a href="/2020/05/13/elasticsearch-sheng-ji-transportclient-zhuan-highlevelrestclient/">
-                        <div class="card-image">
-                            
-                            
-                            <img src="/medias/featureimages/17.jpg" class="responsive-img" alt="elasticsearch升级-transportClient转HighLevelRestClient">
-                            
-                            <span class="card-title">elasticsearch升级-transportClient转HighLevelRestClient</span>
-                        </div>
-                    </a>
-
-                    <div class="card-content article-content">
-                        <div class="summary block-with-text">
-                            
-                                今天分享下项目中进行elasticsearch升级，同时伴随着transport Client转换位High Level Rest Client.
-升级迁移步骤
-es 集群升级（DBA操作）
-数据全量迁移
-使用High Level Rest
+系统设计
+系统分三个模块，分别负责数据落地，数据搜索和数
                             
                         </div>
                         <div class="publish-info">
@@ -622,8 +590,8 @@ es 集群升级（DBA操作）
                                 
                                 <i class="fas fa-bookmark fa-fw icon-category"></i>
                                 
-                                <a href="/categories/elasticsearch/" class="post-category">
-                                    elasticsearch
+                                <a href="/categories/java/" class="post-category">
+                                    java
                                 </a>
                                 
                                 
@@ -634,8 +602,8 @@ es 集群升级（DBA操作）
                     
                     <div class="card-action article-tags">
                         
-                        <a href="/tags/elasticsearch/">
-                            <span class="chip bg-color">elasticsearch</span>
+                        <a href="/tags/java/">
+                            <span class="chip bg-color">java</span>
                         </a>
                         
                     </div>
@@ -695,53 +663,6 @@ es 集群升级（DBA操作）
             
             <div class="article col s12 m6 l4" data-aos="zoom-in">
                 <div class="card">
-                    <a href="/2020/03/05/java-rong-qi-lei-zong-lan/">
-                        <div class="card-image">
-                            
-                            
-                            <img src="/medias/featureimages/8.jpg" class="responsive-img" alt="java容器类-总览">
-                            
-                            <span class="card-title">java容器类-总览</span>
-                        </div>
-                    </a>
-
-                    <div class="card-content article-content">
-                        <div class="summary block-with-text">
-                            
-                                
-                            
-                        </div>
-                        <div class="publish-info">
-                            <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2020-03-05
-                            </span>
-                            <span class="publish-author">
-                                
-                                <i class="fas fa-bookmark fa-fw icon-category"></i>
-                                
-                                <a href="/categories/java/" class="post-category">
-                                    java
-                                </a>
-                                
-                                
-                            </span>
-                        </div>
-                    </div>
-
-                    
-                    <div class="card-action article-tags">
-                        
-                        <a href="/tags/java/">
-                            <span class="chip bg-color">java</span>
-                        </a>
-                        
-                    </div>
-                    
-                </div>
-            </div>
-            
-            <div class="article col s12 m6 l4" data-aos="zoom-in">
-                <div class="card">
                     <a href="/2020/02/13/fen-bu-shi-xi-tong-zhong-de-yi-xie-she-ji-ce-lue/">
                         <div class="card-image">
                             
@@ -755,7 +676,11 @@ es 集群升级（DBA操作）
                     <div class="card-content article-content">
                         <div class="summary block-with-text">
                             
-                                
+                                今天介绍分布式系统下的一些通用的设计策略
+心跳检测
+多个节点分担任务的运行、计算或者程序逻辑处理，需要检测一个节点出现了故障乃至无法工作
+可使用周期检测心跳机制、累计失效检测机制
+周期检测心跳机制：Server端每间隔t秒向Node集群发起
                             
                         </div>
                         <div class="publish-info">
@@ -764,83 +689,25 @@ es 集群升级（DBA操作）
                             </span>
                             <span class="publish-author">
                                 
-                                <i class="fas fa-user fa-fw"></i>
-                                Xudong Jiang
+                                <i class="fas fa-bookmark fa-fw icon-category"></i>
+                                
+                                <a href="/categories/分布式系统/" class="post-category">
+                                    分布式系统
+                                </a>
+                                
                                 
                             </span>
                         </div>
                     </div>
 
                     
-                </div>
-            </div>
-            
-            <div class="article col s12 m6 l4" data-aos="zoom-in">
-                <div class="card">
-                    <a href="/2020/02/13/fen-bu-shi-xi-tong-2pc-he-3pc-jie-shao/">
-                        <div class="card-image">
-                            
-                            
-                            <img src="/medias/featureimages/2.jpg" class="responsive-img" alt="分布式系统-2PC和3PC介绍">
-                            
-                            <span class="card-title">分布式系统-2PC和3PC介绍</span>
-                        </div>
-                    </a>
-
-                    <div class="card-content article-content">
-                        <div class="summary block-with-text">
-                            
-                                
-                            
-                        </div>
-                        <div class="publish-info">
-                            <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2020-02-13
-                            </span>
-                            <span class="publish-author">
-                                
-                                <i class="fas fa-user fa-fw"></i>
-                                Xudong Jiang
-                                
-                            </span>
-                        </div>
+                    <div class="card-action article-tags">
+                        
+                        <a href="/tags/分布式系统/">
+                            <span class="chip bg-color">分布式系统</span>
+                        </a>
+                        
                     </div>
-
-                    
-                </div>
-            </div>
-            
-            <div class="article col s12 m6 l4" data-aos="zoom-in">
-                <div class="card">
-                    <a href="/2020/02/13/fen-bu-shi-xi-tong-paxos-suan-fa/">
-                        <div class="card-image">
-                            
-                            
-                            <img src="/medias/featureimages/10.jpg" class="responsive-img" alt="分布式系统-paxos算法">
-                            
-                            <span class="card-title">分布式系统-paxos算法</span>
-                        </div>
-                    </a>
-
-                    <div class="card-content article-content">
-                        <div class="summary block-with-text">
-                            
-                                
-                            
-                        </div>
-                        <div class="publish-info">
-                            <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2020-02-13
-                            </span>
-                            <span class="publish-author">
-                                
-                                <i class="fas fa-user fa-fw"></i>
-                                Xudong Jiang
-                                
-                            </span>
-                        </div>
-                    </div>
-
                     
                 </div>
             </div>
@@ -860,7 +727,10 @@ es 集群升级（DBA操作）
                     <div class="card-content article-content">
                         <div class="summary block-with-text">
                             
-                                
+                                本文介绍关于分布式系统的一些理论，后续还会涉及到
+CAP理论
+一致性（C）：在分布式系统中的所有数据备份，在同一时刻是否有同样的值。（等同于所有节点访问同一份最新的数据副本
+可用性（A）：在集群中一部分节点故障后，集群整体是否还能响应客户端
                             
                         </div>
                         <div class="publish-info">
@@ -869,13 +739,25 @@ es 集群升级（DBA操作）
                             </span>
                             <span class="publish-author">
                                 
-                                <i class="fas fa-user fa-fw"></i>
-                                Xudong Jiang
+                                <i class="fas fa-bookmark fa-fw icon-category"></i>
+                                
+                                <a href="/categories/分布式系统/" class="post-category">
+                                    分布式系统
+                                </a>
+                                
                                 
                             </span>
                         </div>
                     </div>
 
+                    
+                    <div class="card-action article-tags">
+                        
+                        <a href="/tags/分布式系统/">
+                            <span class="chip bg-color">分布式系统</span>
+                        </a>
+                        
+                    </div>
                     
                 </div>
             </div>
@@ -895,7 +777,9 @@ es 集群升级（DBA操作）
                     <div class="card-content article-content">
                         <div class="summary block-with-text">
                             
-                                
+                                进程与线程
+进程是具有一定独立功能的程序关于某个数据集合上的一次运行活动，进程是系统进行资源分配和调度的一个独立单位。线程是进程的一个实体，是CPU调度和分派的基本单位，它是比进程更小的能独立运行的基本单位。
+线程自己基本上不拥有系统资源，
                             
                         </div>
                         <div class="publish-info">
@@ -904,13 +788,25 @@ es 集群升级（DBA操作）
                             </span>
                             <span class="publish-author">
                                 
-                                <i class="fas fa-user fa-fw"></i>
-                                Xudong Jiang
+                                <i class="fas fa-bookmark fa-fw icon-category"></i>
+                                
+                                <a href="/categories/分布式系统/" class="post-category">
+                                    分布式系统
+                                </a>
+                                
                                 
                             </span>
                         </div>
                     </div>
 
+                    
+                    <div class="card-action article-tags">
+                        
+                        <a href="/tags/分布式系统/">
+                            <span class="chip bg-color">分布式系统</span>
+                        </a>
+                        
+                    </div>
                     
                 </div>
             </div>
@@ -930,7 +826,10 @@ es 集群升级（DBA操作）
                     <div class="card-content article-content">
                         <div class="summary block-with-text">
                             
-                                
+                                今天介绍下缓存算法
+FIFO算法
+进先出（FIFO，队列），是最简单、最公平的一种思想，即如果一个数据是最先进入的，那么可以认为在将来它被访问的可能性很小。空间满的时候，最先进入的数据会被最早置换（淘汰）掉
+实现：维护一个FIFO队列，按照
                             
                         </div>
                         <div class="publish-info">
@@ -939,13 +838,25 @@ es 集群升级（DBA操作）
                             </span>
                             <span class="publish-author">
                                 
-                                <i class="fas fa-user fa-fw"></i>
-                                Xudong Jiang
+                                <i class="fas fa-bookmark fa-fw icon-category"></i>
+                                
+                                <a href="/categories/redis/" class="post-category">
+                                    redis
+                                </a>
+                                
                                 
                             </span>
                         </div>
                     </div>
 
+                    
+                    <div class="card-action article-tags">
+                        
+                        <a href="/tags/redis/">
+                            <span class="chip bg-color">redis</span>
+                        </a>
+                        
+                    </div>
                     
                 </div>
             </div>
@@ -965,7 +876,11 @@ es 集群升级（DBA操作）
                     <div class="card-content article-content">
                         <div class="summary block-with-text">
                             
-                                
+                                今天介绍下redis的复制功能
+复制配置
+参与复制的Redis实例划分为主节点(master)和从节点(slave)
+复制的数据流是单向的，只能由主节点复制到从节 点。配置复制的方式有以下三种
+在配置文件中加入slaveof{masterH
                             
                         </div>
                         <div class="publish-info">
@@ -974,13 +889,25 @@ es 集群升级（DBA操作）
                             </span>
                             <span class="publish-author">
                                 
-                                <i class="fas fa-user fa-fw"></i>
-                                Xudong Jiang
+                                <i class="fas fa-bookmark fa-fw icon-category"></i>
+                                
+                                <a href="/categories/redis/" class="post-category">
+                                    redis
+                                </a>
+                                
                                 
                             </span>
                         </div>
                     </div>
 
+                    
+                    <div class="card-action article-tags">
+                        
+                        <a href="/tags/redis/">
+                            <span class="chip bg-color">redis</span>
+                        </a>
+                        
+                    </div>
                     
                 </div>
             </div>
@@ -1009,6 +936,217 @@ elasticsearch接收form（开始返回的结果位置，从0开始）和size（�
                         <div class="publish-info">
                             <span class="publish-date">
                                 <i class="far fa-clock fa-fw icon-date"></i>2020-02-11
+                            </span>
+                            <span class="publish-author">
+                                
+                                <i class="fas fa-bookmark fa-fw icon-category"></i>
+                                
+                                <a href="/categories/elasticsearch/" class="post-category">
+                                    elasticsearch
+                                </a>
+                                
+                                
+                            </span>
+                        </div>
+                    </div>
+
+                    
+                    <div class="card-action article-tags">
+                        
+                        <a href="/tags/elasticsearch/">
+                            <span class="chip bg-color">elasticsearch</span>
+                        </a>
+                        
+                    </div>
+                    
+                </div>
+            </div>
+            
+            <div class="article col s12 m6 l4" data-aos="zoom-in">
+                <div class="card">
+                    <a href="/2020/01/19/qmq-xiao-xi-dui-lie-gao-ke-yong/">
+                        <div class="card-image">
+                            
+                            
+                            <img src="/medias/featureimages/0.jpg" class="responsive-img" alt="qmq消息队列-高可用">
+                            
+                            <span class="card-title">qmq消息队列-高可用</span>
+                        </div>
+                    </a>
+
+                    <div class="card-content article-content">
+                        <div class="summary block-with-text">
+                            
+                                今天分享下qmq高可用的特性
+高可用说明qmq高可用主要从两个角度提供：
+
+分片：qmq不是基于partition，可以很容易通过添加更多的记起提高一个subject的可用性，消息按照一定的负载均衡策略分布在不同的机器上，某台机器离线后pr
+                            
+                        </div>
+                        <div class="publish-info">
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2020-01-19
+                            </span>
+                            <span class="publish-author">
+                                
+                                <i class="fas fa-bookmark fa-fw icon-category"></i>
+                                
+                                <a href="/categories/qmq/" class="post-category">
+                                    qmq
+                                </a>
+                                
+                                
+                            </span>
+                        </div>
+                    </div>
+
+                    
+                    <div class="card-action article-tags">
+                        
+                        <a href="/tags/qmq/">
+                            <span class="chip bg-color">qmq</span>
+                        </a>
+                        
+                        <a href="/tags/消息队列/">
+                            <span class="chip bg-color">消息队列</span>
+                        </a>
+                        
+                    </div>
+                    
+                </div>
+            </div>
+            
+            <div class="article col s12 m6 l4" data-aos="zoom-in">
+                <div class="card">
+                    <a href="/2020/01/19/qmq-xiao-xi-dui-lie-jia-gou-xue-xi/">
+                        <div class="card-image">
+                            
+                            
+                            <img src="/medias/featureimages/23.jpg" class="responsive-img" alt="qmq消息队列-架构学习">
+                            
+                            <span class="card-title">qmq消息队列-架构学习</span>
+                        </div>
+                    </a>
+
+                    <div class="card-content article-content">
+                        <div class="summary block-with-text">
+                            
+                                今天分享下qmq的架构
+组件介绍
+meta server: 提供集群管理和集群发现的作用
+server: 提供实时消息服务
+delay server: 提供延时/定时消息服务，延时消息先在delay server排队，时间到之后再发送给se
+                            
+                        </div>
+                        <div class="publish-info">
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2020-01-19
+                            </span>
+                            <span class="publish-author">
+                                
+                                <i class="fas fa-bookmark fa-fw icon-category"></i>
+                                
+                                <a href="/categories/qmq/" class="post-category">
+                                    qmq
+                                </a>
+                                
+                                
+                            </span>
+                        </div>
+                    </div>
+
+                    
+                    <div class="card-action article-tags">
+                        
+                        <a href="/tags/qmq/">
+                            <span class="chip bg-color">qmq</span>
+                        </a>
+                        
+                        <a href="/tags/消息队列/">
+                            <span class="chip bg-color">消息队列</span>
+                        </a>
+                        
+                    </div>
+                    
+                </div>
+            </div>
+            
+            <div class="article col s12 m6 l4" data-aos="zoom-in">
+                <div class="card">
+                    <a href="/2020/01/15/mysql-innodb-cun-chu-yin-qing-zhong-de-suo/">
+                        <div class="card-image">
+                            
+                            
+                            <img src="/medias/featureimages/22.jpg" class="responsive-img" alt="mysql-innodb存储引擎中的锁">
+                            
+                            <span class="card-title">mysql-innodb存储引擎中的锁</span>
+                        </div>
+                    </a>
+
+                    <div class="card-content article-content">
+                        <div class="summary block-with-text">
+                            
+                                今天介绍下mysql innodb中的锁
+锁类型介绍（行级锁）
+共享锁（S）：允许事务读一行数据
+排他锁（X）：允许事务删除或更新一行数据
+如果一个事务T1已经获得了行r的共享锁，那么另外的事务T2可以立即获得行r的共享锁，因为读取并没有改
+                            
+                        </div>
+                        <div class="publish-info">
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2020-01-15
+                            </span>
+                            <span class="publish-author">
+                                
+                                <i class="fas fa-bookmark fa-fw icon-category"></i>
+                                
+                                <a href="/categories/mysql/" class="post-category">
+                                    mysql
+                                </a>
+                                
+                                
+                            </span>
+                        </div>
+                    </div>
+
+                    
+                    <div class="card-action article-tags">
+                        
+                        <a href="/tags/mysql/">
+                            <span class="chip bg-color">mysql</span>
+                        </a>
+                        
+                    </div>
+                    
+                </div>
+            </div>
+            
+            <div class="article col s12 m6 l4" data-aos="zoom-in">
+                <div class="card">
+                    <a href="/2020/01/15/elasticsearch-xue-xi-xi-lie-sou-suo-qian-chang/">
+                        <div class="card-image">
+                            
+                            
+                            <img src="/medias/featureimages/8.jpg" class="responsive-img" alt="elasticsearch学习系列-搜索浅尝">
+                            
+                            <span class="card-title">elasticsearch学习系列-搜索浅尝</span>
+                        </div>
+                    </a>
+
+                    <div class="card-content article-content">
+                        <div class="summary block-with-text">
+                            
+                                本文简单介绍ES搜索的一些简单尝试
+检索文档GET /_index/_type/_id
+根据库、类型、id搜索数据
+简单搜索GET /_index/_type/_search
+搜索索引_index内类型_type内的所有数据，默认返回10条
+                            
+                        </div>
+                        <div class="publish-info">
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2020-01-15
                             </span>
                             <span class="publish-author">
                                 
