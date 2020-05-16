@@ -424,37 +424,36 @@
             
             <div class="article col s12 m6 l4" data-aos="zoom-in">
                 <div class="card">
-                    <a href="/2020/01/11/ji-yi-ci-shang-xian-hou-fu-wu-qi-cpu-biao-sheng-yi-chang-wen-ti/">
+                    <a href="/2019/10/13/fen-bu-shi-xi-tong-zhong-de-yi-xie-she-ji-ce-lue/">
                         <div class="card-image">
                             
                             
-                            <img src="/medias/featureimages/18.jpg" class="responsive-img" alt="记一次上线后服务器cpu飙升异常问题">
+                            <img src="/medias/featureimages/10.jpg" class="responsive-img" alt="分布式系统中的一些设计策略">
                             
-                            <span class="card-title">记一次上线后服务器cpu飙升异常问题</span>
+                            <span class="card-title">分布式系统中的一些设计策略</span>
                         </div>
                     </a>
 
                     <div class="card-content article-content">
                         <div class="summary block-with-text">
                             
-                                今天记录分享一次服务上线后cpu飙升问题
-问题经过和分析
-项目的场景是接收各个系统的消息进行处理，
-项目消费上线前，一些发消息的业务逻辑先上线，消息在消息队列内大量挤压
-服务上线，没有对消息队列内消息reset处理，大量消息涌入
-服务内部并
+                                今天介绍分布式系统下的一些通用的设计策略
+心跳检测
+多个节点分担任务的运行、计算或者程序逻辑处理，需要检测一个节点出现了故障乃至无法工作
+可使用周期检测心跳机制、累计失效检测机制
+周期检测心跳机制：Server端每间隔t秒向Node集群发起
                             
                         </div>
                         <div class="publish-info">
                             <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2020-01-11
+                                <i class="far fa-clock fa-fw icon-date"></i>2019-10-13
                             </span>
                             <span class="publish-author">
                                 
                                 <i class="fas fa-bookmark fa-fw icon-category"></i>
                                 
-                                <a href="/categories/java/" class="post-category">
-                                    java
+                                <a href="/categories/分布式系统/" class="post-category">
+                                    分布式系统
                                 </a>
                                 
                                 
@@ -465,12 +464,8 @@
                     
                     <div class="card-action article-tags">
                         
-                        <a href="/tags/问题记录/">
-                            <span class="chip bg-color">问题记录</span>
-                        </a>
-                        
-                        <a href="/tags/java/">
-                            <span class="chip bg-color">java</span>
+                        <a href="/tags/分布式系统/">
+                            <span class="chip bg-color">分布式系统</span>
                         </a>
                         
                     </div>
@@ -480,36 +475,36 @@
             
             <div class="article col s12 m6 l4" data-aos="zoom-in">
                 <div class="card">
-                    <a href="/2019/12/16/java-rong-qi-dui-he-you-xian-dui-lie/">
+                    <a href="/2019/08/15/mysql-innodb-cun-chu-yin-qing-zhong-de-suo/">
                         <div class="card-image">
                             
                             
-                            <img src="/medias/featureimages/10.jpg" class="responsive-img" alt="java容器-堆和优先队列">
+                            <img src="/medias/featureimages/22.jpg" class="responsive-img" alt="mysql-innodb存储引擎中的锁">
                             
-                            <span class="card-title">java容器-堆和优先队列</span>
+                            <span class="card-title">mysql-innodb存储引擎中的锁</span>
                         </div>
                     </a>
 
                     <div class="card-content article-content">
                         <div class="summary block-with-text">
                             
-                                今天介绍一些java内的容器-堆和优先队列，有些容器会在后续案例中更详细介绍
-堆
-是完全二叉树，给定任意一个节点，可以根据其编号直接快速计算出其父节点和孩子节点编号
-根据顺序分为两种堆：一种是最大堆，另一种是最小堆
-可以实现优先级队列，解决
+                                今天介绍下mysql innodb中的锁
+锁类型介绍（行级锁）
+共享锁（S）：允许事务读一行数据
+排他锁（X）：允许事务删除或更新一行数据
+如果一个事务T1已经获得了行r的共享锁，那么另外的事务T2可以立即获得行r的共享锁，因为读取并没有改
                             
                         </div>
                         <div class="publish-info">
                             <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2019-12-16
+                                <i class="far fa-clock fa-fw icon-date"></i>2019-08-15
                             </span>
                             <span class="publish-author">
                                 
                                 <i class="fas fa-bookmark fa-fw icon-category"></i>
                                 
-                                <a href="/categories/java/" class="post-category">
-                                    java
+                                <a href="/categories/mysql/" class="post-category">
+                                    mysql
                                 </a>
                                 
                                 
@@ -520,8 +515,8 @@
                     
                     <div class="card-action article-tags">
                         
-                        <a href="/tags/java/">
-                            <span class="chip bg-color">java</span>
+                        <a href="/tags/mysql/">
+                            <span class="chip bg-color">mysql</span>
                         </a>
                         
                     </div>
@@ -531,36 +526,36 @@
             
             <div class="article col s12 m6 l4" data-aos="zoom-in">
                 <div class="card">
-                    <a href="/2019/12/08/java-bing-fa-zhuan-ti-xian-cheng-chi-xiang-jie/">
+                    <a href="/2019/07/19/qmq-xiao-xi-dui-lie-jia-gou-xue-xi/">
                         <div class="card-image">
                             
                             
-                            <img src="/medias/featureimages/13.jpg" class="responsive-img" alt="java并发专题-线程池介绍">
+                            <img src="/medias/featureimages/23.jpg" class="responsive-img" alt="qmq消息队列-架构学习">
                             
-                            <span class="card-title">java并发专题-线程池介绍</span>
+                            <span class="card-title">qmq消息队列-架构学习</span>
                         </div>
                     </a>
 
                     <div class="card-content article-content">
                         <div class="summary block-with-text">
                             
-                                今天介绍下java中的线程池应用，主要介绍java中的Excutor框架
-线程池的好处
-提高响应速度，处理任务时无需等待线程创建；
-提高线程管理性，对线程池内线程统一分配、调度、管理；
-降低资源消耗，通过重复利用已创建的线程降低线程创建和销
+                                今天分享下qmq的架构
+组件介绍
+meta server: 提供集群管理和集群发现的作用
+server: 提供实时消息服务
+delay server: 提供延时/定时消息服务，延时消息先在delay server排队，时间到之后再发送给se
                             
                         </div>
                         <div class="publish-info">
                             <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2019-12-08
+                                <i class="far fa-clock fa-fw icon-date"></i>2019-07-19
                             </span>
                             <span class="publish-author">
                                 
                                 <i class="fas fa-bookmark fa-fw icon-category"></i>
                                 
-                                <a href="/categories/java/" class="post-category">
-                                    java
+                                <a href="/categories/qmq/" class="post-category">
+                                    qmq
                                 </a>
                                 
                                 
@@ -571,63 +566,12 @@
                     
                     <div class="card-action article-tags">
                         
-                        <a href="/tags/java/">
-                            <span class="chip bg-color">java</span>
+                        <a href="/tags/qmq/">
+                            <span class="chip bg-color">qmq</span>
                         </a>
                         
-                        <a href="/tags/并发/">
-                            <span class="chip bg-color">并发</span>
-                        </a>
-                        
-                    </div>
-                    
-                </div>
-            </div>
-            
-            <div class="article col s12 m6 l4" data-aos="zoom-in">
-                <div class="card">
-                    <a href="/2019/11/15/java-rong-qi-map-he-set/">
-                        <div class="card-image">
-                            
-                            
-                            <img src="/medias/featureimages/10.jpg" class="responsive-img" alt="java容器-Map和Set">
-                            
-                            <span class="card-title">java容器-Map和Set</span>
-                        </div>
-                    </a>
-
-                    <div class="card-content article-content">
-                        <div class="summary block-with-text">
-                            
-                                今天介绍一些java内的容器-Map和Set，有些容器会在后续案例中更详细介绍
-Map
-HashMap
-实现map接口， key value键值对
-内部实例变量size表示实际键值对的个数。table是一个Entry类型的数组，称为哈希表或
-                            
-                        </div>
-                        <div class="publish-info">
-                            <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2019-11-15
-                            </span>
-                            <span class="publish-author">
-                                
-                                <i class="fas fa-bookmark fa-fw icon-category"></i>
-                                
-                                <a href="/categories/java/" class="post-category">
-                                    java
-                                </a>
-                                
-                                
-                            </span>
-                        </div>
-                    </div>
-
-                    
-                    <div class="card-action article-tags">
-                        
-                        <a href="/tags/java/">
-                            <span class="chip bg-color">java</span>
+                        <a href="/tags/消息队列/">
+                            <span class="chip bg-color">消息队列</span>
                         </a>
                         
                     </div>
@@ -637,132 +581,28 @@ HashMap
             
             <div class="article col s12 m6 l4" data-aos="zoom-in">
                 <div class="card">
-                    <a href="/2019/11/02/elasticsearch-sheng-ji-transportclient-zhuan-highlevelrestclient/">
+                    <a href="/2019/07/12/huan-cun-ce-lue-huan-cun-suan-fa-jie-shao/">
                         <div class="card-image">
                             
                             
-                            <img src="/medias/featureimages/17.jpg" class="responsive-img" alt="elasticsearch升级-transportClient转HighLevelRestClient">
+                            <img src="/medias/featureimages/10.jpg" class="responsive-img" alt="缓存策略-缓存算法介绍">
                             
-                            <span class="card-title">elasticsearch升级-transportClient转HighLevelRestClient</span>
+                            <span class="card-title">缓存策略-缓存算法介绍</span>
                         </div>
                     </a>
 
                     <div class="card-content article-content">
                         <div class="summary block-with-text">
                             
-                                今天分享下项目中进行elasticsearch升级，同时伴随着transport Client转换位High Level Rest Client.
-升级迁移步骤
-es 集群升级（DBA操作）
-数据全量迁移
-使用High Level Rest
+                                今天介绍下缓存算法
+FIFO算法
+进先出（FIFO，队列），是最简单、最公平的一种思想，即如果一个数据是最先进入的，那么可以认为在将来它被访问的可能性很小。空间满的时候，最先进入的数据会被最早置换（淘汰）掉
+实现：维护一个FIFO队列，按照
                             
                         </div>
                         <div class="publish-info">
                             <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2019-11-02
-                            </span>
-                            <span class="publish-author">
-                                
-                                <i class="fas fa-bookmark fa-fw icon-category"></i>
-                                
-                                <a href="/categories/elasticsearch/" class="post-category">
-                                    elasticsearch
-                                </a>
-                                
-                                
-                            </span>
-                        </div>
-                    </div>
-
-                    
-                    <div class="card-action article-tags">
-                        
-                        <a href="/tags/elasticsearch/">
-                            <span class="chip bg-color">elasticsearch</span>
-                        </a>
-                        
-                    </div>
-                    
-                </div>
-            </div>
-            
-            <div class="article col s12 m6 l4" data-aos="zoom-in">
-                <div class="card">
-                    <a href="/2019/07/05/java-rong-qi-lie-biao-he-dui-lie/">
-                        <div class="card-image">
-                            
-                            
-                            <img src="/medias/featureimages/15.jpg" class="responsive-img" alt="java容器-列表和队列">
-                            
-                            <span class="card-title">java容器-列表和队列</span>
-                        </div>
-                    </a>
-
-                    <div class="card-content article-content">
-                        <div class="summary block-with-text">
-                            
-                                今天介绍一些java内的容器-列表和队列，有些容器会在后续案例中更详细介绍
-列表和队列
-ArrayList
-实现了Iterable接口，可迭代，
-内部有一个数组elementData，一般有些预留空间，有整数size记录实际元素个数；
-添加
-                            
-                        </div>
-                        <div class="publish-info">
-                            <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2019-07-05
-                            </span>
-                            <span class="publish-author">
-                                
-                                <i class="fas fa-bookmark fa-fw icon-category"></i>
-                                
-                                <a href="/categories/java/" class="post-category">
-                                    java
-                                </a>
-                                
-                                
-                            </span>
-                        </div>
-                    </div>
-
-                    
-                    <div class="card-action article-tags">
-                        
-                        <a href="/tags/java/">
-                            <span class="chip bg-color">java</span>
-                        </a>
-                        
-                    </div>
-                    
-                </div>
-            </div>
-            
-            <div class="article col s12 m6 l4" data-aos="zoom-in">
-                <div class="card">
-                    <a href="/2019/05/31/huan-cun-shu-ju-yi-zhi-xing-shua-xin-fang-an/">
-                        <div class="card-image">
-                            
-                            
-                            <img src="/medias/featureimages/0.jpg" class="responsive-img" alt="缓存数据一致性刷新方案">
-                            
-                            <span class="card-title">缓存数据一致性刷新方案</span>
-                        </div>
-                    </a>
-
-                    <div class="card-content article-content">
-                        <div class="summary block-with-text">
-                            
-                                这里分享一下缓存和数据库数据一致性刷新的一些方案和实践。主要从一下4个方面进行介绍和分享。
-数据一致性介绍
-随着业务发展，数据需要添加副本以提高可行性；
-为减少db访问压力，需要进行读写分离；
-为提高接口响应时间，一般会将访问数据进行缓存；
-                            
-                        </div>
-                        <div class="publish-info">
-                            <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2019-05-31
+                                <i class="far fa-clock fa-fw icon-date"></i>2019-07-12
                             </span>
                             <span class="publish-author">
                                 
@@ -791,34 +631,39 @@ ArrayList
             
             <div class="article col s12 m6 l4" data-aos="zoom-in">
                 <div class="card">
-                    <a href="/2019/05/29/elasticsearch-xue-xi-xi-lie-ru-men-jie-shao/">
+                    <a href="/2019/07/07/mysql-shu-ju-ku-ge-chi-ji-bie/">
                         <div class="card-image">
                             
                             
-                            <img src="/medias/featureimages/17.jpg" class="responsive-img" alt="Elasticsearch学习系列-入门介绍">
+                            <img src="/medias/featureimages/11.jpg" class="responsive-img" alt="mysql-数据库隔离级别">
                             
-                            <span class="card-title">Elasticsearch学习系列-入门介绍</span>
+                            <span class="card-title">mysql-数据库隔离级别</span>
                         </div>
                     </a>
 
                     <div class="card-content article-content">
                         <div class="summary block-with-text">
                             
-                                elasticsearch是功能强大的基于Lucene实现的开源搜索引擎。本文主要从以下个方面对其进行入门介绍。推荐文档
-使用场景和优势
-当我们的数据量非常大的时候，我们会考虑进行分库分表，但是分库分表需要考虑依赖拆分的字段，在某些场景下会
+                                介绍下数据库隔离级别以及各隔离下的问题，以及mysql的默认隔离级别
+隔离级别
+Serializable：串行化
+强制事务排序，串行化读写，避免冲突
+
+
+Repeatable read：可重复读
+同一事务的多个实例在并发读取事务时，会“看到
                             
                         </div>
                         <div class="publish-info">
                             <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2019-05-29
+                                <i class="far fa-clock fa-fw icon-date"></i>2019-07-07
                             </span>
                             <span class="publish-author">
                                 
                                 <i class="fas fa-bookmark fa-fw icon-category"></i>
                                 
-                                <a href="/categories/elasticsearch/" class="post-category">
-                                    elasticsearch
+                                <a href="/categories/mysql/" class="post-category">
+                                    mysql
                                 </a>
                                 
                                 
@@ -829,8 +674,8 @@ ArrayList
                     
                     <div class="card-action article-tags">
                         
-                        <a href="/tags/elasticsearch/">
-                            <span class="chip bg-color">elasticsearch</span>
+                        <a href="/tags/mysql/">
+                            <span class="chip bg-color">mysql</span>
                         </a>
                         
                     </div>
@@ -840,7 +685,61 @@ ArrayList
             
             <div class="article col s12 m6 l4" data-aos="zoom-in">
                 <div class="card">
-                    <a href="/2019/02/18/elasticsearch-xue-xi-xi-lie-le-guan-bing-fa-kong-zhi/">
+                    <a href="/2019/06/19/qmq-xiao-xi-dui-lie-gao-ke-yong/">
+                        <div class="card-image">
+                            
+                            
+                            <img src="/medias/featureimages/0.jpg" class="responsive-img" alt="qmq消息队列-高可用">
+                            
+                            <span class="card-title">qmq消息队列-高可用</span>
+                        </div>
+                    </a>
+
+                    <div class="card-content article-content">
+                        <div class="summary block-with-text">
+                            
+                                今天分享下qmq高可用的特性
+高可用说明qmq高可用主要从两个角度提供：
+
+分片：qmq不是基于partition，可以很容易通过添加更多的记起提高一个subject的可用性，消息按照一定的负载均衡策略分布在不同的机器上，某台机器离线后pr
+                            
+                        </div>
+                        <div class="publish-info">
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2019-06-19
+                            </span>
+                            <span class="publish-author">
+                                
+                                <i class="fas fa-bookmark fa-fw icon-category"></i>
+                                
+                                <a href="/categories/qmq/" class="post-category">
+                                    qmq
+                                </a>
+                                
+                                
+                            </span>
+                        </div>
+                    </div>
+
+                    
+                    <div class="card-action article-tags">
+                        
+                        <a href="/tags/qmq/">
+                            <span class="chip bg-color">qmq</span>
+                        </a>
+                        
+                        <a href="/tags/消息队列/">
+                            <span class="chip bg-color">消息队列</span>
+                        </a>
+                        
+                    </div>
+                    
+                </div>
+            </div>
+            
+            <div class="article col s12 m6 l4" data-aos="zoom-in">
+                <div class="card">
+                    <a href="/2019/06/18/elasticsearch-xue-xi-xi-lie-le-guan-bing-fa-kong-zhi/">
                         <div class="card-image">
                             
                             
@@ -862,7 +761,7 @@ ArrayList
                         </div>
                         <div class="publish-info">
                             <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2019-02-18
+                                <i class="far fa-clock fa-fw icon-date"></i>2019-06-18
                             </span>
                             <span class="publish-author">
                                 
@@ -891,32 +790,35 @@ ArrayList
             
             <div class="article col s12 m6 l4" data-aos="zoom-in">
                 <div class="card">
-                    <a href="/2019/02/08/ji-yi-ci-xian-shang-wen-ti-java-nei-cun-yi-chu/">
+                    <a href="/2019/06/13/fen-bu-shi-xi-tong-li-lun-jie-shao/">
                         <div class="card-image">
                             
                             
-                            <img src="/medias/featureimages/20.jpg" class="responsive-img" alt="记一次线上问题-java内存溢出">
+                            <img src="/medias/featureimages/12.jpg" class="responsive-img" alt="分布式系统理论介绍">
                             
-                            <span class="card-title">记一次线上问题-java内存溢出</span>
+                            <span class="card-title">分布式系统理论介绍</span>
                         </div>
                     </a>
 
                     <div class="card-content article-content">
                         <div class="summary block-with-text">
                             
-                                这里分享一个线上问题案例及解决过程。小k来到新公司不久，一天早上，小K收到一封报警邮件，提示某项目出现较多异常。小k点击邮件查看详情，发现提示out of menery错误。此时同事们还没来，小k暗自吐槽：“怎么都没来，这个项目代码自己也还
+                                本文介绍关于分布式系统的一些理论，后续还会涉及到
+CAP理论
+一致性（C）：在分布式系统中的所有数据备份，在同一时刻是否有同样的值。（等同于所有节点访问同一份最新的数据副本
+可用性（A）：在集群中一部分节点故障后，集群整体是否还能响应客户端
                             
                         </div>
                         <div class="publish-info">
                             <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2019-02-08
+                                <i class="far fa-clock fa-fw icon-date"></i>2019-06-13
                             </span>
                             <span class="publish-author">
                                 
                                 <i class="fas fa-bookmark fa-fw icon-category"></i>
                                 
-                                <a href="/categories/java/" class="post-category">
-                                    java
+                                <a href="/categories/分布式系统/" class="post-category">
+                                    分布式系统
                                 </a>
                                 
                                 
@@ -927,12 +829,8 @@ ArrayList
                     
                     <div class="card-action article-tags">
                         
-                        <a href="/tags/问题记录/">
-                            <span class="chip bg-color">问题记录</span>
-                        </a>
-                        
-                        <a href="/tags/java/">
-                            <span class="chip bg-color">java</span>
+                        <a href="/tags/分布式系统/">
+                            <span class="chip bg-color">分布式系统</span>
                         </a>
                         
                     </div>
@@ -942,33 +840,34 @@ ArrayList
             
             <div class="article col s12 m6 l4" data-aos="zoom-in">
                 <div class="card">
-                    <a href="/2019/01/22/xiang-dui-lun-zhong-de-shi-kong/">
+                    <a href="/2019/03/29/elasticsearch-xue-xi-xi-lie-ru-men-jie-shao/">
                         <div class="card-image">
                             
                             
-                            <img src="/medias/featureimages/4.jpg" class="responsive-img" alt="相对论中的时空">
+                            <img src="/medias/featureimages/17.jpg" class="responsive-img" alt="Elasticsearch学习系列-入门介绍">
                             
-                            <span class="card-title">相对论中的时空</span>
+                            <span class="card-title">Elasticsearch学习系列-入门介绍</span>
                         </div>
                     </a>
 
                     <div class="card-content article-content">
                         <div class="summary block-with-text">
                             
-                                  相信很多人跟我一样，很早就接触过时空这个词，但是却从没有深究过它。  本文将基于自己最近的阅读简单和大家聊一聊时空这个概念，希望能激发大家对此类科学的兴趣，也希望有高人对此能指点一二。  在讲它之前，我想简单先聊几个概念。  
-狭义相对
+                                elasticsearch是功能强大的基于Lucene实现的开源搜索引擎。本文主要从以下个方面对其进行入门介绍。推荐文档
+使用场景和优势
+当我们的数据量非常大的时候，我们会考虑进行分库分表，但是分库分表需要考虑依赖拆分的字段，在某些场景下会
                             
                         </div>
                         <div class="publish-info">
                             <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2019-01-22
+                                <i class="far fa-clock fa-fw icon-date"></i>2019-03-29
                             </span>
                             <span class="publish-author">
                                 
                                 <i class="fas fa-bookmark fa-fw icon-category"></i>
                                 
-                                <a href="/categories/科学科幻/" class="post-category">
-                                    科学科幻
+                                <a href="/categories/elasticsearch/" class="post-category">
+                                    elasticsearch
                                 </a>
                                 
                                 
@@ -979,8 +878,8 @@ ArrayList
                     
                     <div class="card-action article-tags">
                         
-                        <a href="/tags/科学科幻/">
-                            <span class="chip bg-color">科学科幻</span>
+                        <a href="/tags/elasticsearch/">
+                            <span class="chip bg-color">elasticsearch</span>
                         </a>
                         
                     </div>
@@ -990,35 +889,158 @@ ArrayList
             
             <div class="article col s12 m6 l4" data-aos="zoom-in">
                 <div class="card">
-                    <a href="/2018/12/28/wo-de-bo-ke-shuo-ming/">
+                    <a href="/2019/02/15/elasticsearch-xue-xi-xi-lie-sou-suo-qian-chang/">
                         <div class="card-image">
                             
-                            <img src="/images/1.jpg" class="responsive-img" alt="我的博客说明">
                             
-                            <span class="card-title">我的博客说明</span>
+                            <img src="/medias/featureimages/8.jpg" class="responsive-img" alt="elasticsearch学习系列-搜索浅尝">
+                            
+                            <span class="card-title">elasticsearch学习系列-搜索浅尝</span>
                         </div>
                     </a>
 
                     <div class="card-content article-content">
                         <div class="summary block-with-text">
                             
-                                   做一件事，要学会倾尽全力
-
+                                本文简单介绍ES搜索的一些简单尝试
+检索文档GET /_index/_type/_id
+根据库、类型、id搜索数据
+简单搜索GET /_index/_type/_search
+搜索索引_index内类型_type内的所有数据，默认返回10条
                             
                         </div>
                         <div class="publish-info">
                             <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2018-12-28
+                                <i class="far fa-clock fa-fw icon-date"></i>2019-02-15
                             </span>
                             <span class="publish-author">
                                 
-                                <i class="fas fa-user fa-fw"></i>
-                                xudongj
+                                <i class="fas fa-bookmark fa-fw icon-category"></i>
+                                
+                                <a href="/categories/elasticsearch/" class="post-category">
+                                    elasticsearch
+                                </a>
+                                
                                 
                             </span>
                         </div>
                     </div>
 
+                    
+                    <div class="card-action article-tags">
+                        
+                        <a href="/tags/elasticsearch/">
+                            <span class="chip bg-color">elasticsearch</span>
+                        </a>
+                        
+                    </div>
+                    
+                </div>
+            </div>
+            
+            <div class="article col s12 m6 l4" data-aos="zoom-in">
+                <div class="card">
+                    <a href="/2019/02/13/fen-bu-shi-xi-tong-xia-de-yi-xie-gai-nian-jie-shao/">
+                        <div class="card-image">
+                            
+                            
+                            <img src="/medias/featureimages/7.jpg" class="responsive-img" alt="分布式系统下的一些概念介绍">
+                            
+                            <span class="card-title">分布式系统下的一些概念介绍</span>
+                        </div>
+                    </a>
+
+                    <div class="card-content article-content">
+                        <div class="summary block-with-text">
+                            
+                                进程与线程
+进程是具有一定独立功能的程序关于某个数据集合上的一次运行活动，进程是系统进行资源分配和调度的一个独立单位。线程是进程的一个实体，是CPU调度和分派的基本单位，它是比进程更小的能独立运行的基本单位。
+线程自己基本上不拥有系统资源，
+                            
+                        </div>
+                        <div class="publish-info">
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2019-02-13
+                            </span>
+                            <span class="publish-author">
+                                
+                                <i class="fas fa-bookmark fa-fw icon-category"></i>
+                                
+                                <a href="/categories/分布式系统/" class="post-category">
+                                    分布式系统
+                                </a>
+                                
+                                
+                            </span>
+                        </div>
+                    </div>
+
+                    
+                    <div class="card-action article-tags">
+                        
+                        <a href="/tags/分布式系统/">
+                            <span class="chip bg-color">分布式系统</span>
+                        </a>
+                        
+                    </div>
+                    
+                </div>
+            </div>
+            
+            <div class="article col s12 m6 l4" data-aos="zoom-in">
+                <div class="card">
+                    <a href="/2019/01/30/shu-ju-ku-guan-yu-fen-ku-fen-biao-de-zheng-li/">
+                        <div class="card-image">
+                            
+                            
+                            <img src="/medias/featureimages/17.jpg" class="responsive-img" alt="数据库关于分库分表的整理">
+                            
+                            <span class="card-title">数据库关于分库分表的整理</span>
+                        </div>
+                    </a>
+
+                    <div class="card-content article-content">
+                        <div class="summary block-with-text">
+                            
+                                今天分享一些项目中关于数据库分库分表的经验
+背景
+一般随着业务的增长，出现以下问题都需要考虑分库分表
+单表的字段过多，
+数据量过大，
+db请求压力过大
+
+
+
+操作
+如果表的字段过多，可以考虑垂直分，将表的一些字段拆分出去建立扩展表
+数据量过
+                            
+                        </div>
+                        <div class="publish-info">
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2019-01-30
+                            </span>
+                            <span class="publish-author">
+                                
+                                <i class="fas fa-bookmark fa-fw icon-category"></i>
+                                
+                                <a href="/categories/mysql/" class="post-category">
+                                    mysql
+                                </a>
+                                
+                                
+                            </span>
+                        </div>
+                    </div>
+
+                    
+                    <div class="card-action article-tags">
+                        
+                        <a href="/tags/mysql/">
+                            <span class="chip bg-color">mysql</span>
+                        </a>
+                        
+                    </div>
                     
                 </div>
             </div>

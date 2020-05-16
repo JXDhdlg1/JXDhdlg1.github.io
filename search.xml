@@ -8,7 +8,7 @@
       <link href="/2020/05/13/shang-pin-zhong-tai-xi-tong-de-yi-xie-she-ji-si-kao/"/>
       <url>/2020/05/13/shang-pin-zhong-tai-xi-tong-de-yi-xie-she-ji-si-kao/</url>
       
-        <content type="html"><![CDATA[<p>今天分享实现中台系统中的一些设计思考</p><h3 id="系统目标"><a href="#系统目标" class="headerlink" title="系统目标"></a>系统目标</h3><ul><li>搭建商品中心系统和服务，支持多个业务线产品的统一存储和输出</li><li>数据进去中台系统到可用，延迟不超过5分钟</li><li>满足接收消息qps超过2000</li></ul><h3 id="系统设计"><a href="#系统设计" class="headerlink" title="系统设计"></a>系统设计</h3><ul><li>系统分三个模块，分别负责数据落地，数据搜索和数据详情</li><li>使用 ES 作为搜索引擎，使用 Redis 作为数据缓存系统</li><li><a href="/images/zt_jg.png">系统架构图</a></li></ul><h3 id="遇到的一些问题"><a href="#遇到的一些问题" class="headerlink" title="遇到的一些问题"></a>遇到的一些问题</h3><ul><li>多个业务系统在中台流程不能相互影响</li><li>考虑依赖方的接口性能和承受能力</li><li>控制处理延时</li><li>分表生成中台唯一主键</li><li>变更事件过来时不一定能获取到所需的数据</li></ul><h3 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h3><ul><li>给不同业务线分配不同的消息topic，避免相互影响</li><li>接收处进行限流设置，对应全量等流量尖峰有控制</li><li>依赖接口保证各自的相应，控制自己的请求频率和批量数量</li><li>自实现id生成器（分布式锁+id表）</li><li>接收消息后延迟执行，便于收集到完整数据</li></ul><h3 id="一些心得"><a href="#一些心得" class="headerlink" title="一些心得"></a>一些心得</h3><ul><li>系统设计中需要进行限速，防止突发高峰影响系统整体运转</li><li>系统中对于应用重启、崩溃等都进行考虑，防止数据丢失</li><li>各个地方建立全量机制保持数据一致</li><li>建立数据补偿机制，如下游查不到出发数据获取流程</li></ul>]]></content>
+        <content type="html"><![CDATA[<p>今天分享实现中台系统中的一些设计思考</p><h3 id="系统目标"><a href="#系统目标" class="headerlink" title="系统目标"></a>系统目标</h3><ul><li>搭建商品中心系统和服务，支持多个业务线产品的统一存储和输出</li><li>数据进去中台系统到可用，延迟不超过5分钟</li><li>满足接收消息qps超过2000</li></ul><h3 id="系统设计"><a href="#系统设计" class="headerlink" title="系统设计"></a>系统设计</h3><ul><li>系统分三个模块，分别负责数据落地，数据搜索和数据详情</li><li>使用 ES 作为搜索引擎，使用 Redis 作为数据缓存系统<br><img src="/images/zt_jg.png" alt="系统架构简图"></li></ul><h3 id="遇到的一些问题"><a href="#遇到的一些问题" class="headerlink" title="遇到的一些问题"></a>遇到的一些问题</h3><ul><li>多个业务系统在中台流程不能相互影响</li><li>考虑依赖方的接口性能和承受能力</li><li>控制处理延时</li><li>分表生成中台唯一主键</li><li>变更事件过来时不一定能获取到所需的数据</li></ul><h3 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h3><ul><li>给不同业务线分配不同的消息topic，避免相互影响</li><li>接收处进行限流设置，对应全量等流量尖峰有控制</li><li>依赖接口保证各自的相应，控制自己的请求频率和批量数量</li><li>自实现id生成器（分布式锁+id表）</li><li>接收消息后延迟执行，便于收集到完整数据</li></ul><h3 id="一些心得"><a href="#一些心得" class="headerlink" title="一些心得"></a>一些心得</h3><ul><li>系统设计中需要进行限速，防止突发高峰影响系统整体运转</li><li>系统中对于应用重启、崩溃等都进行考虑，防止数据丢失</li><li>各个地方建立全量机制保持数据一致</li><li>建立数据补偿机制，如下游查不到出发数据获取流程</li></ul>]]></content>
       
       
       <categories>
@@ -54,240 +54,11 @@
     
     
     <entry>
-      <title>分布式系统中的一些设计策略</title>
-      <link href="/2020/02/13/fen-bu-shi-xi-tong-zhong-de-yi-xie-she-ji-ce-lue/"/>
-      <url>/2020/02/13/fen-bu-shi-xi-tong-zhong-de-yi-xie-she-ji-ce-lue/</url>
-      
-        <content type="html"><![CDATA[<p>今天介绍分布式系统下的一些通用的设计策略</p><h3 id="心跳检测"><a href="#心跳检测" class="headerlink" title="心跳检测"></a>心跳检测</h3><ul><li>多个节点分担任务的运行、计算或者程序逻辑处理，需要检测一个节点出现了故障乃至无法工作</li><li>可使用周期检测心跳机制、累计失效检测机制</li><li>周期检测心跳机制：Server端每间隔t秒向Node集群发起监测请求，设定超时时间，如果超过超时时间，则判断“死亡”。这里的超时时间设置带有随意性，容易误判。进一步，可以统计实际检测Node的返回时间，包括得到一定周期内的最长时间。那么可以根据现有没有正确返回的时间在历史统计的分布中计算得到“死亡”概率，同时对于宣告濒临死亡的节点可以发起有限次数的重试，以作进一步判定。心跳检测本身也是有效资源利用和成本之间的一种权衡，如果迟迟不能判断节点是否“死亡”，会影响业务逻辑的处理</li></ul><h3 id="高可用设计"><a href="#高可用设计" class="headerlink" title="高可用设计"></a>高可用设计</h3><ul><li>主备模式：当主机宕机时，备机接管主机的一切工作，待主机恢复正常后，按使用者的设定以自动（热备）或手动（冷备）方式将服务切换到主机上运行</li><li>互备模式：指两台主机同时运行各自的服务工作且相互监测情况。在数据库高可用部分，常见的互备是MM模式。MM模式即Multi-Master模式，指一个系统存在多个master，每个master都具有read-write能力，需根据时间戳或业务逻辑合并版本。比如分布式版本管理系统git可以理解成multi-master模式，具备最终一致性</li><li>集群模式：集群模式是指有多个节点在运行，同时可以通过主控节点分担服务请求，比如zookeeper。集群模式要特别解决主控节点本身的高可用问题</li></ul><h3 id="容错性"><a href="#容错性" class="headerlink" title="容错性"></a>容错性</h3><ul><li>容错的处理是保障分布式环境下相应系统的高可用或者健壮性，如缓存的雪崩问题</li></ul><h3 id="负载均衡"><a href="#负载均衡" class="headerlink" title="负载均衡"></a>负载均衡</h3><ul><li>关键在于使用多台集群服务器共同分担计算任务，把网络请求及计算分配到集群可用服务器上去，从而达到可用性及较好的用户操作体验</li><li>一些策略：<ul><li>轮询：即Round Robin，根据Nginx配置文件中的顺序，依次把客户端的Web请求分发到不同的后端服务器</li><li>最少连接：当前谁连接最少，分发给谁</li><li>IP地址哈希：确定相同IP请求可以转发给同一个后端节点处理，以方便session保持</li><li>基于权重的负载均衡：配置Nginx把请求更多地分发到高配置的后端服务器上，把相对较少的请求分发到低配服务器</li></ul></li></ul>]]></content>
-      
-      
-      <categories>
-          
-          <category> 分布式系统 </category>
-          
-      </categories>
-      
-      
-        <tags>
-            
-            <tag> 分布式系统 </tag>
-            
-        </tags>
-      
-    </entry>
-    
-    
-    
-    <entry>
-      <title>分布式系统理论介绍</title>
-      <link href="/2020/02/13/fen-bu-shi-xi-tong-li-lun-jie-shao/"/>
-      <url>/2020/02/13/fen-bu-shi-xi-tong-li-lun-jie-shao/</url>
-      
-        <content type="html"><![CDATA[<p>本文介绍关于分布式系统的一些理论，后续还会涉及到</p><h3 id="CAP理论"><a href="#CAP理论" class="headerlink" title="CAP理论"></a>CAP理论</h3><ul><li>一致性（C）：在分布式系统中的所有数据备份，在同一时刻是否有同样的值。（等同于所有节点访问同一份最新的数据副本</li><li>可用性（A）：在集群中一部分节点故障后，集群整体是否还能响应客户端的读写请求。（对数据更新具备高可用性）</li><li>分区容忍性（P）：以实际效果而言，分区相当于对通信的时限要求。系统如果不能在一定时限内达成数据一致性，就意味着发生了分区的情况，必须就当前操作在C和A之间做出选择</li><li>三者很难同时满足，一般根据系统处理业务场景在某一点上进行折中</li></ul><h3 id="BASE理论"><a href="#BASE理论" class="headerlink" title="BASE理论"></a>BASE理论</h3><ul><li>Basically Available, Soft state, Eventually consistent（基本可用、软状态、最终一致性）</li></ul><h3 id="Paxos"><a href="#Paxos" class="headerlink" title="Paxos"></a>Paxos</h3><ul><li>是一个解决分布式系统中，多个节点之间就某个值（提案）达成一致（决议）的通信协议</li><li>两阶段协议，分为Prepare阶段和Accept阶段<ul><li>Prepare阶段<ul><li>Proposer生成全局唯一且递增的提案ID（生成方法很多，比如时间戳+IP+序列号等），向Paxos集群的所有机器发送请求，这里无须携带提案内容，只携带提案ID即可（且把提案id叫作Pn，也有一种说法ID其实代表版本version）</li><li>Acceptor收到提案请求后，做出以下约定：1）不再应答&lt;=Pn的Prepare请求 2）对于&lt;Pn的Accept请求亦不处</li></ul></li><li>Accept阶段<ul><li>Proposer收集到多数派应答（这里的多数派，就是超过n/2+1, n是集群数）Prepare阶段的返回值后，从中选择proposalID最大的提案内容，作为要发起Accept的提案，如果这个提案为空值，则可以自己随意决定提案内容。然后携带上当前proposalID，向Paxos集群的所有机器发送Accpet请求</li><li>Accpetor收到Accpet请求后，检查不违背自己之前做出约定的情况下，持久化当前Proposal ID和提案内容。最后Proposer收集到多数派应答的Accept回复后，形成决议</li></ul></li></ul></li></ul><h3 id="2PC"><a href="#2PC" class="headerlink" title="2PC"></a>2PC</h3><ul><li>在事务处理、关系型数据库及计算机网络中，2阶段提交协议（2PC）是一种典型的原子提交协议（atomic commitment protocol）。它是一种由协调器来处理分布式原子参与者是提交或者回滚事务的分布式算法</li><li>协议包括2个阶段<ul><li>提交请求阶段或者叫投票阶段：该阶段的任务是确定相关参与者对于事务处理是否准备就绪，YES代表可以commit, NO则反之</li><li>提交阶段：基于投票结果，由协调器决定提交事务抑或是退出事务处理；各事务参与者遵循指示，对本地事务资源做需要的动作</li></ul></li><li>最大的不足是提交协议是阻塞型协议，如果事务协调器宕机，某些参与者将无法解决他们的事务：一个参与者发送确认消息给协调器，因协调器无法工作而导致事务未处理完而处于悬挂状态</li></ul><h3 id="3PC"><a href="#3PC" class="headerlink" title="3PC"></a>3PC</h3><ul><li>第一阶段，投票，事务协调器询问参与者是否能提交（canCommit），都得到肯定回答后，继续第二阶段。第二阶段是预提交，都确认预提交成功后，进行第三阶段。第三阶段就是真实的提交，成功则完成事务；失败则继续重试</li><li>3PC是在2PC的基础上增加了一次交互，也就是preCommit（又称预提交）。只要预提交都成功，则一定要保证doCommit提交成功，即使协调器在下一阶段不可用，或者调用超时</li></ul><h3 id="Raft"><a href="#Raft" class="headerlink" title="Raft"></a>Raft</h3><ul><li>Paxos和Raft都是为了实现一致性（Consensus）这个目标，这个过程如同选举一样，参选者需要说服大多数选民（服务器）投票给他，一旦选定后就跟随其操作。Paxos和Raft的区别在于选举的具体过程不同</li><li>选举过程：<ul><li>任何一个服务器都可以成为一个候选者，它向其他服务器（选民）发出要求选举自己的请求</li><li>其他服务器同意了，回复OK（同意）指令</li><li>这样，这个候选者就成为领导者，它可以向选民们发出要执行具体操作动作的指令，比如进行日志复制</li><li>如果一旦这个Leader宕机崩溃了，那么Follower中会有一个成为候选者，发出邀票选举，相当于再次执行1）～2）的步骤</li></ul></li></ul><h3 id="解决脑裂问题"><a href="#解决脑裂问题" class="headerlink" title="解决脑裂问题"></a>解决脑裂问题</h3><ul><li>指在一个高可用（HA）系统中，当联系着的两个节点断开联系时，本来为一个整体的系统，分裂为两个独立节点，这时两个节点开始争抢共享资源，结果会导致系统混乱，数据损坏</li><li>通过心跳检测做主备切换的时候，就存在不确定性。心跳检测的不确定性是发生脑裂问题的一个非常重要的原因。比如Slave提供服务了，但此前被判死的Master又“复活”了，还在继续工作，则对应用程序逻辑带来未知因素，其中就包括抢夺资源</li><li>有一种做法称为设置仲裁机制，例如设置第三方检测服务器（Monitor），当Slave确定准备接管Master时，让Monitor也ping一下Master，如果没有通讯，则判断其“死亡”；同时Master在对外提供服务时，每隔一段时间比如10s由Master服务器ping Slave服务器和Monitor，如果均出现异常，则暂定业务操作，重试。重试多次之后则退出程序执行或者执行服务器重启操作</li><li>通过Lease机制也可以进一步处理双主脑裂问题。我们假设Slave已经在提供服务了，对应的Server服务器则获得Slave颁发的Lease。假设老Master仍在提供服务，则Lease必然是过期的，因此请求失效，老Master请求频繁时效的情况下，可以通过配置监控点触发报警，以人工介入让老Master放弃身份，转换为Slave</li></ul><h3 id="MVCC"><a href="#MVCC" class="headerlink" title="MVCC"></a>MVCC</h3><ul><li>基于多版本并发控制，乐观机制</li></ul>]]></content>
-      
-      
-      <categories>
-          
-          <category> 分布式系统 </category>
-          
-      </categories>
-      
-      
-        <tags>
-            
-            <tag> 分布式系统 </tag>
-            
-        </tags>
-      
-    </entry>
-    
-    
-    
-    <entry>
-      <title>分布式系统下的一些概念介绍</title>
-      <link href="/2020/02/13/fen-bu-shi-xi-tong-xia-de-yi-xie-gai-nian-jie-shao/"/>
-      <url>/2020/02/13/fen-bu-shi-xi-tong-xia-de-yi-xie-gai-nian-jie-shao/</url>
-      
-        <content type="html"><![CDATA[<h3 id="进程与线程"><a href="#进程与线程" class="headerlink" title="进程与线程"></a>进程与线程</h3><ul><li>进程是具有一定独立功能的程序关于某个数据集合上的一次运行活动，进程是系统进行资源分配和调度的一个独立单位。线程是进程的一个实体，是CPU调度和分派的基本单位，它是比进程更小的能独立运行的基本单位。</li><li>线程自己基本上不拥有系统资源，只拥有一点在运行中必不可少的资源（如程序计数器、一组寄存器和栈），但是它可与同属一个进程的其他的线程共享进程所拥有的全部资源</li></ul><h3 id="并发"><a href="#并发" class="headerlink" title="并发"></a>并发</h3><ul><li>当有多个线程在操作时，如果系统只有一个CPU，则它根本不可能真正同时进行一个以上的线程，它只能把CPU运行时间划分成若干个时间段，再将时间段分配给各个线程执行，在一个时间段的线程代码运行时，其他线程处于挂起状态。这种方式我们称之为并发</li></ul><h3 id="锁"><a href="#锁" class="headerlink" title="锁"></a>锁</h3><ul><li>锁（lock）作为用于保护临界区（critical section）的一种机制，被广泛应用在多线程程序中，比如Java（synchronized , ReentrantLock…）</li><li>减少或规避锁竞争的一些策略：<ul><li>分拆锁</li><li>分离锁</li><li>避免共享变量缓存</li><li>使用并发容器如Amino</li><li>使用Immutable数据和ThreadLocal中的数据</li></ul></li></ul><h3 id="并行"><a href="#并行" class="headerlink" title="并行"></a>并行</h3><ul><li>当系统有一个以上的CPU时，则线程的操作有可能非并发。当一个CPU执行一个线程时，另一个CPU可以执行另一个线程，两个线程互不抢占CPU资源，可以同时进行，这种方式我们称之为并行（Parallel）</li><li>和并发的区别：并发和并行是即相似又有区别的两个概念，并行是指两个或者多个事件在同一时刻发生；而并发是指两个或多个事件在同一时间间隔内发生</li></ul><h3 id="集群"><a href="#集群" class="headerlink" title="集群"></a>集群</h3><ul><li>集群是一组相互独立的、通过高速网络互联的计算机，它们构成了一个组，并以单一系统的模式加以管理</li><li>集群配置是用于提高可用性和可伸缩性。其实，分布式系统可以表达为很多机器组成的集群，靠彼此之间的网络通信，担当的角色可能不同，共同完成同一件事情的系统</li></ul><h3 id="状态特性"><a href="#状态特性" class="headerlink" title="状态特性"></a>状态特性</h3><ul><li>在大部分应用中都提倡服务无状态，分布式环境中的任何节点（Node）也是无状态的</li><li>无状态是指不保存存储状态，则可以随意重启和替代，便于做扩展。比如负载均衡服务器Nginx是无状态的，应用服务绝大部分也是无状态的，在高压力访问下，撑不住了就加一些机器，扩展很容易</li></ul><h3 id="系统重发和幂等性"><a href="#系统重发和幂等性" class="headerlink" title="系统重发和幂等性"></a>系统重发和幂等性</h3><ul><li>网络重复请求，造成的原因有多种</li><li>幂等性就是调用1次和调用N次要返回一样的结果</li></ul>]]></content>
-      
-      
-      <categories>
-          
-          <category> 分布式系统 </category>
-          
-      </categories>
-      
-      
-        <tags>
-            
-            <tag> 分布式系统 </tag>
-            
-        </tags>
-      
-    </entry>
-    
-    
-    
-    <entry>
-      <title>缓存策略-缓存算法介绍</title>
-      <link href="/2020/02/12/huan-cun-ce-lue-huan-cun-suan-fa-jie-shao/"/>
-      <url>/2020/02/12/huan-cun-ce-lue-huan-cun-suan-fa-jie-shao/</url>
-      
-        <content type="html"><![CDATA[<p>今天介绍下缓存算法</p><h3 id="FIFO算法"><a href="#FIFO算法" class="headerlink" title="FIFO算法"></a>FIFO算法</h3><ul><li>进先出（FIFO，队列），是最简单、最公平的一种思想，即如果一个数据是最先进入的，那么可以认为在将来它被访问的可能性很小。空间满的时候，最先进入的数据会被最早置换（淘汰）掉</li><li>实现：维护一个FIFO队列，按照时间顺序将各数据（已分配页面）链接起来组成队列，并将置换指针指向队列的队首。再进行置换时，只需把置换指针所指的数据（页面）顺次换出，并把新加入的数据插到队尾即可</li><li>缺点： FIFO算法会使一些页面频繁地被替换和重新申请内存，从而导致缺页率增加</li></ul><h3 id="LRU算法"><a href="#LRU算法" class="headerlink" title="LRU算法"></a>LRU算法</h3><ul><li>LRU（The Least Recently Used，最近最久未使用算法）是一种常见的缓存算法，在很多分布式缓存系统（如Redis, Memcached）中都有广泛使用</li><li>如果一个数据在最近一段时间没有被访问到，那么可以认为在将来它被访问的可能性也很小。因此，当空间满时，最久没有访问的数据最先被置换（淘汰）</li><li>实现：最朴素的思想就是用数组+时间戳的方式，不过这样做效率较低。因此，我们可以用双向链表（LinkedList）+哈希表（HashMap）实现（链表用来表示位置，哈希表用来存储和查找），在Java里有对应的数据结构LinkedHashMap</li></ul><h3 id="LFU算法"><a href="#LFU算法" class="headerlink" title="LFU算法"></a>LFU算法</h3><ul><li>LFU（Least Frequently Used ，最近最少使用算法）也是一种常见的缓存算法。思想是：如果一个数据在最近一段时间很少被访问到，那么可以认为在将来它被访问的可能性也很小。因此，当空间满时，最小频率访问的数据最先被淘汰</li><li>算法实现策略：考虑到 LFU 会淘汰访问频率最小的数据，我们需要一种合适的方法按大小顺序维护数据访问的频率。LFU 算法本质上可以看做是一个 top K 问题(K = 1)，即选出频率最小的元素，因此我们很容易想到可以用二项堆来选择频率最小的元素，这样的实现比较高效。最终实现策略为小顶堆+哈希表</li></ul>]]></content>
-      
-      
-      <categories>
-          
-          <category> redis </category>
-          
-      </categories>
-      
-      
-        <tags>
-            
-            <tag> redis </tag>
-            
-        </tags>
-      
-    </entry>
-    
-    
-    
-    <entry>
-      <title>redis学习-复制功能</title>
-      <link href="/2020/02/11/redis-xue-xi-fu-zhi-gong-neng/"/>
-      <url>/2020/02/11/redis-xue-xi-fu-zhi-gong-neng/</url>
-      
-        <content type="html"><![CDATA[<p>今天介绍下redis的复制功能</p><h3 id="复制配置"><a href="#复制配置" class="headerlink" title="复制配置"></a>复制配置</h3><ul><li>参与复制的Redis实例划分为主节点(master)和从节点(slave)</li><li>复制的数据流是单向的，只能由主节点复制到从节 点。配置复制的方式有以下三种<ul><li>在配置文件中加入slaveof{masterHost}{masterPort}随Redis启动生 效</li><li>在redis-server启动命令后加入–slaveof{masterHost}{masterPort}生 效</li><li>直接使用命令:slaveof{masterHost}{masterPort}生效</li></ul></li></ul><h3 id="拓扑介绍"><a href="#拓扑介绍" class="headerlink" title="拓扑介绍"></a>拓扑介绍</h3><ul><li>一主一从结构<ul><li>最简单的复制拓扑结构，用于主节点出现宕机时从节点 提供故障转移支持</li><li>当应用写命令并发量较高且需要持久 化时，可以只在从节点上开启AOF，这样既保证数据安全性同时也避免了持 久化对主节点的性能干扰</li><li>当主节点关闭持久化功能时， 如果主节点脱机要避免自动重启操作。因为主节点之前没有开启持久化功能 自动重启后数据集为空，这时从节点如果继续复制主节点会导致从节点数据 也被清空的情况，丧失了持久化的意义。安全的做法是在从节点上执行 slaveof no one断开与主节点的复制关系，再重启主节点从而避免这一问题</li></ul></li><li>一主多从结构<ul><li>一主多从结构(又称为星形拓扑结构)使得应用端可以利用多个从节点 实现读写分离</li><li>对于读占比较大的场景，可以把读命令发送到 从节点来分担主节点压力。同时在日常开发中如果需要执行一些比较耗时的 读命令，如:keys、sort等，可以在其中一台从节点上执行，防止慢查询对 主节点造成阻塞从而影响线上服务的稳定性</li></ul></li><li>树状主从结构<ul><li>树状主从结构(又称为树状拓扑结构)使得从节点不但可以复制主节点 数据，同时可以作为其他从节点的主节点继续向下层复制</li><li>通过引入复制中 间层，可以有效降低主节点负载和需要传送给从节点的数据量</li></ul></li></ul><h3 id="原理"><a href="#原理" class="headerlink" title="原理"></a>原理</h3><ul><li>复制过程<ul><li>保存主节点(master)信息：</li><li>从节点(slave)内部通过每秒运行的定时任务维护复制相关逻辑， 当定时任务发现存在新的主节点后，会尝试与该节点建立网络连接</li><li>发送ping命令</li><li>权限验证。如果主节点设置了requirepass参数，则需要密码验证， 从节点必须配置masterauth参数保证与主节点相同的密码才能通过验证;如 果验证失败复制将终止，从节点重新发起复制流程</li><li>同步数据集。（主从复制连接正常通信后，对于首次建立复制的场 景，主节点会把持有的数据全部发送给从节点，这部分操作是耗时最长的步 骤。Redis在2.8版本以后采用新复制命令psync进行数据同步，原来的sync命 令依然支持，保证新旧版本的兼容性。新版同步划分两种情况:全量同步和 部分同步）</li><li>命令持续复制。当主节点把当前的数据同步给从节点后，便完成了 复制的建立流程。接下来主节点会持续地把写命令发送给从节点，保证主从 数据一致性</li></ul></li><li>数据同步<ul><li>全量复制:一般用于初次复制场景，Redis早期支持的复制功能只有全 量复制，它会把主节点全部数据一次性发送给从节点，当数据量较大时，会 对主从节点和网络造成很大的开销</li><li>部分复制:用于处理在主从复制中因网络闪断等原因造成的数据丢失 场景，当从节点再次连上主节点后，如果条件允许，主节点会补发丢失数据 给从节点。因为补发的数据远远小于全量数据，可以有效避免全量复制的过 高开销</li></ul></li></ul>]]></content>
-      
-      
-      <categories>
-          
-          <category> redis </category>
-          
-      </categories>
-      
-      
-        <tags>
-            
-            <tag> redis </tag>
-            
-        </tags>
-      
-    </entry>
-    
-    
-    
-    <entry>
       <title>elasticsearch学习系列-分布式系统中深度分页</title>
-      <link href="/2020/02/11/elasticsearch-xue-xi-xi-lie-fen-bu-shi-xi-tong-zhong-shen-du-fen-ye/"/>
-      <url>/2020/02/11/elasticsearch-xue-xi-xi-lie-fen-bu-shi-xi-tong-zhong-shen-du-fen-ye/</url>
+      <link href="/2020/01/11/elasticsearch-xue-xi-xi-lie-fen-bu-shi-xi-tong-zhong-shen-du-fen-ye/"/>
+      <url>/2020/01/11/elasticsearch-xue-xi-xi-lie-fen-bu-shi-xi-tong-zhong-shen-du-fen-ye/</url>
       
         <content type="html"><![CDATA[<p>本文介绍下ES中搜索的分页功能，据此也引出分布式系统中深度分页的问题</p><h4 id="ES分页功能"><a href="#ES分页功能" class="headerlink" title="ES分页功能"></a>ES分页功能</h4><ul><li>elasticsearch接收form（开始返回的结果位置，从0开始）和size（返回的数量）参数；</li><li>结果集在返回之前先排序，每个分片产生自己的排序结果，再集中排序保证整体顺序；</li></ul><h4 id="深度分页"><a href="#深度分页" class="headerlink" title="深度分页"></a>深度分页</h4><ul><li>在分布式系统中，对结果排序的成本随分页的深度成指数上升；</li><li>例：如我们有10个分片，要获取第1000页的数据，默认size为10，则没个分片产生100010个数据，最后<br>对全部的1000100个结果排序并丢弃掉其中大部分的数据；</li><li>参考大部分web搜索引擎对任何查询都不返回过多的结果；</li></ul><h4 id="游标查询-scoll"><a href="#游标查询-scoll" class="headerlink" title="游标查询 scoll"></a>游标查询 scoll</h4><ul><li>es可使用scoll进行大批量的文档查询，而不需要付出深度分页的代价；</li><li>游标查询会取某个时间点的快照数据。 查询初始化之后索引上的任何变化会被它忽略。 它通过保存旧的数据文件来实现这个特性，结果就像保留初始化时的索引视图一样；</li><li>深度分页的代价根源是结果集全局排序，如果去掉全局排序的特性的话查询结果的成本就会很低。 游标查询用字段 _doc 来排序。这个指令让 Elasticsearch 仅仅从还有结果的分片返回下一批结果</li></ul>]]></content>
-      
-      
-      <categories>
-          
-          <category> elasticsearch </category>
-          
-      </categories>
-      
-      
-        <tags>
-            
-            <tag> elasticsearch </tag>
-            
-        </tags>
-      
-    </entry>
-    
-    
-    
-    <entry>
-      <title>qmq消息队列-高可用</title>
-      <link href="/2020/01/19/qmq-xiao-xi-dui-lie-gao-ke-yong/"/>
-      <url>/2020/01/19/qmq-xiao-xi-dui-lie-gao-ke-yong/</url>
-      
-        <content type="html"><![CDATA[<p>今天分享下qmq高可用的特性</p><h4 id="高可用说明"><a href="#高可用说明" class="headerlink" title="高可用说明"></a>高可用说明</h4><p>qmq高可用主要从两个角度提供：</p><ul><li>分片：qmq不是基于partition，可以很容易通过添加更多的记起提高一个subject的可用性，消息按照一定的负载均衡策略分布在不同的机器上，某台机器离线后producer将不再将消息发送给该Server</li><li>复制：QMQ通过主从复制来提高单机可用性。QMQ将服务端集群划分为多个group，每个group包含一个master和一个slave。消息的发送和消费全部指向master，slave只为保证可用性</li></ul><h4 id="主从切换"><a href="#主从切换" class="headerlink" title="主从切换"></a>主从切换</h4><ul><li>不支持自动主从切换，需要人工介入；</li><li>切换步骤：<ul><li>将某组设置为readonly，设置readonly之后，该组将不再接受新的消息；</li><li>等待主从完全同步，可以通过观察master的slaveMessageLogLag监控了解；</li><li>停止slave， 停止master；</li><li>执行ReplaceBroker命令切换角色(该步骤一定要在停止应用之后执行)；</li><li>启动slave， 启动master；</li></ul></li></ul><h4 id="部署方案实例"><a href="#部署方案实例" class="headerlink" title="部署方案实例"></a>部署方案实例</h4><ul><li>metaserver：部署两台应用，然后配置nginx作为负载均衡，确保mysql可用；</li><li>broker：部署两组，每组为一主一从两台，则至少部署4台；</li><li>delay server：同broker部署方式(如没有延时消息可以不部署)；</li><li>watchdog：建议部署两台，但某个时刻只有一台工作，当一台故障会自动切换(如无事务或持久化消息可以不部署)； </li></ul>]]></content>
-      
-      
-      <categories>
-          
-          <category> qmq </category>
-          
-      </categories>
-      
-      
-        <tags>
-            
-            <tag> qmq </tag>
-            
-            <tag> 消息队列 </tag>
-            
-        </tags>
-      
-    </entry>
-    
-    
-    
-    <entry>
-      <title>qmq消息队列-架构学习</title>
-      <link href="/2020/01/19/qmq-xiao-xi-dui-lie-jia-gou-xue-xi/"/>
-      <url>/2020/01/19/qmq-xiao-xi-dui-lie-jia-gou-xue-xi/</url>
-      
-        <content type="html"><![CDATA[<p>今天分享下qmq的架构</p><h3 id="组件介绍"><a href="#组件介绍" class="headerlink" title="组件介绍"></a>组件介绍</h3><ul><li>meta server: 提供集群管理和集群发现的作用</li><li>server: 提供实时消息服务</li><li>delay server: 提供延时/定时消息服务，延时消息先在delay server排队，时间到之后再发送给server</li><li>producer: 消息生产者</li><li>consumer： 消息消费者</li></ul><h3 id="交互过程"><a href="#交互过程" class="headerlink" title="交互过程"></a>交互过程</h3><p><img src="/images/qmq_jg.png" alt="qmq交互图"></p><ol><li>delay server 向meta server注册</li><li>实时server 向meta server注册</li><li>producer在发送消息前需要询问meta server获取server list</li><li>meta server返回server list给producer(根据producer请求的消息类型返回不同的server list)</li><li>producer发送延时/定时消息</li><li>延时时间已到，delay server将消息投递给实时server</li><li>producer发送实时消息</li><li>consumer需要拉取消息，在拉取之前向meta server获取server list(只会获取实时server的list)</li><li>meta server返回server list给consumer</li><li>consumer向实时server发起pull请求</li><li>实时server将消息返回给consumer</li></ol><h3 id="实时消息介绍"><a href="#实时消息介绍" class="headerlink" title="实时消息介绍"></a>实时消息介绍</h3><ul><li>QMQ没有采用基于partition存储模型，学习了很多Kafka和RocketMQ的存储实现方式：<ul><li>顺序append文件，提供很好的性能</li><li>顺序消费文件，使用offset表示消费进度，成本极低</li><li>将所有subject的消息合并在一起，减少parition数量，可以提供更多的subject(RocketMQ)</li></ul></li><li>通过添加一层拉取的log(pull log)来动态映射consumer与partition的逻辑关系，这样不仅解决了consumer的动态扩容缩容问题，还可以继续使用一个offset表示消费进度</li><li>时Server存储模型中有三种重要的log，消费者就可以使用pull log上的sequence来表示消费进度<ul><li>message log 所有subject的消息进入该log，消息的主存储</li><li>consume log consume log存储的是message log的索引信息</li><li>pull log 每个consumer拉取消息的时候会产生pull log，pull log记录的是拉取的消息在consume log中的sequence</li></ul></li></ul><h3 id="延时-定时消息介绍"><a href="#延时-定时消息介绍" class="headerlink" title="延时/定时消息介绍"></a>延时/定时消息介绍</h3><ul><li>QMQ提供任意时间的延时/定时消息，你可以指定消息在未来两年内(可配置)任意时间内投递。比起RocketMQ提供的多个不同延时level的延时消息，QMQ的延时消息更加灵活。比如在OTA场景中，客人经常是预订未来某个时刻的酒店或者机票，这个时间是不固定的，我们无法使用几个固定的延时level来实现这个场景</li><li>QMQ的延时/定时消息使用的是两层hash wheel来实现的。第一层位于磁盘上，每个小时为一个刻度(默认为一个小时一个刻度，可以根据实际情况在配置里进行调整)，每个刻度会生成一个日志文件(schedule log)，因为QMQ支持两年内的延迟消息(默认支持两年内，可以进行配置修改)，则最多会生成 2 <em> 366 </em> 24 = 17568 个文件(如果需要支持的最大延时时间更短，则生成的文件更少)。第二层在内存中，当消息的投递时间即将到来的时候，会将这个小时的消息索引(索引包括消息在schedule log中的offset和size)从磁盘文件加载到内存中的hash wheel上，内存中的hash wheel则是以500ms为一个刻度</li><li>在延时/定时消息里存在三种log<ul><li>message log 和实时消息里的message log类似，收到消息后append到该log就返回给producer，相当于WAL</li><li>schedule log 按照投递时间组织，每个小时一个。该log是回放message log后根据延时时间放置对应的log上，这是上面描述的两层hash wheel的第一层，位于磁盘上。schedule log里是包含完整的消息内容的，因为消息内容从message log同步到了schedule log，所以历史message log都可以删除(所以message log只需要占用极小的存储空间，所以我们可以使用低容量高性能的ssd来获取极高的吞吐量，比如采用100G极好的SSD只需要RMB2000左右)。另外，schedule log是按照延时时间组织的，所以延时时间已过的schedule log文件也可以删除</li><li>dispatch log 延时/定时消息投递成功后写入，主要用于在应用重启后能够确定哪些消息已经投递，dispatch log里写入的是消息的offset，不包含消息内容。当延时server中途重启时，我们需要判断出当前这个刻度(比如一个小时)里的消息有哪些已经投递了则不重复投递</li></ul></li></ul>]]></content>
-      
-      
-      <categories>
-          
-          <category> qmq </category>
-          
-      </categories>
-      
-      
-        <tags>
-            
-            <tag> qmq </tag>
-            
-            <tag> 消息队列 </tag>
-            
-        </tags>
-      
-    </entry>
-    
-    
-    
-    <entry>
-      <title>mysql-innodb存储引擎中的锁</title>
-      <link href="/2020/01/15/mysql-innodb-cun-chu-yin-qing-zhong-de-suo/"/>
-      <url>/2020/01/15/mysql-innodb-cun-chu-yin-qing-zhong-de-suo/</url>
-      
-        <content type="html"><![CDATA[<p>今天介绍下mysql innodb中的锁</p><h3 id="锁类型介绍（行级锁）"><a href="#锁类型介绍（行级锁）" class="headerlink" title="锁类型介绍（行级锁）"></a>锁类型介绍（行级锁）</h3><ul><li>共享锁（S）：允许事务读一行数据</li><li>排他锁（X）：允许事务删除或更新一行数据</li><li>如果一个事务T1已经获得了行r的共享锁，那么另外的事务T2可以立即获得行r的共享锁，因为读取并没有改变行r的数据，称这种情况为锁兼容，如X与X、S不兼容， S与X不兼容，S与S兼容；</li><li>InnoDB存储引擎支持多粒度（granular）锁定，这种锁定允许事务在行级上的锁和表级上的锁同时存在。为了支持在不同粒度上进行加锁操作，InnoDB存储引擎支持一种额外的锁方式，称之为意向锁（Intention Lock）。意向锁是将锁定的对象分为多个层次，意向锁意味着事务希望在更细粒度（fine granularity）上进行加锁</li></ul><h3 id="一致性非锁定读"><a href="#一致性非锁定读" class="headerlink" title="一致性非锁定读"></a>一致性非锁定读</h3><ul><li>InnoDB存储引擎通过行多版本控制（multi versioning）的方式来读取当前执行时间数据库中行的数据</li><li>如果读取的行正在执行DELETE或UPDATE操作，这时读取操作不会因此去等待行上锁的释放。相反地，InnoDB存储引擎会去读取行的一个快照数据</li><li>非锁定读不需要等待访问的行上X锁的释放。快照数据是指该行的之前版本的数据，该实现是通过undo段来完成。而undo用来在事务中回滚数据，因此快照数据本身是没有额外的开销。此外，读取快照数据是不需要上锁的，因为没有事务需要对历史的数据进行修改操作</li><li>非锁定读机制极大地提高了数据库的并发性。在InnoDB存储引擎的默认设置下，这是默认的读取方式，即读取不会占用和等待表上的锁。但是在不同事务隔离级别下，读取的方式不同，并不是在每个事务隔离级别下都是采用非锁定的一致性读。此外，即使都是使用非锁定的一致性读，但是对于快照数据的定义也各不相同</li><li>在事务隔离级别READ COMMITTED和REPEATABLE READ（InnoDB存储引擎的默认事务隔离级别）下，InnoDB存储引擎使用非锁定的一致性读。然而，对于快照数据的定义却不相同。在READ COMMITTED事务隔离级别下，对于快照数据，非一致性读总是读取被锁定行的最新一份快照数据。而在REPEATABLE READ事务隔离级别下，对于快照数据，非一致性读总是读取事务开始时的行数据版本</li></ul><h3 id="一致性锁定读"><a href="#一致性锁定读" class="headerlink" title="一致性锁定读"></a>一致性锁定读</h3><ul><li>在默认配置下，即事务的隔离级别为REPEATABLE READ模式下，InnoDB存储引擎的SELECT操作使用一致性非锁定读。</li><li>但是在某些情况下，用户需要显式地对数据库读取操作进行加锁以保证数据逻辑的一致性。而这要求数据库支持加锁语句，即使是对于SELECT的只读操作</li></ul><h3 id="自增长与锁"><a href="#自增长与锁" class="headerlink" title="自增长与锁"></a>自增长与锁</h3><ul><li>自增长在数据库中是非常常见的一种属性，也是很多DBA或开发人员首选的主键方式。在InnoDB存储引擎的内存结构中，对每个含有自增长值的表都有一个自增长计数器（auto-increment counter</li><li>插入操作会依据这个自增长的计数器值加1赋予自增长列。这个实现方式称做AUTO-INCLocking。这种锁其实是采用一种特殊的表锁机制，为了提高插入的性能，锁不是在一个事务完成后才释放，而是在完成对自增长值插入的SQL语句后立即释放</li><li>从MySQL 5.1.22版本开始，InnoDB存储引擎中提供了一种轻量级互斥量的自增长实现机制，这种机制大大提高了自增长值插入的性能</li><li>需要注意InnoDB存储引擎中自增长的实现和MyISAM不同，MyISAM存储引擎是表锁设计，自增长不用考虑并发插入的问题。因此在master上用InnoDB存储引擎，在slave上用MyISAM存储引擎的replication架构下，必须考虑这种情况</li><li>在InnoDB存储引擎中，自增长值的列必须是索引，同时必须是索引的第一个列</li></ul><h3 id="外键与锁"><a href="#外键与锁" class="headerlink" title="外键与锁"></a>外键与锁</h3><ul><li>外键主要用于引用完整性的约束检查，在InnoDB存储引擎中，对于一个外键列，如果没有显式地对这个列加索引，InnoDB存储引擎自动对其加一个索引</li></ul>]]></content>
-      
-      
-      <categories>
-          
-          <category> mysql </category>
-          
-      </categories>
-      
-      
-        <tags>
-            
-            <tag> mysql </tag>
-            
-        </tags>
-      
-    </entry>
-    
-    
-    
-    <entry>
-      <title>elasticsearch学习系列-搜索浅尝</title>
-      <link href="/2020/01/15/elasticsearch-xue-xi-xi-lie-sou-suo-qian-chang/"/>
-      <url>/2020/01/15/elasticsearch-xue-xi-xi-lie-sou-suo-qian-chang/</url>
-      
-        <content type="html"><![CDATA[<p>本文简单介绍ES搜索的一些简单尝试</p><h4 id="检索文档"><a href="#检索文档" class="headerlink" title="检索文档"></a>检索文档</h4><pre><code>GET /_index/_type/_id</code></pre><p>根据库、类型、id搜索数据</p><h4 id="简单搜索"><a href="#简单搜索" class="headerlink" title="简单搜索"></a>简单搜索</h4><pre><code>GET /_index/_type/_search</code></pre><p>搜索索引_index内类型_type内的所有数据，默认返回10条</p><h4 id="查询表达式搜索"><a href="#查询表达式搜索" class="headerlink" title="查询表达式搜索"></a>查询表达式搜索</h4><pre><code>GET /_index/_type/_search{    &quot;query&quot; : {        &quot;match&quot; : {            &quot;name&quot; : &quot;Smith&quot;        }    }}</code></pre><p>搜索name=Smith的数据</p><h4 id="复杂搜索"><a href="#复杂搜索" class="headerlink" title="复杂搜索"></a>复杂搜索</h4><pre><code>GET /_index/_type/_search{    &quot;query&quot; : {        &quot;bool&quot;: {            &quot;must&quot;: {                &quot;match&quot; : {                    &quot;name&quot; : &quot;smith&quot;                }            },            &quot;filter&quot;: {                &quot;range&quot; : {                    &quot;age&quot; : { &quot;gt&quot; : 30 }                }            }        }    }}</code></pre><p>查找name=Smith，age大于30的数据</p><h4 id="全文搜索"><a href="#全文搜索" class="headerlink" title="全文搜索"></a>全文搜索</h4><pre><code>GET /_index/_type/_search{    &quot;query&quot; : {        &quot;match&quot; : {            &quot;about&quot; : &quot;abc def&quot;        }    }}</code></pre><p>搜索数据包含 abc def，或abd 、 def的数据</p><h4 id="短语搜索"><a href="#短语搜索" class="headerlink" title="短语搜索"></a>短语搜索</h4><pre><code>GET /_index/_type/_search{    &quot;query&quot; : {        &quot;match_phrase&quot; : {            &quot;about&quot; : &quot;abc def&quot;        }    }}</code></pre><p>搜索数据包含 abc def的数据，不可拆分</p>]]></content>
       
       
       <categories>
@@ -335,11 +106,11 @@
     
     
     <entry>
-      <title>java容器-堆和优先队列</title>
-      <link href="/2019/12/16/java-rong-qi-dui-he-you-xian-dui-lie/"/>
-      <url>/2019/12/16/java-rong-qi-dui-he-you-xian-dui-lie/</url>
+      <title>java虚拟机内存区域介绍</title>
+      <link href="/2019/12/22/java-xu-ni-ji-nei-cun-qu-yu-jie-shao/"/>
+      <url>/2019/12/22/java-xu-ni-ji-nei-cun-qu-yu-jie-shao/</url>
       
-        <content type="html"><![CDATA[<p>今天介绍一些java内的容器-堆和优先队列，有些容器会在后续案例中更详细介绍</p><h3 id="堆"><a href="#堆" class="headerlink" title="堆"></a>堆</h3><ul><li>是完全二叉树，给定任意一个节点，可以根据其编号直接快速计算出其父节点和孩子节点编号</li><li>根据顺序分为两种堆：一种是最大堆，另一种是最小堆</li><li>可以实现优先级队列，解决求前K个最大的元素，求中值元素等问题</li><li>堆还可以实现排序，称之为堆排序</li><li>概念上是树，存储为数组，父子有特殊顺序，根是最大值/最小值，构建/添加/删除效率都很高</li></ul><h3 id="优先队列"><a href="#优先队列" class="headerlink" title="优先队列"></a>优先队列</h3><ul><li>PriorityQueue<ul><li>内部是用堆实现的，内部元素不是完全有序的，逐个出队会得到有序的输出</li><li>优先级可以有相同的，内部元素不是完全有序的，如果遍历输出，除了第一个，其他没有特定顺序</li><li>查看头部元素的效率很高，为O(1)，入队、出队效率比较高，为O(log2(N))，构建堆heapify的效率为O(N)</li></ul></li></ul><h3 id="特别说明"><a href="#特别说明" class="headerlink" title="特别说明"></a>特别说明</h3><ul><li>对于某些问题（如求前k个最大元素和求中值），相比使用排序，使用堆不仅实现效率更高，而且可以应对数据量不确定且源源不断到来的情况，可以给出实时结果</li></ul>]]></content>
+        <content type="html"><![CDATA[<p>本文将简单介绍下java内存区域，借此加深对java虚拟机的理解；<br>希望对入门者有一定的引导作用，同时也作为记录帮助自己记忆，若有错误，希望大牛指点一二；</p><h4 id="简述"><a href="#简述" class="headerlink" title="简述"></a>简述</h4><p>java虚拟机所管理的内存包括这几个运行时数据区：程序计数器、java虚拟机栈、本地方法栈、java堆、方法区、直接内存；<br>参考图片（来自《深入理解java虚拟机》，推荐阅读）：<br><img src="/images/jvm1.PNG" alt="java虚拟机运行时数据区"></p><h4 id="程序计数器"><a href="#程序计数器" class="headerlink" title="程序计数器"></a>程序计数器</h4><ul><li>当前线程所执行的字节码的行号指示器，根据这里的值来选取下一条需要执行的字节码指令；</li><li>每个线程都有一个程序计数器，各线程互不影响；</li></ul><h4 id="java虚拟机栈"><a href="#java虚拟机栈" class="headerlink" title="java虚拟机栈"></a>java虚拟机栈</h4><ul><li>线程私有的，线程间互不干扰，生命周期与线程相同；</li><li>描述java方法执行的内存模型，每个方法再执行时会建立一个栈帧用于存储局部变量表、操作数栈、动态连接、方法出口等信息；每个方法调用至完成就对应一个栈帧（栈帧是方法运行时的基础数据结构）再虚拟机栈中入栈到出栈的过程；</li><li>其中局部变量表存放了编译器可知的各种基本数据类型；</li><li>这个区域存在两种异常状况：StackOverflowError（线程请求的栈深度大于虚拟机允许深度）和OutOfMemoryError（扩展时无法申请足够内存）；</li></ul><h4 id="本地方法栈"><a href="#本地方法栈" class="headerlink" title="本地方法栈"></a>本地方法栈</h4><ul><li>与虚拟机栈作用相似， 为虚拟机使用的Native方法服务；</li><li>也会抛出StackOverflowError和OutOfMemoryError；</li></ul><h4 id="java堆"><a href="#java堆" class="headerlink" title="java堆"></a>java堆</h4><ul><li>java虚拟机管理内存中最大的一块， 是所有线程共享的一块内存区域；</li><li>用来存放对象实例；</li><li>是垃圾收集器管理的主要区域，又称为”GC堆”；</li><li>可分为新生代和老年代，再细分为Eden空间 From Survivor和To Survivor空间 ；</li><li>堆无法扩展时会抛出OutOfMemoryError异常；</li></ul><h4 id="方法区"><a href="#方法区" class="headerlink" title="方法区"></a>方法区</h4><ul><li>各个线程共享的内存区域；</li><li>存储虚拟机加载的类信息、常量、静态变量、编译后的代码等；</li><li>内存不满足时抛出OutOfMemoryError异常；</li></ul><h4 id="直接内存"><a href="#直接内存" class="headerlink" title="直接内存"></a>直接内存</h4><ul><li>内存不够会抛出OutOfMemoryError异常；</li><li>不是虚拟机运行时数据区的一部分；</li></ul><h4 id="对象创建"><a href="#对象创建" class="headerlink" title="对象创建"></a>对象创建</h4><ul><li>虚拟机遇到new指令，检查参数是否能在常量池中定位到类的符号引用，若没有，先执行类加载过程（该过程会在后续文章进行分享）；</li><li>类加载检查完，在java堆中为对象分配内存（受不同收集器影响）；</li><li>虚拟机对对象进行一些设置：是哪个类的实例，如何查找类元数据信息，对象哈希码，对象的GC分代年龄等；</li><li>执行init进行初始化；</li></ul><h4 id="对象的访问定位"><a href="#对象的访问定位" class="headerlink" title="对象的访问定位"></a>对象的访问定位</h4><ul><li>需要通过栈上的reference数据来操作栈上的对象；</li><li>两种访问方式：<ul><li>句柄：java堆种一块内存作为句柄池，reference保存对象的句柄地址，句柄再保存对象实例数据和类型数据的具体地址信息；</li><li>直接指针：java堆对象放置访问类型数据，reference种存储对象地址；</li></ul></li></ul><p>以上是对java虚拟机涉及内存以及对象创建、对象访问定位流程的简单介绍，后续会继续进行相关基础和进阶知识的学习整理分享，欢迎一起讨论交流~</p>]]></content>
       
       
       <categories>
@@ -387,36 +158,11 @@
     
     
     <entry>
-      <title>java容器-Map和Set</title>
-      <link href="/2019/11/15/java-rong-qi-map-he-set/"/>
-      <url>/2019/11/15/java-rong-qi-map-he-set/</url>
-      
-        <content type="html"><![CDATA[<p>今天介绍一些java内的容器-Map和Set，有些容器会在后续案例中更详细介绍</p><h3 id="Map"><a href="#Map" class="headerlink" title="Map"></a>Map</h3><ul><li>HashMap<ul><li>实现map接口， key value键值对</li><li>内部实例变量size表示实际键值对的个数。table是一个Entry类型的数组，称为哈希表或哈希桶，其中的每个元素指向一个单向链表，链表中的每个节点表示一个键值对，Entry是一个内部类，其中，key和value分别表示键和值，next指向下一个Entry节点，hash是key的hash值；</li><li>扩展策略： threshold表示阈值，当键值对个数size大于等于threshold时考虑进行扩展， 一般而言，threshold等于table.length乘以loadFactor，会分配一个容量为原来两倍的Entry数组，调用transfer方法将原来的键值对移植过来，然后更新内部的table变量，以及threshold的值</li><li>key比较的时候，是先比较hash值，hash相同的时候，再使用equals方法进行比较，要求元素重写hashCode和equals方法</li><li>保存键值对的流程：<ul><li>计算键哈希值</li><li>根据哈希值取得保存位置</li><li>插到对应位置的链表头部或更新已有值</li><li>根据需要扩展table大小</li></ul></li><li>分配一个容量为原来两倍的Entry数组，调用transfer方法将原来的键值对移植过来，然后更新内部的table变量，以及threshold的值</li><li>hash值是随即的，键值对没有顺序</li></ul></li><li>TreeSet<ul><li>按键有序，TreeMap同样实现了SortedMap和NavigableMap接口，可以方便地根据键的顺序进行查找，如第一个、最后一个、某一范围的键、邻近键等,要求键实现Comparable接口或通过构造方法提供一个Com-parator对象</li><li>内部是用红黑树实现的，红黑树是一种大致平衡的排序二叉树</li><li>根据键保存、查找、删除的效率比较高，为O(h), h为树的高度，在树平衡的情况下，h为log2(N), N为节点数</li></ul></li><li>LinkedHashMap<ul><li>是HashMap的子类，内部还有一个双向链表维护键值对的顺序，每个键值对既位于哈希表中，也位于这个双向链表中。</li><li>LinkedHashMap支持两种顺序：一种是插入顺序；另外一种是访问顺序； （按访问有序-LRU缓存）</li></ul></li></ul><h3 id="Set"><a href="#Set" class="headerlink" title="Set"></a>Set</h3><ul><li>hashSet<ul><li>没有重复元素</li><li>可以高效地添加、删除元素、判断元素是否存在，效率都为O(1)</li><li>无序</li><li>要求元素重写hashCode和equals方法，且对于两个对象，如果equals相同，则hashCode也必须相同</li><li>内部是用HashMap实现的</li></ul></li><li>TreeSet<ul><li>有序</li><li>给予TreeMap实现</li><li>添加、删除元素、判断元素是否存在，效率比较高，为O(log2(N)), N为元素个数</li><li>TreeSet同样实现了SortedSet和NavigatableSet接口，可以方便地根据顺序进行查找和操作，如第一个、最后一个、某一取值范围、某一值的邻近元素等，要求元素实现Comparable接口或通过构造方法提供一个Com-parator对象</li></ul></li><li>LinkedHashSet<ul><li>内部的Map的实现类是LinkedHashMap</li></ul></li></ul><h3 id="特别说明"><a href="#特别说明" class="headerlink" title="特别说明"></a>特别说明</h3><ul><li>HashMap也不是线程安全的，并发场景下需要注意，可以使用HashTable，但是相应效率地下，可以使用ConcurrentHashMap，兼顾性能和并发</li><li>map的keySet和entrySet返回都是set，所以一般可以用map实现对应的set；</li></ul>]]></content>
-      
-      
-      <categories>
-          
-          <category> java </category>
-          
-      </categories>
-      
-      
-        <tags>
-            
-            <tag> java </tag>
-            
-        </tags>
-      
-    </entry>
-    
-    
-    
-    <entry>
       <title>elasticsearch升级-transportClient转HighLevelRestClient</title>
-      <link href="/2019/11/02/elasticsearch-sheng-ji-transportclient-zhuan-highlevelrestclient/"/>
-      <url>/2019/11/02/elasticsearch-sheng-ji-transportclient-zhuan-highlevelrestclient/</url>
+      <link href="/2019/12/02/elasticsearch-sheng-ji-transportclient-zhuan-highlevelrestclient/"/>
+      <url>/2019/12/02/elasticsearch-sheng-ji-transportclient-zhuan-highlevelrestclient/</url>
       
-        <content type="html"><![CDATA[<p>今天分享下项目中进行elasticsearch升级，同时伴随着transport Client转换位High Level Rest Client.</p><h3 id="升级迁移步骤"><a href="#升级迁移步骤" class="headerlink" title="升级迁移步骤"></a>升级迁移步骤</h3><ul><li>es 集群升级（DBA操作）</li><li>数据全量迁移</li><li>使用High Level Rest Client和transport Client对新老集群双写；</li><li>数据全量迁移</li><li>读改到升级后新集群</li><li>老集群断写入</li></ul><h3 id="架构"><a href="#架构" class="headerlink" title="架构"></a>架构</h3><ul><li><img src="/images/es_jg.png" alt="架构简介"></li></ul><h3 id="注意事项"><a href="#注意事项" class="headerlink" title="注意事项"></a>注意事项</h3><ul><li>数据迁移过程中双写，并建立补偿机制，避免数据丢失</li><li>核心业务部署双集群，封装DR</li><li>建立db数据和es数据的全量同步流程，修复数据不一致</li></ul>]]></content>
+        <content type="html"><![CDATA[<p>今天分享下项目中进行elasticsearch升级，同时伴随着transport Client转换位High Level Rest Client.</p><h3 id="升级迁移步骤"><a href="#升级迁移步骤" class="headerlink" title="升级迁移步骤"></a>升级迁移步骤</h3><ul><li>es 集群升级（DBA操作）</li><li>数据全量迁移</li><li>使用High Level Rest Client和transport Client对新老集群双写；</li><li>数据全量迁移</li><li>读改到升级后新集群</li><li>老集群断写入</li></ul><h3 id="架构"><a href="#架构" class="headerlink" title="架构"></a>架构</h3><p><img src="/images/es_jg.png" alt="架构简介"></p><h3 id="注意事项"><a href="#注意事项" class="headerlink" title="注意事项"></a>注意事项</h3><ul><li>数据迁移过程中双写，并建立补偿机制，避免数据丢失</li><li>核心业务部署双集群，封装DR</li><li>建立db数据和es数据的全量同步流程，修复数据不一致</li></ul>]]></content>
       
       
       <categories>
@@ -437,9 +183,36 @@
     
     
     <entry>
+      <title>记一次线上问题-java内存溢出</title>
+      <link href="/2019/11/08/ji-yi-ci-xian-shang-wen-ti-java-nei-cun-yi-chu/"/>
+      <url>/2019/11/08/ji-yi-ci-xian-shang-wen-ti-java-nei-cun-yi-chu/</url>
+      
+        <content type="html"><![CDATA[<p>这里分享一个线上问题案例及解决过程。<br>小k来到新公司不久，一天早上，小K收到一封报警邮件，提示某项目出现较多异常。小k点击邮件查看详情，发现提示out of menery错误。此时同事们还没来，小k暗自吐槽：“怎么都没来，这个项目代码自己也还不熟悉阿”。但是小k转念一想：“毕竟也是有2年开发经验的人，自己先排查下吧”<br>&nbsp;<br>于是小k开始查看日志系统，发现报错基本集中在个别机器上。小k打开该项目的机器监控，发现有两台机器的内存使用率高于正常水平。进一步发现这两台机器的线程数量远高于其他机器以及此前的正常水平。<br>&nbsp;<br><img src="/images/3.png" alt="服务内存监控（此为正常情况，异常是超过90%）"><br><img src="/images/4.png" alt="线程监控（此为正常情况，异常机器的JMX thread数量有个梯度上升）"><br>小k心中有了方向，进一步针对机器的线程收集监控，获取到异常机器的大量线程来自同一个线程池。此时小k的组长大M来了，小k把相关问题以及排查结果向大M进行了说明，大M找到项目中使用该线程池的地方，小k暗叹：“还是对项目熟悉定位问题比较快哇”。然后两个人一起看起了代码。不一会，就发现了问题，当然代码的创造者早已离开。<br>关键代码如下：</p><pre><code>ExecutorService executor = Executors.newFixedThreadPool(size);</code></pre><p>问题在于这里的size是会根据请求中某参数的数量动态创建的。原先的的请求内参数并没有特别多，创建了定长线程池执行完后可以安全释放。但是现在遇到两个参数过多的请求（并没有对请求方限制批量处理的的数量），导致创建过多线程消耗过多内存，程序异常，也无法执行下面的对线程池的回收和销毁。<br>&nbsp;<br>确定了问题之后，组长让我对这里进行了修改，添加了创建线程数量的限制，防止线程泄露。上线后项目也恢复了正常。<br>&nbsp;<br>小k在这次问题排查中学到了很多：</p><ol><li>创建线程池本身要注意，要合理限制创建线程的最大数量，防止消耗过多的资源；</li><li>线程池使用中要确保在正常和异常情况下对线程池进行释放；</li><li>批量接口最好对最大请求数量进行约定和限制，防止不可控的异常；<br>小k整理了下思路，继续开始一天愉快得工作，直到深夜….</li></ol>]]></content>
+      
+      
+      <categories>
+          
+          <category> java </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> 问题记录 </tag>
+            
+            <tag> java </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>java容器-列表和队列</title>
-      <link href="/2019/07/05/java-rong-qi-lie-biao-he-dui-lie/"/>
-      <url>/2019/07/05/java-rong-qi-lie-biao-he-dui-lie/</url>
+      <link href="/2019/11/05/java-rong-qi-lie-biao-he-dui-lie/"/>
+      <url>/2019/11/05/java-rong-qi-lie-biao-he-dui-lie/</url>
       
         <content type="html"><![CDATA[<p>今天介绍一些java内的容器-列表和队列，有些容器会在后续案例中更详细介绍</p><h3 id="列表和队列"><a href="#列表和队列" class="headerlink" title="列表和队列"></a>列表和队列</h3><ul><li>ArrayList<ul><li>实现了Iterable接口，可迭代，</li><li>内部有一个数组elementData，一般有些预留空间，有整数size记录实际元素个数；</li><li>添加元素时先判断数组是不是空的，如果是空的，则首次至少要分配的大小为DEFAULT_CAPACITY,DEFAULT_CAPACITY的值为10;</li><li>有以指定的大小initialCapacity初始化内部的数组大小的构造方法</li><li>可以随机访问，按照索引位置进行访问效率很高，用算法描述中的术语，效率是O(1)，简单说就是可以一步到位</li><li>除非数组已排序，否则按照内容查找元素效率比较低，具体是O(N), N为数组内容长度，也就是说，性能与数组长度成正比</li><li>添加元素的效率还可以，重新分配和复制数组的开销被平摊了，具体来说，添加N个元素的效率为O(N)</li><li>插入和删除元素的效率比较低，因为需要移动元素，具体为O(N)</li><li>非线程安全的</li></ul></li><li>LinkedList<ul><li>实现了Deque和Queue接口，可以按照队列、栈和双端队列的方式进行操作</li><li>内部实现是双向链表，每个元素在内存都是单独存放的，元素之间通过链接连在一起</li><li>按需分配空间，不需要预先分配很多空间</li><li>不可以随机访问，按照索引位置访问效率比较低，必须从头或尾顺着链接找，效率为O(N/2)</li><li>不管列表是否已排序，只要是按照内容查找元素，效率都比较低，必须逐个比较，效率为O(N)</li><li>在两端添加、删除元素的效率很高，为O(1</li><li>在中间插入、删除元素，要先定位，效率比较低，为O(N)，但修改本身的效率很高，效率为O(1)</li></ul></li><li>ArrayDeque<ul><li>基于数组实现</li><li>ArrayDeque实现了Deque接口，同LinkedList一样，它的队列长度也是没有限制的</li><li>ArrayDeque的高效来源于head和tail这两个变量，它们使得物理上简单的从头到尾的数组变为了一个逻辑上循环的数组，避免了在头尾操作时的移动</li><li>在两端添加、删除元素的效率很高，动态扩展需要的内存分配以及数组复制开销可以被平摊，具体来说，添加N个元素的效率为O(N)</li><li>根据元素内容查找和删除的效率比较低，为O(N)</li><li>与ArrayList和LinkedList不同，没有索引位置的概念，不能根据索引位置进行操作</li></ul></li></ul><h3 id="特别说明"><a href="#特别说明" class="headerlink" title="特别说明"></a>特别说明</h3><ul><li>关于迭代器，有一种常见的误用，就是在迭代的中间调用容器的删除方法，如<pre><code>for(Integer a : list) {  if(a&lt;=0) {    list.remove(a);  }}</code></pre>会抛出一场，可以改用迭代器：<pre><code>Iterator&lt;Integer&gt; it = list.iterator();while(it.hasNext()) {if(it.next() &lt; 0) {  it.remove();}}</code></pre>原理： 迭代器中cursor表示下一个要返回的元素位置，lastRet表示最后一个返回的索引位置，expected-ModCount表示期望的修改次数，初始化为外部类当前的修改次数modCount，回顾一下，成员内部类可以直接访问外部类的实例变量。每次发生结构性变化的时候modCount都会增加，而每次迭代器操作的时候都会检查expectedModCount是否与modCount相同，这样就能检测出结构性变化</li><li>多线程并发场景下，需要选择线程安全的容器，如ArrayList就不是线程安全的，直接在并发场景使用会有问题</li></ul>]]></content>
       
@@ -463,8 +236,8 @@
     
     <entry>
       <title>缓存数据一致性刷新方案</title>
-      <link href="/2019/05/31/huan-cun-shu-ju-yi-zhi-xing-shua-xin-fang-an/"/>
-      <url>/2019/05/31/huan-cun-shu-ju-yi-zhi-xing-shua-xin-fang-an/</url>
+      <link href="/2019/10/31/huan-cun-shu-ju-yi-zhi-xing-shua-xin-fang-an/"/>
+      <url>/2019/10/31/huan-cun-shu-ju-yi-zhi-xing-shua-xin-fang-an/</url>
       
         <content type="html"><![CDATA[<p>这里分享一下缓存和数据库数据一致性刷新的一些方案和实践。<br>主要从一下4个方面进行介绍和分享。</p><h4 id="数据一致性介绍"><a href="#数据一致性介绍" class="headerlink" title="数据一致性介绍"></a>数据一致性介绍</h4><ul><li>随着业务发展，数据需要添加副本以提高可行性；</li><li>为减少db访问压力，需要进行读写分离；</li><li>为提高接口响应时间，一般会将访问数据进行缓存；</li><li>当然还有其他形式的数据，如存储与es搜索引擎以满足特定业务场景（此处主要讨论缓存数据一致性）；</li></ul><h4 id="一些方案"><a href="#一些方案" class="headerlink" title="一些方案"></a>一些方案</h4><ul><li>使用缓存的一些场景：<ul><li>面向用户的接口请求量大，使用缓存提升性能；</li><li>数据强一致性场景（如 库存），直接操作数据库，展示类接口使用缓存；</li></ul></li><li>方案一：<ul><li>查询接口时无缓存数据进行缓存数据的写入；</li><li>缓存失效时间使缓存自动失效；</li><li>数据变动，根据对db从库的监听对缓存进行失效；</li></ul></li><li>方案二：<ul><li>查询接口时无缓存则获取缓存；</li><li>缓存自动失效；</li><li>数据变动触发缓存数据更新；</li></ul></li></ul><h4 id="遇到的问题和解决"><a href="#遇到的问题和解决" class="headerlink" title="遇到的问题和解决"></a>遇到的问题和解决</h4><ul><li>问题：从数据库变动发出消息失效缓存，写入缓存时读取其他从库，导致写入脏数据；<ul><li>解决：所有的从库数据变动都去发送触发缓存失效的消息；<br><img src="/images/多线程缓存读写1.png" alt="多线程缓存读写1"></li></ul></li><li>问题：过期缓存删除存在隐患，无法预知当前是否有线程已持有过期数据正要插入（缓存的读取不是原子操作）；如下图：<ul><li>解决：采用如下图的方案：相关说明如下<br><img src="/images/多线程缓存读写2.png" alt="多线程缓存读写2"></li><li>先删除缓存后删除db数据，防止当前网站线程crash引起数据不一致；</li><li>原子操作前判断缓存是否命中，命中则直接返回，防止热点数据引起的缓存击穿；</li><li>减小缓存数据的颗粒，减小此处锁的颗粒，降低锁开销，锁持有的时间就是一次数据库访问的时间；</li></ul></li></ul><h4 id="一些思考和总结"><a href="#一些思考和总结" class="headerlink" title="一些思考和总结"></a>一些思考和总结</h4><ul><li>任何技术方案都需要根据具体的业务场来考虑，比如缓存方案中，数据变动是去时缓存失效还是刷新缓存，就是可以考虑多个方面；</li><li>缓存多大范围的数据？</li><li>数据的热点程度？</li></ul>]]></content>
       
@@ -487,23 +260,202 @@
     
     
     <entry>
-      <title>Elasticsearch学习系列-入门介绍</title>
-      <link href="/2019/05/29/elasticsearch-xue-xi-xi-lie-ru-men-jie-shao/"/>
-      <url>/2019/05/29/elasticsearch-xue-xi-xi-lie-ru-men-jie-shao/</url>
+      <title>java容器-堆和优先队列</title>
+      <link href="/2019/10/16/java-rong-qi-dui-he-you-xian-dui-lie/"/>
+      <url>/2019/10/16/java-rong-qi-dui-he-you-xian-dui-lie/</url>
       
-        <content type="html"><![CDATA[<p>elasticsearch是功能强大的基于Lucene实现的开源搜索引擎。<br>本文主要从以下个方面对其进行入门介绍。<br><a href="https://es.xiaoleilu.com/010_Intro/05_What_is_it.html" target="_blank" rel="noopener">推荐文档</a></p><h4 id="使用场景和优势"><a href="#使用场景和优势" class="headerlink" title="使用场景和优势"></a>使用场景和优势</h4><ul><li>当我们的数据量非常大的时候，我们会考虑进行分库分表，但是分库分表需要考虑依赖拆分的字段，在某些场景下会很复杂。这时候es的优势可以体现出来：<br>支持PB级数据的高效存取；</li><li>当我们的业务数据结构很复杂，表之间的关联关系在关系型数据库中表达困难，表之间的关联错综复杂，我们可以考虑es：他可以以json形式存储结构化和非结构化的数据；</li><li>此外他还是实时文件存储，支持实时分析搜索；</li></ul><h4 id="如何使用"><a href="#如何使用" class="headerlink" title="如何使用"></a>如何使用</h4><ul><li>elasticsearch的使用非常简单。在本地可以很轻松的搭建起来。下面列出简单的步骤（如windows本地）<ul><li><a href="https://www.elastic.co/cn/downloads/elasticsearch" target="_blank" rel="noopener">下载地址</a>下载对应的包，如windows下的biz包</li><li>下载后解压出来，点击es/bin/下的elasticsearch.bat（linux下执行bin/elasticsearch，可<a href="https://juejin.im/post/58d1d7530ce4630057e6053a#heading-2" target="_blank" rel="noopener">参考</a>）</li><li>打开本地：<a href="http://localhost:9200/">http://localhost:9200/</a> 看到正确的json，即安装运行成功</li></ul></li><li>向es内存取数据（具体的字段说明下一节说明）<ul><li><img src="/images/post.png" alt="post保存数据"></li><li><img src="/images/get.png" alt="get查询数据"></li></ul></li></ul><h4 id="基本概念说明"><a href="#基本概念说明" class="headerlink" title="基本概念说明"></a>基本概念说明</h4><ul><li>elasticsearch提供了非常好用的restful api操作数据，如上节我们看到的get post，还有put delete等简单操作；</li><li>这里需要对elasticsearch的一些基本概念介绍下：<ul><li>index：索引，是elasticsearch存储数据的逻辑区域，类似关系型数据库中的database；</li><li>document：文档，elasticsearch用json标示一个对象，类似关系型数据库中的一行数据；</li><li>type：类型，文档归属一种type，类似关系型数据库中的table；</li><li>field：字段，类似关系型数据库中的字段；</li></ul></li><li>在es中可以按照以上概念对数据进行组织，存储，查询，聚合等操作；</li></ul><h4 id="更多特性和优势"><a href="#更多特性和优势" class="headerlink" title="更多特性和优势"></a>更多特性和优势</h4><ul><li>DSL查询： elasticsearch提供了功能十分强大的DSL查询，用于复杂的场景，可以看文档了解这块，基本上可以满足业务的各种要求；</li><li>分布式集群：非常便于扩展，支持大量级的数据存储查询；</li><li>还有排序，搜索…等更多更复杂的特性我们会在后续的使用以及专题中进行更详细的介绍。</li></ul>]]></content>
+        <content type="html"><![CDATA[<p>今天介绍一些java内的容器-堆和优先队列，有些容器会在后续案例中更详细介绍</p><h3 id="堆"><a href="#堆" class="headerlink" title="堆"></a>堆</h3><ul><li>是完全二叉树，给定任意一个节点，可以根据其编号直接快速计算出其父节点和孩子节点编号</li><li>根据顺序分为两种堆：一种是最大堆，另一种是最小堆</li><li>可以实现优先级队列，解决求前K个最大的元素，求中值元素等问题</li><li>堆还可以实现排序，称之为堆排序</li><li>概念上是树，存储为数组，父子有特殊顺序，根是最大值/最小值，构建/添加/删除效率都很高</li></ul><h3 id="优先队列"><a href="#优先队列" class="headerlink" title="优先队列"></a>优先队列</h3><ul><li>PriorityQueue<ul><li>内部是用堆实现的，内部元素不是完全有序的，逐个出队会得到有序的输出</li><li>优先级可以有相同的，内部元素不是完全有序的，如果遍历输出，除了第一个，其他没有特定顺序</li><li>查看头部元素的效率很高，为O(1)，入队、出队效率比较高，为O(log2(N))，构建堆heapify的效率为O(N)</li></ul></li></ul><h3 id="特别说明"><a href="#特别说明" class="headerlink" title="特别说明"></a>特别说明</h3><ul><li>对于某些问题（如求前k个最大元素和求中值），相比使用排序，使用堆不仅实现效率更高，而且可以应对数据量不确定且源源不断到来的情况，可以给出实时结果</li></ul>]]></content>
       
       
       <categories>
           
-          <category> elasticsearch </category>
+          <category> java </category>
           
       </categories>
       
       
         <tags>
             
-            <tag> elasticsearch </tag>
+            <tag> java </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>java容器-Map和Set</title>
+      <link href="/2019/10/15/java-rong-qi-map-he-set/"/>
+      <url>/2019/10/15/java-rong-qi-map-he-set/</url>
+      
+        <content type="html"><![CDATA[<p>今天介绍一些java内的容器-Map和Set，有些容器会在后续案例中更详细介绍</p><h3 id="Map"><a href="#Map" class="headerlink" title="Map"></a>Map</h3><ul><li>HashMap<ul><li>实现map接口， key value键值对</li><li>内部实例变量size表示实际键值对的个数。table是一个Entry类型的数组，称为哈希表或哈希桶，其中的每个元素指向一个单向链表，链表中的每个节点表示一个键值对，Entry是一个内部类，其中，key和value分别表示键和值，next指向下一个Entry节点，hash是key的hash值；</li><li>扩展策略： threshold表示阈值，当键值对个数size大于等于threshold时考虑进行扩展， 一般而言，threshold等于table.length乘以loadFactor，会分配一个容量为原来两倍的Entry数组，调用transfer方法将原来的键值对移植过来，然后更新内部的table变量，以及threshold的值</li><li>key比较的时候，是先比较hash值，hash相同的时候，再使用equals方法进行比较，要求元素重写hashCode和equals方法</li><li>保存键值对的流程：<ul><li>计算键哈希值</li><li>根据哈希值取得保存位置</li><li>插到对应位置的链表头部或更新已有值</li><li>根据需要扩展table大小</li></ul></li><li>分配一个容量为原来两倍的Entry数组，调用transfer方法将原来的键值对移植过来，然后更新内部的table变量，以及threshold的值</li><li>hash值是随即的，键值对没有顺序</li></ul></li><li>TreeSet<ul><li>按键有序，TreeMap同样实现了SortedMap和NavigableMap接口，可以方便地根据键的顺序进行查找，如第一个、最后一个、某一范围的键、邻近键等,要求键实现Comparable接口或通过构造方法提供一个Com-parator对象</li><li>内部是用红黑树实现的，红黑树是一种大致平衡的排序二叉树</li><li>根据键保存、查找、删除的效率比较高，为O(h), h为树的高度，在树平衡的情况下，h为log2(N), N为节点数</li></ul></li><li>LinkedHashMap<ul><li>是HashMap的子类，内部还有一个双向链表维护键值对的顺序，每个键值对既位于哈希表中，也位于这个双向链表中。</li><li>LinkedHashMap支持两种顺序：一种是插入顺序；另外一种是访问顺序； （按访问有序-LRU缓存）</li></ul></li></ul><h3 id="Set"><a href="#Set" class="headerlink" title="Set"></a>Set</h3><ul><li>hashSet<ul><li>没有重复元素</li><li>可以高效地添加、删除元素、判断元素是否存在，效率都为O(1)</li><li>无序</li><li>要求元素重写hashCode和equals方法，且对于两个对象，如果equals相同，则hashCode也必须相同</li><li>内部是用HashMap实现的</li></ul></li><li>TreeSet<ul><li>有序</li><li>给予TreeMap实现</li><li>添加、删除元素、判断元素是否存在，效率比较高，为O(log2(N)), N为元素个数</li><li>TreeSet同样实现了SortedSet和NavigatableSet接口，可以方便地根据顺序进行查找和操作，如第一个、最后一个、某一取值范围、某一值的邻近元素等，要求元素实现Comparable接口或通过构造方法提供一个Com-parator对象</li></ul></li><li>LinkedHashSet<ul><li>内部的Map的实现类是LinkedHashMap</li></ul></li></ul><h3 id="特别说明"><a href="#特别说明" class="headerlink" title="特别说明"></a>特别说明</h3><ul><li>HashMap也不是线程安全的，并发场景下需要注意，可以使用HashTable，但是相应效率地下，可以使用ConcurrentHashMap，兼顾性能和并发</li><li>map的keySet和entrySet返回都是set，所以一般可以用map实现对应的set；</li></ul>]]></content>
+      
+      
+      <categories>
+          
+          <category> java </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> java </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>分布式系统中的一些设计策略</title>
+      <link href="/2019/10/13/fen-bu-shi-xi-tong-zhong-de-yi-xie-she-ji-ce-lue/"/>
+      <url>/2019/10/13/fen-bu-shi-xi-tong-zhong-de-yi-xie-she-ji-ce-lue/</url>
+      
+        <content type="html"><![CDATA[<p>今天介绍分布式系统下的一些通用的设计策略</p><h3 id="心跳检测"><a href="#心跳检测" class="headerlink" title="心跳检测"></a>心跳检测</h3><ul><li>多个节点分担任务的运行、计算或者程序逻辑处理，需要检测一个节点出现了故障乃至无法工作</li><li>可使用周期检测心跳机制、累计失效检测机制</li><li>周期检测心跳机制：Server端每间隔t秒向Node集群发起监测请求，设定超时时间，如果超过超时时间，则判断“死亡”。这里的超时时间设置带有随意性，容易误判。进一步，可以统计实际检测Node的返回时间，包括得到一定周期内的最长时间。那么可以根据现有没有正确返回的时间在历史统计的分布中计算得到“死亡”概率，同时对于宣告濒临死亡的节点可以发起有限次数的重试，以作进一步判定。心跳检测本身也是有效资源利用和成本之间的一种权衡，如果迟迟不能判断节点是否“死亡”，会影响业务逻辑的处理</li></ul><h3 id="高可用设计"><a href="#高可用设计" class="headerlink" title="高可用设计"></a>高可用设计</h3><ul><li>主备模式：当主机宕机时，备机接管主机的一切工作，待主机恢复正常后，按使用者的设定以自动（热备）或手动（冷备）方式将服务切换到主机上运行</li><li>互备模式：指两台主机同时运行各自的服务工作且相互监测情况。在数据库高可用部分，常见的互备是MM模式。MM模式即Multi-Master模式，指一个系统存在多个master，每个master都具有read-write能力，需根据时间戳或业务逻辑合并版本。比如分布式版本管理系统git可以理解成multi-master模式，具备最终一致性</li><li>集群模式：集群模式是指有多个节点在运行，同时可以通过主控节点分担服务请求，比如zookeeper。集群模式要特别解决主控节点本身的高可用问题</li></ul><h3 id="容错性"><a href="#容错性" class="headerlink" title="容错性"></a>容错性</h3><ul><li>容错的处理是保障分布式环境下相应系统的高可用或者健壮性，如缓存的雪崩问题</li></ul><h3 id="负载均衡"><a href="#负载均衡" class="headerlink" title="负载均衡"></a>负载均衡</h3><ul><li>关键在于使用多台集群服务器共同分担计算任务，把网络请求及计算分配到集群可用服务器上去，从而达到可用性及较好的用户操作体验</li><li>一些策略：<ul><li>轮询：即Round Robin，根据Nginx配置文件中的顺序，依次把客户端的Web请求分发到不同的后端服务器</li><li>最少连接：当前谁连接最少，分发给谁</li><li>IP地址哈希：确定相同IP请求可以转发给同一个后端节点处理，以方便session保持</li><li>基于权重的负载均衡：配置Nginx把请求更多地分发到高配置的后端服务器上，把相对较少的请求分发到低配服务器</li></ul></li></ul>]]></content>
+      
+      
+      <categories>
+          
+          <category> 分布式系统 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> 分布式系统 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>mysql-innodb存储引擎中的锁</title>
+      <link href="/2019/08/15/mysql-innodb-cun-chu-yin-qing-zhong-de-suo/"/>
+      <url>/2019/08/15/mysql-innodb-cun-chu-yin-qing-zhong-de-suo/</url>
+      
+        <content type="html"><![CDATA[<p>今天介绍下mysql innodb中的锁</p><h3 id="锁类型介绍（行级锁）"><a href="#锁类型介绍（行级锁）" class="headerlink" title="锁类型介绍（行级锁）"></a>锁类型介绍（行级锁）</h3><ul><li>共享锁（S）：允许事务读一行数据</li><li>排他锁（X）：允许事务删除或更新一行数据</li><li>如果一个事务T1已经获得了行r的共享锁，那么另外的事务T2可以立即获得行r的共享锁，因为读取并没有改变行r的数据，称这种情况为锁兼容，如X与X、S不兼容， S与X不兼容，S与S兼容；</li><li>InnoDB存储引擎支持多粒度（granular）锁定，这种锁定允许事务在行级上的锁和表级上的锁同时存在。为了支持在不同粒度上进行加锁操作，InnoDB存储引擎支持一种额外的锁方式，称之为意向锁（Intention Lock）。意向锁是将锁定的对象分为多个层次，意向锁意味着事务希望在更细粒度（fine granularity）上进行加锁</li></ul><h3 id="一致性非锁定读"><a href="#一致性非锁定读" class="headerlink" title="一致性非锁定读"></a>一致性非锁定读</h3><ul><li>InnoDB存储引擎通过行多版本控制（multi versioning）的方式来读取当前执行时间数据库中行的数据</li><li>如果读取的行正在执行DELETE或UPDATE操作，这时读取操作不会因此去等待行上锁的释放。相反地，InnoDB存储引擎会去读取行的一个快照数据</li><li>非锁定读不需要等待访问的行上X锁的释放。快照数据是指该行的之前版本的数据，该实现是通过undo段来完成。而undo用来在事务中回滚数据，因此快照数据本身是没有额外的开销。此外，读取快照数据是不需要上锁的，因为没有事务需要对历史的数据进行修改操作</li><li>非锁定读机制极大地提高了数据库的并发性。在InnoDB存储引擎的默认设置下，这是默认的读取方式，即读取不会占用和等待表上的锁。但是在不同事务隔离级别下，读取的方式不同，并不是在每个事务隔离级别下都是采用非锁定的一致性读。此外，即使都是使用非锁定的一致性读，但是对于快照数据的定义也各不相同</li><li>在事务隔离级别READ COMMITTED和REPEATABLE READ（InnoDB存储引擎的默认事务隔离级别）下，InnoDB存储引擎使用非锁定的一致性读。然而，对于快照数据的定义却不相同。在READ COMMITTED事务隔离级别下，对于快照数据，非一致性读总是读取被锁定行的最新一份快照数据。而在REPEATABLE READ事务隔离级别下，对于快照数据，非一致性读总是读取事务开始时的行数据版本</li></ul><h3 id="一致性锁定读"><a href="#一致性锁定读" class="headerlink" title="一致性锁定读"></a>一致性锁定读</h3><ul><li>在默认配置下，即事务的隔离级别为REPEATABLE READ模式下，InnoDB存储引擎的SELECT操作使用一致性非锁定读。</li><li>但是在某些情况下，用户需要显式地对数据库读取操作进行加锁以保证数据逻辑的一致性。而这要求数据库支持加锁语句，即使是对于SELECT的只读操作</li></ul><h3 id="自增长与锁"><a href="#自增长与锁" class="headerlink" title="自增长与锁"></a>自增长与锁</h3><ul><li>自增长在数据库中是非常常见的一种属性，也是很多DBA或开发人员首选的主键方式。在InnoDB存储引擎的内存结构中，对每个含有自增长值的表都有一个自增长计数器（auto-increment counter</li><li>插入操作会依据这个自增长的计数器值加1赋予自增长列。这个实现方式称做AUTO-INCLocking。这种锁其实是采用一种特殊的表锁机制，为了提高插入的性能，锁不是在一个事务完成后才释放，而是在完成对自增长值插入的SQL语句后立即释放</li><li>从MySQL 5.1.22版本开始，InnoDB存储引擎中提供了一种轻量级互斥量的自增长实现机制，这种机制大大提高了自增长值插入的性能</li><li>需要注意InnoDB存储引擎中自增长的实现和MyISAM不同，MyISAM存储引擎是表锁设计，自增长不用考虑并发插入的问题。因此在master上用InnoDB存储引擎，在slave上用MyISAM存储引擎的replication架构下，必须考虑这种情况</li><li>在InnoDB存储引擎中，自增长值的列必须是索引，同时必须是索引的第一个列</li></ul><h3 id="外键与锁"><a href="#外键与锁" class="headerlink" title="外键与锁"></a>外键与锁</h3><ul><li>外键主要用于引用完整性的约束检查，在InnoDB存储引擎中，对于一个外键列，如果没有显式地对这个列加索引，InnoDB存储引擎自动对其加一个索引</li></ul>]]></content>
+      
+      
+      <categories>
+          
+          <category> mysql </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> mysql </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>qmq消息队列-架构学习</title>
+      <link href="/2019/07/19/qmq-xiao-xi-dui-lie-jia-gou-xue-xi/"/>
+      <url>/2019/07/19/qmq-xiao-xi-dui-lie-jia-gou-xue-xi/</url>
+      
+        <content type="html"><![CDATA[<p>今天分享下qmq的架构</p><h3 id="组件介绍"><a href="#组件介绍" class="headerlink" title="组件介绍"></a>组件介绍</h3><ul><li>meta server: 提供集群管理和集群发现的作用</li><li>server: 提供实时消息服务</li><li>delay server: 提供延时/定时消息服务，延时消息先在delay server排队，时间到之后再发送给server</li><li>producer: 消息生产者</li><li>consumer： 消息消费者</li></ul><h3 id="交互过程"><a href="#交互过程" class="headerlink" title="交互过程"></a>交互过程</h3><p><img src="/images/qmq_jg.png" alt="qmq交互图"></p><ol><li>delay server 向meta server注册</li><li>实时server 向meta server注册</li><li>producer在发送消息前需要询问meta server获取server list</li><li>meta server返回server list给producer(根据producer请求的消息类型返回不同的server list)</li><li>producer发送延时/定时消息</li><li>延时时间已到，delay server将消息投递给实时server</li><li>producer发送实时消息</li><li>consumer需要拉取消息，在拉取之前向meta server获取server list(只会获取实时server的list)</li><li>meta server返回server list给consumer</li><li>consumer向实时server发起pull请求</li><li>实时server将消息返回给consumer</li></ol><h3 id="实时消息介绍"><a href="#实时消息介绍" class="headerlink" title="实时消息介绍"></a>实时消息介绍</h3><ul><li>QMQ没有采用基于partition存储模型，学习了很多Kafka和RocketMQ的存储实现方式：<ul><li>顺序append文件，提供很好的性能</li><li>顺序消费文件，使用offset表示消费进度，成本极低</li><li>将所有subject的消息合并在一起，减少parition数量，可以提供更多的subject(RocketMQ)</li></ul></li><li>通过添加一层拉取的log(pull log)来动态映射consumer与partition的逻辑关系，这样不仅解决了consumer的动态扩容缩容问题，还可以继续使用一个offset表示消费进度</li><li>时Server存储模型中有三种重要的log，消费者就可以使用pull log上的sequence来表示消费进度<ul><li>message log 所有subject的消息进入该log，消息的主存储</li><li>consume log consume log存储的是message log的索引信息</li><li>pull log 每个consumer拉取消息的时候会产生pull log，pull log记录的是拉取的消息在consume log中的sequence</li></ul></li></ul><h3 id="延时-定时消息介绍"><a href="#延时-定时消息介绍" class="headerlink" title="延时/定时消息介绍"></a>延时/定时消息介绍</h3><ul><li>QMQ提供任意时间的延时/定时消息，你可以指定消息在未来两年内(可配置)任意时间内投递。比起RocketMQ提供的多个不同延时level的延时消息，QMQ的延时消息更加灵活。比如在OTA场景中，客人经常是预订未来某个时刻的酒店或者机票，这个时间是不固定的，我们无法使用几个固定的延时level来实现这个场景</li><li>QMQ的延时/定时消息使用的是两层hash wheel来实现的。第一层位于磁盘上，每个小时为一个刻度(默认为一个小时一个刻度，可以根据实际情况在配置里进行调整)，每个刻度会生成一个日志文件(schedule log)，因为QMQ支持两年内的延迟消息(默认支持两年内，可以进行配置修改)，则最多会生成 2 <em> 366 </em> 24 = 17568 个文件(如果需要支持的最大延时时间更短，则生成的文件更少)。第二层在内存中，当消息的投递时间即将到来的时候，会将这个小时的消息索引(索引包括消息在schedule log中的offset和size)从磁盘文件加载到内存中的hash wheel上，内存中的hash wheel则是以500ms为一个刻度</li><li>在延时/定时消息里存在三种log<ul><li>message log 和实时消息里的message log类似，收到消息后append到该log就返回给producer，相当于WAL</li><li>schedule log 按照投递时间组织，每个小时一个。该log是回放message log后根据延时时间放置对应的log上，这是上面描述的两层hash wheel的第一层，位于磁盘上。schedule log里是包含完整的消息内容的，因为消息内容从message log同步到了schedule log，所以历史message log都可以删除(所以message log只需要占用极小的存储空间，所以我们可以使用低容量高性能的ssd来获取极高的吞吐量，比如采用100G极好的SSD只需要RMB2000左右)。另外，schedule log是按照延时时间组织的，所以延时时间已过的schedule log文件也可以删除</li><li>dispatch log 延时/定时消息投递成功后写入，主要用于在应用重启后能够确定哪些消息已经投递，dispatch log里写入的是消息的offset，不包含消息内容。当延时server中途重启时，我们需要判断出当前这个刻度(比如一个小时)里的消息有哪些已经投递了则不重复投递</li></ul></li></ul>]]></content>
+      
+      
+      <categories>
+          
+          <category> qmq </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> qmq </tag>
+            
+            <tag> 消息队列 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>缓存策略-缓存算法介绍</title>
+      <link href="/2019/07/12/huan-cun-ce-lue-huan-cun-suan-fa-jie-shao/"/>
+      <url>/2019/07/12/huan-cun-ce-lue-huan-cun-suan-fa-jie-shao/</url>
+      
+        <content type="html"><![CDATA[<p>今天介绍下缓存算法</p><h3 id="FIFO算法"><a href="#FIFO算法" class="headerlink" title="FIFO算法"></a>FIFO算法</h3><ul><li>进先出（FIFO，队列），是最简单、最公平的一种思想，即如果一个数据是最先进入的，那么可以认为在将来它被访问的可能性很小。空间满的时候，最先进入的数据会被最早置换（淘汰）掉</li><li>实现：维护一个FIFO队列，按照时间顺序将各数据（已分配页面）链接起来组成队列，并将置换指针指向队列的队首。再进行置换时，只需把置换指针所指的数据（页面）顺次换出，并把新加入的数据插到队尾即可</li><li>缺点： FIFO算法会使一些页面频繁地被替换和重新申请内存，从而导致缺页率增加</li></ul><h3 id="LRU算法"><a href="#LRU算法" class="headerlink" title="LRU算法"></a>LRU算法</h3><ul><li>LRU（The Least Recently Used，最近最久未使用算法）是一种常见的缓存算法，在很多分布式缓存系统（如Redis, Memcached）中都有广泛使用</li><li>如果一个数据在最近一段时间没有被访问到，那么可以认为在将来它被访问的可能性也很小。因此，当空间满时，最久没有访问的数据最先被置换（淘汰）</li><li>实现：最朴素的思想就是用数组+时间戳的方式，不过这样做效率较低。因此，我们可以用双向链表（LinkedList）+哈希表（HashMap）实现（链表用来表示位置，哈希表用来存储和查找），在Java里有对应的数据结构LinkedHashMap</li></ul><h3 id="LFU算法"><a href="#LFU算法" class="headerlink" title="LFU算法"></a>LFU算法</h3><ul><li>LFU（Least Frequently Used ，最近最少使用算法）也是一种常见的缓存算法。思想是：如果一个数据在最近一段时间很少被访问到，那么可以认为在将来它被访问的可能性也很小。因此，当空间满时，最小频率访问的数据最先被淘汰</li><li>算法实现策略：考虑到 LFU 会淘汰访问频率最小的数据，我们需要一种合适的方法按大小顺序维护数据访问的频率。LFU 算法本质上可以看做是一个 top K 问题(K = 1)，即选出频率最小的元素，因此我们很容易想到可以用二项堆来选择频率最小的元素，这样的实现比较高效。最终实现策略为小顶堆+哈希表</li></ul>]]></content>
+      
+      
+      <categories>
+          
+          <category> redis </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> redis </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>mysql-数据库隔离级别</title>
+      <link href="/2019/07/07/mysql-shu-ju-ku-ge-chi-ji-bie/"/>
+      <url>/2019/07/07/mysql-shu-ju-ku-ge-chi-ji-bie/</url>
+      
+        <content type="html"><![CDATA[<p>介绍下数据库隔离级别以及各隔离下的问题，以及mysql的默认隔离级别</p><h4 id="隔离级别"><a href="#隔离级别" class="headerlink" title="隔离级别"></a>隔离级别</h4><ul><li>Serializable：串行化<ul><li>强制事务排序，串行化读写，避免冲突</li></ul></li><li>Repeatable read：可重复读<ul><li>同一事务的多个实例在并发读取事务时，会“看到同样的”数据行</li></ul></li><li>Read committed：读已提交<ul><li>一个事务开始时，只能“看见”已经提交事务所做的改变</li><li>一个事务从开始到提交前，所做的任何数据改变都是不可见的，除非已经提交</li></ul></li><li>Read uncommitted：读未提交<ul><li>所有事务都可以“看到”未提交事务的执行结果</li></ul></li></ul><h4 id="各隔离级别下的问题"><a href="#各隔离级别下的问题" class="headerlink" title="各隔离级别下的问题"></a>各隔离级别下的问题</h4><p>见以下表格：</p><table><thead><tr><th>隔离级别 问题</th><th>脏读</th><th>不可重复读</th><th>幻读</th><th>加锁读</th></tr></thead><tbody><tr><td>Serializable</td><td>no</td><td>no</td><td>no</td><td>yes</td></tr><tr><td>Repeatable read</td><td>no</td><td>no</td><td>yes</td><td>no</td></tr><tr><td>Read committed</td><td>no</td><td>yes</td><td>yes</td><td>no</td></tr><tr><td>Read uncommitted</td><td>yes</td><td>yes</td><td>yes</td><td>no</td></tr></tbody></table><ul><li>脏读：一个事务处理过程里读取了另一个未提交的事务中的数据</li><li>不可重复读：在一个事务的两次查询中数据不一致</li><li>幻读：幻读是事务非独立执行时发生的一种现象，如事务T1批量对一个表中某一列列值为1的数据修改为2的变更，<br>但是在这时，事务T2对这张表插入了一条列值为1的数据，并完成提交<br>此时，如果事务T1查看刚刚完成操作的数据，发现还有一条列值为1的数据没有进行修改</li></ul><h4 id="默认隔离级别"><a href="#默认隔离级别" class="headerlink" title="默认隔离级别"></a>默认隔离级别</h4><p>Mysql默认隔离级别：Repeatable read<br>sql server默认隔离级别：Read committed</p><h4 id="如何设置隔离级别"><a href="#如何设置隔离级别" class="headerlink" title="如何设置隔离级别"></a>如何设置隔离级别</h4><p>（1）方法一</p><ol><li>使用vi打开mysql配置文件<br>sudo vi /etc/mysql/mysql.conf.d/mysqld.cnf</li><li>在文件的最末尾添加如下配置， 指定mysql数据库的隔离级别为READ-COMMITTED（transaction-isolation=READ-COMMITTED）；可选参数有：READ-UNCOMMITTED, READ-COMMITTED, REPEATABLE-READ, SERIALIZABLE.</li><li>在终端中重启mysql服务<br>sudo service mysql restart</li></ol><p>（2）方法二：</p><ol><li>进入mysql终端</li><li>设置隔离级别，可选的参数READ UNCOMMITTED  | REPEATABLE READ | SERIALIZABLE<br> SET GLOBAL TRANSACTION ISOLATION LEVEL READ COMMITTED;</li></ol>]]></content>
+      
+      
+      <categories>
+          
+          <category> mysql </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> mysql </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>qmq消息队列-高可用</title>
+      <link href="/2019/06/19/qmq-xiao-xi-dui-lie-gao-ke-yong/"/>
+      <url>/2019/06/19/qmq-xiao-xi-dui-lie-gao-ke-yong/</url>
+      
+        <content type="html"><![CDATA[<p>今天分享下qmq高可用的特性</p><h4 id="高可用说明"><a href="#高可用说明" class="headerlink" title="高可用说明"></a>高可用说明</h4><p>qmq高可用主要从两个角度提供：</p><ul><li>分片：qmq不是基于partition，可以很容易通过添加更多的记起提高一个subject的可用性，消息按照一定的负载均衡策略分布在不同的机器上，某台机器离线后producer将不再将消息发送给该Server</li><li>复制：QMQ通过主从复制来提高单机可用性。QMQ将服务端集群划分为多个group，每个group包含一个master和一个slave。消息的发送和消费全部指向master，slave只为保证可用性</li></ul><h4 id="主从切换"><a href="#主从切换" class="headerlink" title="主从切换"></a>主从切换</h4><ul><li>不支持自动主从切换，需要人工介入；</li><li>切换步骤：<ul><li>将某组设置为readonly，设置readonly之后，该组将不再接受新的消息；</li><li>等待主从完全同步，可以通过观察master的slaveMessageLogLag监控了解；</li><li>停止slave， 停止master；</li><li>执行ReplaceBroker命令切换角色(该步骤一定要在停止应用之后执行)；</li><li>启动slave， 启动master；</li></ul></li></ul><h4 id="部署方案实例"><a href="#部署方案实例" class="headerlink" title="部署方案实例"></a>部署方案实例</h4><ul><li>metaserver：部署两台应用，然后配置nginx作为负载均衡，确保mysql可用；</li><li>broker：部署两组，每组为一主一从两台，则至少部署4台；</li><li>delay server：同broker部署方式(如没有延时消息可以不部署)；</li><li>watchdog：建议部署两台，但某个时刻只有一台工作，当一台故障会自动切换(如无事务或持久化消息可以不部署)；</li></ul>]]></content>
+      
+      
+      <categories>
+          
+          <category> qmq </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> qmq </tag>
+            
+            <tag> 消息队列 </tag>
             
         </tags>
       
@@ -513,8 +465,8 @@
     
     <entry>
       <title>elasticsearch学习系列-乐观并发控制</title>
-      <link href="/2019/02/18/elasticsearch-xue-xi-xi-lie-le-guan-bing-fa-kong-zhi/"/>
-      <url>/2019/02/18/elasticsearch-xue-xi-xi-lie-le-guan-bing-fa-kong-zhi/</url>
+      <link href="/2019/06/18/elasticsearch-xue-xi-xi-lie-le-guan-bing-fa-kong-zhi/"/>
+      <url>/2019/06/18/elasticsearch-xue-xi-xi-lie-le-guan-bing-fa-kong-zhi/</url>
       
         <content type="html"><![CDATA[<p>今天介绍下elasticsearch中的乐观并发控制机制</p><h3 id="并发控制"><a href="#并发控制" class="headerlink" title="并发控制"></a>并发控制</h3><ul><li>并发控制分为悲观的和乐观的，对应有我们的乐观锁和悲观锁。</li><li>悲观锁假设冲突随时发生，在处理前必须获得排他的锁再处理</li><li>乐观锁则认为不存在冲突，先处理，若最后发现在处理过程中发生了改变，则取消改变，回滚处理；</li></ul><h3 id="es的乐观并发控制"><a href="#es的乐观并发控制" class="headerlink" title="es的乐观并发控制"></a>es的乐观并发控制</h3><ul><li>Elasticsearch是异步和并发的，这意味着这些复制请求被并行发送，并且到达目的地时也许 顺序是乱的 。 Elasticsearch 需要一种方法确保文档的旧版本不会覆盖新的版本</li><li>我们可以利用 version 号来确保 应用中相互冲突的变更不会导致数据丢失。我们通过指定想要修改文档的 version 号来达到这个目的。 如果该版本不是当前版本号，我们的请求将会失败</li><li>我们可以是使用其它数据库作为主要的数据存储，使用 Elasticsearch 做数据检索， 这意味着主数据库的所有更改发生时都需要被复制到 Elasticsearch ，如果多个进程负责这一数据同步，你可能遇到类似于之前描述的并发问题<ul><li>如果你的主数据库已经有了版本号 — 或一个能作为版本号的字段值比如 timestamp — 那么你就可以在 Elasticsearch 中通过增加 version_type=external 到查询字符串的方式重用这些相同的版本号， 版本号必须是大于零的整数， 且小于 9.2E+18 — 一个 Java 中 long 类型的正值</li><li>外部版本号的处理方式和我们之前讨论的内部版本号的处理方式有些不同， Elasticsearch 不是检查当前 version 和请求中指定的版本号是否相同， 而是检查当前 version 是否 小于 指定的版本号。 如果请求成功，外部的版本号作为文档的新 version 进行存储</li><li>外部版本号不仅在索引和删除请求是可以指定，而且在 创建 新文档时也可以指定</li></ul></li></ul><h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><ul><li>乐观控制在性能上通常更有优势，尤其是在读大部分都是读操作的场景</li><li>如果实际上确实存在很多冲突，乐观锁机制通常会退化，性能甚至低于悲观并发机制</li></ul>]]></content>
       
@@ -537,25 +489,123 @@
     
     
     <entry>
-      <title>记一次线上问题-java内存溢出</title>
-      <link href="/2019/02/08/ji-yi-ci-xian-shang-wen-ti-java-nei-cun-yi-chu/"/>
-      <url>/2019/02/08/ji-yi-ci-xian-shang-wen-ti-java-nei-cun-yi-chu/</url>
+      <title>分布式系统理论介绍</title>
+      <link href="/2019/06/13/fen-bu-shi-xi-tong-li-lun-jie-shao/"/>
+      <url>/2019/06/13/fen-bu-shi-xi-tong-li-lun-jie-shao/</url>
       
-        <content type="html"><![CDATA[<p>这里分享一个线上问题案例及解决过程。<br>小k来到新公司不久，一天早上，小K收到一封报警邮件，提示某项目出现较多异常。小k点击邮件查看详情，发现提示out of menery错误。此时同事们还没来，小k暗自吐槽：“怎么都没来，这个项目代码自己也还不熟悉阿”。但是小k转念一想：“毕竟也是有2年开发经验的人，自己先排查下吧”<br>&nbsp;<br>于是小k开始查看日志系统，发现报错基本集中在个别机器上。小k打开该项目的机器监控，发现有两台机器的内存使用率高于正常水平。进一步发现这两台机器的线程数量远高于其他机器以及此前的正常水平。<br>&nbsp;<br><img src="/images/3.png" alt="服务内存监控（此为正常情况，异常是超过90%）"><br><img src="/images/4.png" alt="线程监控（此为正常情况，异常机器的JMX thread数量有个梯度上升）"><br>小k心中有了方向，进一步针对机器的线程收集监控，获取到异常机器的大量线程来自同一个线程池。此时小k的组长大M来了，小k把相关问题以及排查结果向大M进行了说明，大M找到项目中使用该线程池的地方，小k暗叹：“还是对项目熟悉定位问题比较快哇”。然后两个人一起看起了代码。不一会，就发现了问题，当然代码的创造者早已离开。<br>关键代码如下：</p><pre><code>ExecutorService executor = Executors.newFixedThreadPool(size);</code></pre><p>问题在于这里的size是会根据请求中某参数的数量动态创建的。原先的的请求内参数并没有特别多，创建了定长线程池执行完后可以安全释放。但是现在遇到两个参数过多的请求（并没有对请求方限制批量处理的的数量），导致创建过多线程消耗过多内存，程序异常，也无法执行下面的对线程池的回收和销毁。<br>&nbsp;<br>确定了问题之后，组长让我对这里进行了修改，添加了创建线程数量的限制，防止线程泄露。上线后项目也恢复了正常。<br>&nbsp;<br>小k在这次问题排查中学到了很多：</p><ol><li>创建线程池本身要注意，要合理限制创建线程的最大数量，防止消耗过多的资源；</li><li>线程池使用中要确保在正常和异常情况下对线程池进行释放；</li><li>批量接口最好对最大请求数量进行约定和限制，防止不可控的异常；<br>小k整理了下思路，继续开始一天愉快得工作，直到深夜….</li></ol>]]></content>
+        <content type="html"><![CDATA[<p>本文介绍关于分布式系统的一些理论，后续还会涉及到</p><h3 id="CAP理论"><a href="#CAP理论" class="headerlink" title="CAP理论"></a>CAP理论</h3><ul><li>一致性（C）：在分布式系统中的所有数据备份，在同一时刻是否有同样的值。（等同于所有节点访问同一份最新的数据副本</li><li>可用性（A）：在集群中一部分节点故障后，集群整体是否还能响应客户端的读写请求。（对数据更新具备高可用性）</li><li>分区容忍性（P）：以实际效果而言，分区相当于对通信的时限要求。系统如果不能在一定时限内达成数据一致性，就意味着发生了分区的情况，必须就当前操作在C和A之间做出选择</li><li>三者很难同时满足，一般根据系统处理业务场景在某一点上进行折中</li></ul><h3 id="BASE理论"><a href="#BASE理论" class="headerlink" title="BASE理论"></a>BASE理论</h3><ul><li>Basically Available, Soft state, Eventually consistent（基本可用、软状态、最终一致性）</li></ul><h3 id="Paxos"><a href="#Paxos" class="headerlink" title="Paxos"></a>Paxos</h3><ul><li>是一个解决分布式系统中，多个节点之间就某个值（提案）达成一致（决议）的通信协议</li><li>两阶段协议，分为Prepare阶段和Accept阶段<ul><li>Prepare阶段<ul><li>Proposer生成全局唯一且递增的提案ID（生成方法很多，比如时间戳+IP+序列号等），向Paxos集群的所有机器发送请求，这里无须携带提案内容，只携带提案ID即可（且把提案id叫作Pn，也有一种说法ID其实代表版本version）</li><li>Acceptor收到提案请求后，做出以下约定：1）不再应答&lt;=Pn的Prepare请求 2）对于&lt;Pn的Accept请求亦不处</li></ul></li><li>Accept阶段<ul><li>Proposer收集到多数派应答（这里的多数派，就是超过n/2+1, n是集群数）Prepare阶段的返回值后，从中选择proposalID最大的提案内容，作为要发起Accept的提案，如果这个提案为空值，则可以自己随意决定提案内容。然后携带上当前proposalID，向Paxos集群的所有机器发送Accpet请求</li><li>Accpetor收到Accpet请求后，检查不违背自己之前做出约定的情况下，持久化当前Proposal ID和提案内容。最后Proposer收集到多数派应答的Accept回复后，形成决议</li></ul></li></ul></li></ul><h3 id="2PC"><a href="#2PC" class="headerlink" title="2PC"></a>2PC</h3><ul><li>在事务处理、关系型数据库及计算机网络中，2阶段提交协议（2PC）是一种典型的原子提交协议（atomic commitment protocol）。它是一种由协调器来处理分布式原子参与者是提交或者回滚事务的分布式算法</li><li>协议包括2个阶段<ul><li>提交请求阶段或者叫投票阶段：该阶段的任务是确定相关参与者对于事务处理是否准备就绪，YES代表可以commit, NO则反之</li><li>提交阶段：基于投票结果，由协调器决定提交事务抑或是退出事务处理；各事务参与者遵循指示，对本地事务资源做需要的动作</li></ul></li><li>最大的不足是提交协议是阻塞型协议，如果事务协调器宕机，某些参与者将无法解决他们的事务：一个参与者发送确认消息给协调器，因协调器无法工作而导致事务未处理完而处于悬挂状态</li></ul><h3 id="3PC"><a href="#3PC" class="headerlink" title="3PC"></a>3PC</h3><ul><li>第一阶段，投票，事务协调器询问参与者是否能提交（canCommit），都得到肯定回答后，继续第二阶段。第二阶段是预提交，都确认预提交成功后，进行第三阶段。第三阶段就是真实的提交，成功则完成事务；失败则继续重试</li><li>3PC是在2PC的基础上增加了一次交互，也就是preCommit（又称预提交）。只要预提交都成功，则一定要保证doCommit提交成功，即使协调器在下一阶段不可用，或者调用超时</li></ul><h3 id="Raft"><a href="#Raft" class="headerlink" title="Raft"></a>Raft</h3><ul><li>Paxos和Raft都是为了实现一致性（Consensus）这个目标，这个过程如同选举一样，参选者需要说服大多数选民（服务器）投票给他，一旦选定后就跟随其操作。Paxos和Raft的区别在于选举的具体过程不同</li><li>选举过程：<ul><li>任何一个服务器都可以成为一个候选者，它向其他服务器（选民）发出要求选举自己的请求</li><li>其他服务器同意了，回复OK（同意）指令</li><li>这样，这个候选者就成为领导者，它可以向选民们发出要执行具体操作动作的指令，比如进行日志复制</li><li>如果一旦这个Leader宕机崩溃了，那么Follower中会有一个成为候选者，发出邀票选举，相当于再次执行1）～2）的步骤</li></ul></li></ul><h3 id="解决脑裂问题"><a href="#解决脑裂问题" class="headerlink" title="解决脑裂问题"></a>解决脑裂问题</h3><ul><li>指在一个高可用（HA）系统中，当联系着的两个节点断开联系时，本来为一个整体的系统，分裂为两个独立节点，这时两个节点开始争抢共享资源，结果会导致系统混乱，数据损坏</li><li>通过心跳检测做主备切换的时候，就存在不确定性。心跳检测的不确定性是发生脑裂问题的一个非常重要的原因。比如Slave提供服务了，但此前被判死的Master又“复活”了，还在继续工作，则对应用程序逻辑带来未知因素，其中就包括抢夺资源</li><li>有一种做法称为设置仲裁机制，例如设置第三方检测服务器（Monitor），当Slave确定准备接管Master时，让Monitor也ping一下Master，如果没有通讯，则判断其“死亡”；同时Master在对外提供服务时，每隔一段时间比如10s由Master服务器ping Slave服务器和Monitor，如果均出现异常，则暂定业务操作，重试。重试多次之后则退出程序执行或者执行服务器重启操作</li><li>通过Lease机制也可以进一步处理双主脑裂问题。我们假设Slave已经在提供服务了，对应的Server服务器则获得Slave颁发的Lease。假设老Master仍在提供服务，则Lease必然是过期的，因此请求失效，老Master请求频繁时效的情况下，可以通过配置监控点触发报警，以人工介入让老Master放弃身份，转换为Slave</li></ul><h3 id="MVCC"><a href="#MVCC" class="headerlink" title="MVCC"></a>MVCC</h3><ul><li>基于多版本并发控制，乐观机制</li></ul>]]></content>
       
       
       <categories>
           
-          <category> java </category>
+          <category> 分布式系统 </category>
           
       </categories>
       
       
         <tags>
             
-            <tag> 问题记录 </tag>
+            <tag> 分布式系统 </tag>
             
-            <tag> java </tag>
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>Elasticsearch学习系列-入门介绍</title>
+      <link href="/2019/03/29/elasticsearch-xue-xi-xi-lie-ru-men-jie-shao/"/>
+      <url>/2019/03/29/elasticsearch-xue-xi-xi-lie-ru-men-jie-shao/</url>
+      
+        <content type="html"><![CDATA[<p>elasticsearch是功能强大的基于Lucene实现的开源搜索引擎。<br>本文主要从以下个方面对其进行入门介绍。<br><a href="https://es.xiaoleilu.com/010_Intro/05_What_is_it.html" target="_blank" rel="noopener">推荐文档</a></p><h4 id="使用场景和优势"><a href="#使用场景和优势" class="headerlink" title="使用场景和优势"></a>使用场景和优势</h4><ul><li>当我们的数据量非常大的时候，我们会考虑进行分库分表，但是分库分表需要考虑依赖拆分的字段，在某些场景下会很复杂。这时候es的优势可以体现出来：<br>支持PB级数据的高效存取；</li><li>当我们的业务数据结构很复杂，表之间的关联关系在关系型数据库中表达困难，表之间的关联错综复杂，我们可以考虑es：他可以以json形式存储结构化和非结构化的数据；</li><li>此外他还是实时文件存储，支持实时分析搜索；</li></ul><h4 id="如何使用"><a href="#如何使用" class="headerlink" title="如何使用"></a>如何使用</h4><ul><li>elasticsearch的使用非常简单。在本地可以很轻松的搭建起来。下面列出简单的步骤（如windows本地）<ul><li><a href="https://www.elastic.co/cn/downloads/elasticsearch" target="_blank" rel="noopener">下载地址</a>下载对应的包，如windows下的biz包</li><li>下载后解压出来，点击es/bin/下的elasticsearch.bat（linux下执行bin/elasticsearch，可<a href="https://juejin.im/post/58d1d7530ce4630057e6053a#heading-2" target="_blank" rel="noopener">参考</a>）</li><li>打开本地：<a href="http://localhost:9200/">http://localhost:9200/</a> 看到正确的json，即安装运行成功</li></ul></li><li>向es内存取数据（具体的字段说明下一节说明）<ul><li><img src="/images/post.png" alt="post保存数据"></li><li><img src="/images/get.png" alt="get查询数据"></li></ul></li></ul><h4 id="基本概念说明"><a href="#基本概念说明" class="headerlink" title="基本概念说明"></a>基本概念说明</h4><ul><li>elasticsearch提供了非常好用的restful api操作数据，如上节我们看到的get post，还有put delete等简单操作；</li><li>这里需要对elasticsearch的一些基本概念介绍下：<ul><li>index：索引，是elasticsearch存储数据的逻辑区域，类似关系型数据库中的database；</li><li>document：文档，elasticsearch用json标示一个对象，类似关系型数据库中的一行数据；</li><li>type：类型，文档归属一种type，类似关系型数据库中的table；</li><li>field：字段，类似关系型数据库中的字段；</li></ul></li><li>在es中可以按照以上概念对数据进行组织，存储，查询，聚合等操作；</li></ul><h4 id="更多特性和优势"><a href="#更多特性和优势" class="headerlink" title="更多特性和优势"></a>更多特性和优势</h4><ul><li>DSL查询： elasticsearch提供了功能十分强大的DSL查询，用于复杂的场景，可以看文档了解这块，基本上可以满足业务的各种要求；</li><li>分布式集群：非常便于扩展，支持大量级的数据存储查询；</li><li>还有排序，搜索…等更多更复杂的特性我们会在后续的使用以及专题中进行更详细的介绍。</li></ul>]]></content>
+      
+      
+      <categories>
+          
+          <category> elasticsearch </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> elasticsearch </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>elasticsearch学习系列-搜索浅尝</title>
+      <link href="/2019/02/15/elasticsearch-xue-xi-xi-lie-sou-suo-qian-chang/"/>
+      <url>/2019/02/15/elasticsearch-xue-xi-xi-lie-sou-suo-qian-chang/</url>
+      
+        <content type="html"><![CDATA[<p>本文简单介绍ES搜索的一些简单尝试</p><h4 id="检索文档"><a href="#检索文档" class="headerlink" title="检索文档"></a>检索文档</h4><pre><code>GET /_index/_type/_id</code></pre><p>根据库、类型、id搜索数据</p><h4 id="简单搜索"><a href="#简单搜索" class="headerlink" title="简单搜索"></a>简单搜索</h4><pre><code>GET /_index/_type/_search</code></pre><p>搜索索引_index内类型_type内的所有数据，默认返回10条</p><h4 id="查询表达式搜索"><a href="#查询表达式搜索" class="headerlink" title="查询表达式搜索"></a>查询表达式搜索</h4><pre><code>GET /_index/_type/_search{    &quot;query&quot; : {        &quot;match&quot; : {            &quot;name&quot; : &quot;Smith&quot;        }    }}</code></pre><p>搜索name=Smith的数据</p><h4 id="复杂搜索"><a href="#复杂搜索" class="headerlink" title="复杂搜索"></a>复杂搜索</h4><pre><code>GET /_index/_type/_search{    &quot;query&quot; : {        &quot;bool&quot;: {            &quot;must&quot;: {                &quot;match&quot; : {                    &quot;name&quot; : &quot;smith&quot;                }            },            &quot;filter&quot;: {                &quot;range&quot; : {                    &quot;age&quot; : { &quot;gt&quot; : 30 }                }            }        }    }}</code></pre><p>查找name=Smith，age大于30的数据</p><h4 id="全文搜索"><a href="#全文搜索" class="headerlink" title="全文搜索"></a>全文搜索</h4><pre><code>GET /_index/_type/_search{    &quot;query&quot; : {        &quot;match&quot; : {            &quot;about&quot; : &quot;abc def&quot;        }    }}</code></pre><p>搜索数据包含 abc def，或abd 、 def的数据</p><h4 id="短语搜索"><a href="#短语搜索" class="headerlink" title="短语搜索"></a>短语搜索</h4><pre><code>GET /_index/_type/_search{    &quot;query&quot; : {        &quot;match_phrase&quot; : {            &quot;about&quot; : &quot;abc def&quot;        }    }}</code></pre><p>搜索数据包含 abc def的数据，不可拆分</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> elasticsearch </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> elasticsearch </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>分布式系统下的一些概念介绍</title>
+      <link href="/2019/02/13/fen-bu-shi-xi-tong-xia-de-yi-xie-gai-nian-jie-shao/"/>
+      <url>/2019/02/13/fen-bu-shi-xi-tong-xia-de-yi-xie-gai-nian-jie-shao/</url>
+      
+        <content type="html"><![CDATA[<h3 id="进程与线程"><a href="#进程与线程" class="headerlink" title="进程与线程"></a>进程与线程</h3><ul><li>进程是具有一定独立功能的程序关于某个数据集合上的一次运行活动，进程是系统进行资源分配和调度的一个独立单位。线程是进程的一个实体，是CPU调度和分派的基本单位，它是比进程更小的能独立运行的基本单位。</li><li>线程自己基本上不拥有系统资源，只拥有一点在运行中必不可少的资源（如程序计数器、一组寄存器和栈），但是它可与同属一个进程的其他的线程共享进程所拥有的全部资源</li></ul><h3 id="并发"><a href="#并发" class="headerlink" title="并发"></a>并发</h3><ul><li>当有多个线程在操作时，如果系统只有一个CPU，则它根本不可能真正同时进行一个以上的线程，它只能把CPU运行时间划分成若干个时间段，再将时间段分配给各个线程执行，在一个时间段的线程代码运行时，其他线程处于挂起状态。这种方式我们称之为并发</li></ul><h3 id="锁"><a href="#锁" class="headerlink" title="锁"></a>锁</h3><ul><li>锁（lock）作为用于保护临界区（critical section）的一种机制，被广泛应用在多线程程序中，比如Java（synchronized , ReentrantLock…）</li><li>减少或规避锁竞争的一些策略：<ul><li>分拆锁</li><li>分离锁</li><li>避免共享变量缓存</li><li>使用并发容器如Amino</li><li>使用Immutable数据和ThreadLocal中的数据</li></ul></li></ul><h3 id="并行"><a href="#并行" class="headerlink" title="并行"></a>并行</h3><ul><li>当系统有一个以上的CPU时，则线程的操作有可能非并发。当一个CPU执行一个线程时，另一个CPU可以执行另一个线程，两个线程互不抢占CPU资源，可以同时进行，这种方式我们称之为并行（Parallel）</li><li>和并发的区别：并发和并行是即相似又有区别的两个概念，并行是指两个或者多个事件在同一时刻发生；而并发是指两个或多个事件在同一时间间隔内发生</li></ul><h3 id="集群"><a href="#集群" class="headerlink" title="集群"></a>集群</h3><ul><li>集群是一组相互独立的、通过高速网络互联的计算机，它们构成了一个组，并以单一系统的模式加以管理</li><li>集群配置是用于提高可用性和可伸缩性。其实，分布式系统可以表达为很多机器组成的集群，靠彼此之间的网络通信，担当的角色可能不同，共同完成同一件事情的系统</li></ul><h3 id="状态特性"><a href="#状态特性" class="headerlink" title="状态特性"></a>状态特性</h3><ul><li>在大部分应用中都提倡服务无状态，分布式环境中的任何节点（Node）也是无状态的</li><li>无状态是指不保存存储状态，则可以随意重启和替代，便于做扩展。比如负载均衡服务器Nginx是无状态的，应用服务绝大部分也是无状态的，在高压力访问下，撑不住了就加一些机器，扩展很容易</li></ul><h3 id="系统重发和幂等性"><a href="#系统重发和幂等性" class="headerlink" title="系统重发和幂等性"></a>系统重发和幂等性</h3><ul><li>网络重复请求，造成的原因有多种</li><li>幂等性就是调用1次和调用N次要返回一样的结果</li></ul>]]></content>
+      
+      
+      <categories>
+          
+          <category> 分布式系统 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> 分布式系统 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>数据库关于分库分表的整理</title>
+      <link href="/2019/01/30/shu-ju-ku-guan-yu-fen-ku-fen-biao-de-zheng-li/"/>
+      <url>/2019/01/30/shu-ju-ku-guan-yu-fen-ku-fen-biao-de-zheng-li/</url>
+      
+        <content type="html"><![CDATA[<p>今天分享一些项目中关于数据库分库分表的经验</p><h3 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h3><ul><li>一般随着业务的增长，出现以下问题都需要考虑分库分表<ul><li>单表的字段过多，</li><li>数据量过大，</li><li>db请求压力过大</li></ul></li></ul><h3 id="操作"><a href="#操作" class="headerlink" title="操作"></a>操作</h3><ul><li>如果表的字段过多，可以考虑垂直分，将表的一些字段拆分出去建立扩展表</li><li>数据量过大的时候，可以考虑数据的当前总量和增量，进行水平拆分</li><li>数据库请求压力大的时候，可以进行分区，进行分库管理</li></ul><h3 id="说明"><a href="#说明" class="headerlink" title="说明"></a>说明</h3><ul><li>拆分表的字段以及分表策略需要根据实际情况而定，分表后如果需要根据非分表字段查询是一件很痛苦的事情</li><li>基于上面提到的问题，我们可以考虑在分表的同时使用es等存储数据方便进行索引</li></ul>]]></content>
+      
+      
+      <categories>
+          
+          <category> mysql </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> mysql </tag>
             
         </tags>
       
@@ -596,6 +646,31 @@
         <content type="html"><![CDATA[<p>   做一件事，要学会倾尽全力</p>]]></content>
       
       
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>redis学习-复制功能</title>
+      <link href="/2018/12/11/redis-xue-xi-fu-zhi-gong-neng/"/>
+      <url>/2018/12/11/redis-xue-xi-fu-zhi-gong-neng/</url>
+      
+        <content type="html"><![CDATA[<p>今天介绍下redis的复制功能</p><h3 id="复制配置"><a href="#复制配置" class="headerlink" title="复制配置"></a>复制配置</h3><ul><li>参与复制的Redis实例划分为主节点(master)和从节点(slave)</li><li>复制的数据流是单向的，只能由主节点复制到从节 点。配置复制的方式有以下三种<ul><li>在配置文件中加入slaveof{masterHost}{masterPort}随Redis启动生 效</li><li>在redis-server启动命令后加入–slaveof{masterHost}{masterPort}生 效</li><li>直接使用命令:slaveof{masterHost}{masterPort}生效</li></ul></li></ul><h3 id="拓扑介绍"><a href="#拓扑介绍" class="headerlink" title="拓扑介绍"></a>拓扑介绍</h3><ul><li>一主一从结构<ul><li>最简单的复制拓扑结构，用于主节点出现宕机时从节点 提供故障转移支持</li><li>当应用写命令并发量较高且需要持久 化时，可以只在从节点上开启AOF，这样既保证数据安全性同时也避免了持 久化对主节点的性能干扰</li><li>当主节点关闭持久化功能时， 如果主节点脱机要避免自动重启操作。因为主节点之前没有开启持久化功能 自动重启后数据集为空，这时从节点如果继续复制主节点会导致从节点数据 也被清空的情况，丧失了持久化的意义。安全的做法是在从节点上执行 slaveof no one断开与主节点的复制关系，再重启主节点从而避免这一问题</li></ul></li><li>一主多从结构<ul><li>一主多从结构(又称为星形拓扑结构)使得应用端可以利用多个从节点 实现读写分离</li><li>对于读占比较大的场景，可以把读命令发送到 从节点来分担主节点压力。同时在日常开发中如果需要执行一些比较耗时的 读命令，如:keys、sort等，可以在其中一台从节点上执行，防止慢查询对 主节点造成阻塞从而影响线上服务的稳定性</li></ul></li><li>树状主从结构<ul><li>树状主从结构(又称为树状拓扑结构)使得从节点不但可以复制主节点 数据，同时可以作为其他从节点的主节点继续向下层复制</li><li>通过引入复制中 间层，可以有效降低主节点负载和需要传送给从节点的数据量</li></ul></li></ul><h3 id="原理"><a href="#原理" class="headerlink" title="原理"></a>原理</h3><ul><li>复制过程<ul><li>保存主节点(master)信息：</li><li>从节点(slave)内部通过每秒运行的定时任务维护复制相关逻辑， 当定时任务发现存在新的主节点后，会尝试与该节点建立网络连接</li><li>发送ping命令</li><li>权限验证。如果主节点设置了requirepass参数，则需要密码验证， 从节点必须配置masterauth参数保证与主节点相同的密码才能通过验证;如 果验证失败复制将终止，从节点重新发起复制流程</li><li>同步数据集。（主从复制连接正常通信后，对于首次建立复制的场 景，主节点会把持有的数据全部发送给从节点，这部分操作是耗时最长的步 骤。Redis在2.8版本以后采用新复制命令psync进行数据同步，原来的sync命 令依然支持，保证新旧版本的兼容性。新版同步划分两种情况:全量同步和 部分同步）</li><li>命令持续复制。当主节点把当前的数据同步给从节点后，便完成了 复制的建立流程。接下来主节点会持续地把写命令发送给从节点，保证主从 数据一致性</li></ul></li><li>数据同步<ul><li>全量复制:一般用于初次复制场景，Redis早期支持的复制功能只有全 量复制，它会把主节点全部数据一次性发送给从节点，当数据量较大时，会 对主从节点和网络造成很大的开销</li><li>部分复制:用于处理在主从复制中因网络闪断等原因造成的数据丢失 场景，当从节点再次连上主节点后，如果条件允许，主节点会补发丢失数据 给从节点。因为补发的数据远远小于全量数据，可以有效避免全量复制的过 高开销</li></ul></li></ul>]]></content>
+      
+      
+      <categories>
+          
+          <category> redis </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> redis </tag>
+            
+        </tags>
       
     </entry>
     
@@ -667,31 +742,6 @@
     
     
     <entry>
-      <title>数据库关于分库分表的整理</title>
-      <link href="/2018/07/30/shu-ju-ku-guan-yu-fen-ku-fen-biao-de-zheng-li/"/>
-      <url>/2018/07/30/shu-ju-ku-guan-yu-fen-ku-fen-biao-de-zheng-li/</url>
-      
-        <content type="html"><![CDATA[<p>今天分享一些项目中关于数据库分库分表的经验</p><h3 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h3><ul><li>一般随着业务的增长，出现以下问题都需要考虑分库分表<ul><li>单表的字段过多，</li><li>数据量过大，</li><li>db请求压力过大</li></ul></li></ul><h3 id="操作"><a href="#操作" class="headerlink" title="操作"></a>操作</h3><ul><li>如果表的字段过多，可以考虑垂直分，将表的一些字段拆分出去建立扩展表</li><li>数据量过大的时候，可以考虑数据的当前总量和增量，进行水平拆分</li><li>数据库请求压力大的时候，可以进行分区，进行分库管理</li></ul><h3 id="说明"><a href="#说明" class="headerlink" title="说明"></a>说明</h3><ul><li>拆分表的字段以及分表策略需要根据实际情况而定，分表后如果需要根据非分表字段查询是一件很痛苦的事情</li><li>基于上面提到的问题，我们可以考虑在分表的同时使用es等存储数据方便进行索引</li></ul>]]></content>
-      
-      
-      <categories>
-          
-          <category> mysql </category>
-          
-      </categories>
-      
-      
-        <tags>
-            
-            <tag> mysql </tag>
-            
-        </tags>
-      
-    </entry>
-    
-    
-    
-    <entry>
       <title>java-多线程-线程安全简单介绍</title>
       <link href="/2018/07/22/java-duo-xian-cheng-xian-cheng-an-quan-jian-dan-jie-shao/"/>
       <url>/2018/07/22/java-duo-xian-cheng-xian-cheng-an-quan-jian-dan-jie-shao/</url>
@@ -711,31 +761,6 @@
             <tag> java </tag>
             
             <tag> 并发 </tag>
-            
-        </tags>
-      
-    </entry>
-    
-    
-    
-    <entry>
-      <title>mysql-数据库隔离级别</title>
-      <link href="/2018/07/07/mysql-shu-ju-ku-ge-chi-ji-bie/"/>
-      <url>/2018/07/07/mysql-shu-ju-ku-ge-chi-ji-bie/</url>
-      
-        <content type="html"><![CDATA[<p>介绍下数据库隔离级别以及各隔离下的问题，以及mysql的默认隔离级别</p><h4 id="隔离级别"><a href="#隔离级别" class="headerlink" title="隔离级别"></a>隔离级别</h4><ul><li>Serializable：串行化<ul><li>强制事务排序，串行化读写，避免冲突</li></ul></li><li>Repeatable read：可重复读<ul><li>同一事务的多个实例在并发读取事务时，会“看到同样的”数据行</li></ul></li><li>Read committed：读已提交<ul><li>一个事务开始时，只能“看见”已经提交事务所做的改变</li><li>一个事务从开始到提交前，所做的任何数据改变都是不可见的，除非已经提交</li></ul></li><li>Read uncommitted：读未提交<ul><li>所有事务都可以“看到”未提交事务的执行结果</li></ul></li></ul><h4 id="各隔离级别下的问题"><a href="#各隔离级别下的问题" class="headerlink" title="各隔离级别下的问题"></a>各隔离级别下的问题</h4><p>见以下表格：</p><table><thead><tr><th>隔离级别 问题</th><th>脏读</th><th>不可重复读</th><th>幻读</th><th>加锁读</th></tr></thead><tbody><tr><td>Serializable</td><td>no</td><td>no</td><td>no</td><td>yes</td></tr><tr><td>Repeatable read</td><td>no</td><td>no</td><td>yes</td><td>no</td></tr><tr><td>Read committed</td><td>no</td><td>yes</td><td>yes</td><td>no</td></tr><tr><td>Read uncommitted</td><td>yes</td><td>yes</td><td>yes</td><td>no</td></tr></tbody></table><ul><li>脏读：一个事务处理过程里读取了另一个未提交的事务中的数据</li><li>不可重复读：在一个事务的两次查询中数据不一致</li><li>幻读：幻读是事务非独立执行时发生的一种现象，如事务T1批量对一个表中某一列列值为1的数据修改为2的变更，<br>但是在这时，事务T2对这张表插入了一条列值为1的数据，并完成提交<br>此时，如果事务T1查看刚刚完成操作的数据，发现还有一条列值为1的数据没有进行修改</li></ul><h4 id="默认隔离级别"><a href="#默认隔离级别" class="headerlink" title="默认隔离级别"></a>默认隔离级别</h4><p>Mysql默认隔离级别：Repeatable read<br>sql server默认隔离级别：Read committed</p><h4 id="如何设置隔离级别"><a href="#如何设置隔离级别" class="headerlink" title="如何设置隔离级别"></a>如何设置隔离级别</h4><p>（1）方法一</p><ol><li>使用vi打开mysql配置文件<br>sudo vi /etc/mysql/mysql.conf.d/mysqld.cnf</li><li>在文件的最末尾添加如下配置， 指定mysql数据库的隔离级别为READ-COMMITTED（transaction-isolation=READ-COMMITTED）；可选参数有：READ-UNCOMMITTED, READ-COMMITTED, REPEATABLE-READ, SERIALIZABLE.</li><li>在终端中重启mysql服务<br>sudo service mysql restart</li></ol><p>（2）方法二：</p><ol><li>进入mysql终端</li><li>设置隔离级别，可选的参数READ UNCOMMITTED  | REPEATABLE READ | SERIALIZABLE<br> SET GLOBAL TRANSACTION ISOLATION LEVEL READ COMMITTED;</li></ol>]]></content>
-      
-      
-      <categories>
-          
-          <category> mysql </category>
-          
-      </categories>
-      
-      
-        <tags>
-            
-            <tag> mysql </tag>
             
         </tags>
       
@@ -769,23 +794,23 @@
     
     
     <entry>
-      <title>java-outofmemoryError异常整理</title>
-      <link href="/2018/04/23/java-outofmemoryerror-yi-chang-zheng-li/"/>
-      <url>/2018/04/23/java-outofmemoryerror-yi-chang-zheng-li/</url>
+      <title>git常用命令</title>
+      <link href="/2018/05/13/git-chang-yong-ming-ling/"/>
+      <url>/2018/05/13/git-chang-yong-ming-ling/</url>
       
-        <content type="html"><![CDATA[<p>今天介绍java中的一些outofmemoryError</p><h3 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h3><ul><li><p>java虚拟机栈</p><ul><li>StackOverflowError：如果线程请求的栈深度大于虚拟机所允许的深度</li><li>OutOfMemoryError：当栈扩展时无法申请到足够的内存</li></ul></li><li><p>本地方法栈</p><ul><li>StackOverflowError</li><li>OutOfMemoryError</li></ul></li><li><p>java堆</p><ul><li>OutOfMemoryError</li></ul></li><li><p>方法区</p><ul><li>OutOfMemoryError</li></ul></li><li><p>运动时常量池</p><ul><li>OutOfMemoryError</li></ul></li><li><p>直接内存</p><ul><li>OutOfMemoryError</li></ul></li></ul>]]></content>
+        <content type="html"><![CDATA[<p>今天介绍下版本管理工具：git的一些常用命令</p><h3 id="git介绍"><a href="#git介绍" class="headerlink" title="git介绍"></a>git介绍</h3><ul><li>Git是目前世界上最先进的分布式版本控制系统</li><li>可以有效、高速地处理从很小到非常大的项目版本管理</li></ul><h3 id="git原理-参考"><a href="#git原理-参考" class="headerlink" title="git原理(参考 )"></a>git原理(<a href="https://blog.csdn.net/qq360694660/article/details/80256367" target="_blank" rel="noopener">参考</a> )</h3><ul><li>暂存操作会对先每一个文件计算校验和checksum（Git 使用SHA-1 算法计算数据的校验和，通过对文件的内容或目录的结构计算出一个SHA-1 哈希值，作为指纹字符串,该字串由40 个十六进制字符,并将此结果作为数据的唯一标识和索引），然后把当前版本的文件快照保存到本地Git 仓库中（Git 使用blob 类型的对象存储这些文件内容快照），并将校验和加入暂存区域</li><li>使用git commit 新建一个提交对象前，Git 会先计算每一个子目录（项目根目录）的校验和，然后在Git 仓库中将这些目录保存为树（tree）对象。之后Git 创建的提交对象，除了包含相关提交信息以外，还包含着指向这个树对象（项目根目录）的指针，如此它就可以在将来需要的时候，重现此次快照的内容了</li><li>分支：<ul><li>Git 中的分支实际上仅是一个包含所指对象校验和（40 个字符长度SHA-1 字串）的文件，所以创建和销毁一个分支就变得非常廉价。新建一个分支就是向一个文件写入41 个字节（外加一个换行符）</li><li>Git 创建一个新的分支仅仅是创建一个新的分支指针</li><li>有一个名为HEAD 的特别指针，运行git branch 命令，仅仅是建立了一个新的分支，但不会自动切换到这个分支中，所以当前我们仍然在master分支</li><li>git checkout testing，git仅仅是将HEAD指针指向了testing，几乎瞬间完成</li><li>如果这时我们再次修改了文件，并提交(git commit ),仅仅是testing分支指向了最新commit ，而master仍指向在原来的commit</li><li>使用git checkout master切换回master分支。git做了两件事它把HEAD 指针移回到master 分支，并把工作目录中的文件换成了master 分支所指向的快照内容</li><li>在master分支我们修改文件再进行提交，这时项目提交历史产生了分叉</li></ul></li></ul><h3 id="git常用命令介绍"><a href="#git常用命令介绍" class="headerlink" title="git常用命令介绍"></a>git常用命令介绍</h3><ul><li>git init: 初始化</li><li>git add ：对修改保存暂存区</li><li>git commit: 提交改动，生成当前项目的一个快照</li><li>git config user.name “用户名”    git config user.email “Email 地址” 设置用户名和邮件地址</li><li>git branch a： 创建分支a</li><li>git checkout a : 切换到分支a（先保存当前分支的改动）</li><li>git merge a: a分支合并到当前分支</li><li>git log: 查看整个版本历史</li><li>git pull: 获取远程分支的更新（别人的改动）</li><li>git push：自己的改动推到远端（方便别人获取）<br>-</li></ul>]]></content>
       
       
       <categories>
           
-          <category> java </category>
+          <category> git </category>
           
       </categories>
       
       
         <tags>
             
-            <tag> java </tag>
+            <tag> git </tag>
             
         </tags>
       
@@ -794,11 +819,11 @@
     
     
     <entry>
-      <title>java虚拟机内存区域介绍</title>
-      <link href="/2018/04/22/java-xu-ni-ji-nei-cun-qu-yu-jie-shao/"/>
-      <url>/2018/04/22/java-xu-ni-ji-nei-cun-qu-yu-jie-shao/</url>
+      <title>java-outofmemoryError异常整理</title>
+      <link href="/2018/04/23/java-outofmemoryerror-yi-chang-zheng-li/"/>
+      <url>/2018/04/23/java-outofmemoryerror-yi-chang-zheng-li/</url>
       
-        <content type="html"><![CDATA[<p>本文将简单介绍下java内存区域，借此加深对java虚拟机的理解；<br>希望对入门者有一定的引导作用，同时也作为记录帮助自己记忆，若有错误，希望大牛指点一二；</p><h4 id="简述"><a href="#简述" class="headerlink" title="简述"></a>简述</h4><p>java虚拟机所管理的内存包括这几个运行时数据区：程序计数器、java虚拟机栈、本地方法栈、java堆、方法区、直接内存；<br>参考图片（来自《深入理解java虚拟机》，推荐阅读）：<br><img src="/images/jvm1.PNG" alt="java虚拟机运行时数据区"></p><h4 id="程序计数器"><a href="#程序计数器" class="headerlink" title="程序计数器"></a>程序计数器</h4><ul><li>当前线程所执行的字节码的行号指示器，根据这里的值来选取下一条需要执行的字节码指令；</li><li>每个线程都有一个程序计数器，各线程互不影响；</li></ul><h4 id="java虚拟机栈"><a href="#java虚拟机栈" class="headerlink" title="java虚拟机栈"></a>java虚拟机栈</h4><ul><li>线程私有的，线程间互不干扰，生命周期与线程相同；</li><li>描述java方法执行的内存模型，每个方法再执行时会建立一个栈帧用于存储局部变量表、操作数栈、动态连接、方法出口等信息；每个方法调用至完成就对应一个栈帧（栈帧是方法运行时的基础数据结构）再虚拟机栈中入栈到出栈的过程；</li><li>其中局部变量表存放了编译器可知的各种基本数据类型；</li><li>这个区域存在两种异常状况：StackOverflowError（线程请求的栈深度大于虚拟机允许深度）和OutOfMemoryError（扩展时无法申请足够内存）；</li></ul><h4 id="本地方法栈"><a href="#本地方法栈" class="headerlink" title="本地方法栈"></a>本地方法栈</h4><ul><li>与虚拟机栈作用相似， 为虚拟机使用的Native方法服务；</li><li>也会抛出StackOverflowError和OutOfMemoryError；</li></ul><h4 id="java堆"><a href="#java堆" class="headerlink" title="java堆"></a>java堆</h4><ul><li>java虚拟机管理内存中最大的一块， 是所有线程共享的一块内存区域；</li><li>用来存放对象实例；</li><li>是垃圾收集器管理的主要区域，又称为”GC堆”；</li><li>可分为新生代和老年代，再细分为Eden空间 From Survivor和To Survivor空间 ；</li><li>堆无法扩展时会抛出OutOfMemoryError异常；</li></ul><h4 id="方法区"><a href="#方法区" class="headerlink" title="方法区"></a>方法区</h4><ul><li>各个线程共享的内存区域；</li><li>存储虚拟机加载的类信息、常量、静态变量、编译后的代码等；</li><li>内存不满足时抛出OutOfMemoryError异常；</li></ul><h4 id="直接内存"><a href="#直接内存" class="headerlink" title="直接内存"></a>直接内存</h4><ul><li>内存不够会抛出OutOfMemoryError异常；</li><li>不是虚拟机运行时数据区的一部分；</li></ul><h4 id="对象创建"><a href="#对象创建" class="headerlink" title="对象创建"></a>对象创建</h4><ul><li>虚拟机遇到new指令，检查参数是否能在常量池中定位到类的符号引用，若没有，先执行类加载过程（该过程会在后续文章进行分享）；</li><li>类加载检查完，在java堆中为对象分配内存（受不同收集器影响）；</li><li>虚拟机对对象进行一些设置：是哪个类的实例，如何查找类元数据信息，对象哈希码，对象的GC分代年龄等；</li><li>执行init进行初始化；</li></ul><h4 id="对象的访问定位"><a href="#对象的访问定位" class="headerlink" title="对象的访问定位"></a>对象的访问定位</h4><ul><li>需要通过栈上的reference数据来操作栈上的对象；</li><li>两种访问方式：<ul><li>句柄：java堆种一块内存作为句柄池，reference保存对象的句柄地址，句柄再保存对象实例数据和类型数据的具体地址信息；</li><li>直接指针：java堆对象放置访问类型数据，reference种存储对象地址；</li></ul></li></ul><p>以上是对java虚拟机涉及内存以及对象创建、对象访问定位流程的简单介绍，后续会继续进行相关基础和进阶知识的学习整理分享，欢迎一起讨论交流~</p>]]></content>
+        <content type="html"><![CDATA[<p>今天介绍java中的一些outofmemoryError</p><h3 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h3><ul><li><p>java虚拟机栈</p><ul><li>StackOverflowError：如果线程请求的栈深度大于虚拟机所允许的深度</li><li>OutOfMemoryError：当栈扩展时无法申请到足够的内存</li></ul></li><li><p>本地方法栈</p><ul><li>StackOverflowError</li><li>OutOfMemoryError</li></ul></li><li><p>java堆</p><ul><li>OutOfMemoryError</li></ul></li><li><p>方法区</p><ul><li>OutOfMemoryError</li></ul></li><li><p>运动时常量池</p><ul><li>OutOfMemoryError</li></ul></li><li><p>直接内存</p><ul><li>OutOfMemoryError</li></ul></li></ul>]]></content>
       
       
       <categories>
@@ -886,31 +911,6 @@
         <tags>
             
             <tag> mysql </tag>
-            
-        </tags>
-      
-    </entry>
-    
-    
-    
-    <entry>
-      <title>git常用命令</title>
-      <link href="/2017/05/13/git-chang-yong-ming-ling/"/>
-      <url>/2017/05/13/git-chang-yong-ming-ling/</url>
-      
-        <content type="html"><![CDATA[<p>今天介绍下版本管理工具：git的一些常用命令</p><h3 id="git介绍"><a href="#git介绍" class="headerlink" title="git介绍"></a>git介绍</h3><ul><li>Git是目前世界上最先进的分布式版本控制系统</li><li>可以有效、高速地处理从很小到非常大的项目版本管理</li></ul><h3 id="git原理-参考"><a href="#git原理-参考" class="headerlink" title="git原理( 参考 )"></a>git原理( <a href="https://blog.csdn.net/qq360694660/article/details/80256367" target="_blank" rel="noopener">参考</a> )</h3><ul><li>暂存操作会对先每一个文件计算校验和checksum（Git 使用SHA-1 算法计算数据的校验和，通过对文件的内容或目录的结构计算出一个SHA-1 哈希值，作为指纹字符串,该字串由40 个十六进制字符,并将此结果作为数据的唯一标识和索引），然后把当前版本的文件快照保存到本地Git 仓库中（Git 使用blob 类型的对象存储这些文件内容快照），并将校验和加入暂存区域</li><li>使用git commit 新建一个提交对象前，Git 会先计算每一个子目录（项目根目录）的校验和，然后在Git 仓库中将这些目录保存为树（tree）对象。之后Git 创建的提交对象，除了包含相关提交信息以外，还包含着指向这个树对象（项目根目录）的指针，如此它就可以在将来需要的时候，重现此次快照的内容了</li><li>分支：<ul><li>Git 中的分支实际上仅是一个包含所指对象校验和（40 个字符长度SHA-1 字串）的文件，所以创建和销毁一个分支就变得非常廉价。新建一个分支就是向一个文件写入41 个字节（外加一个换行符）</li><li>Git 创建一个新的分支仅仅是创建一个新的分支指针</li><li>有一个名为HEAD 的特别指针，运行git branch 命令，仅仅是建立了一个新的分支，但不会自动切换到这个分支中，所以当前我们仍然在master分支</li><li>git checkout testing，git仅仅是将HEAD指针指向了testing，几乎瞬间完成</li><li>如果这时我们再次修改了文件，并提交(git commit ),仅仅是testing分支指向了最新commit ，而master仍指向在原来的commit</li><li>使用git checkout master切换回master分支。git做了两件事它把HEAD 指针移回到master 分支，并把工作目录中的文件换成了master 分支所指向的快照内容</li><li>在master分支我们修改文件再进行提交，这时项目提交历史产生了分叉</li></ul></li></ul><h3 id="git常用命令介绍"><a href="#git常用命令介绍" class="headerlink" title="git常用命令介绍"></a>git常用命令介绍</h3><ul><li>git init: 初始化</li><li>git add ：对修改保存暂存区</li><li>git commit: 提交改动，生成当前项目的一个快照</li><li>git config user.name “用户名”    git config user.email “Email 地址” 设置用户名和邮件地址</li><li>git branch a： 创建分支a</li><li>git checkout a : 切换到分支a（先保存当前分支的改动）</li><li>git merge a: a分支合并到当前分支</li><li>git log: 查看整个版本历史</li><li>git pull: 获取远程分支的更新（别人的改动）</li><li>git push：自己的改动推到远端（方便别人获取）<br>-</li></ul>]]></content>
-      
-      
-      <categories>
-          
-          <category> git </category>
-          
-      </categories>
-      
-      
-        <tags>
-            
-            <tag> git </tag>
             
         </tags>
       
