@@ -749,36 +749,35 @@
             <div class="article-badge left-badge text-color">
                 <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
             <div class="card">
-                <a href="/2020/01/11/ji-yi-ci-shang-xian-hou-fu-wu-qi-cpu-biao-sheng-yi-chang-wen-ti/">
+                <a href="/2020/01/02/elasticsearch-sheng-ji-transportclient-zhuan-highlevelrestclient/">
                     <div class="card-image">
                         
                         
-                        <img src="/medias/featureimages/18.jpg" class="responsive-img" alt="记一次上线后服务器cpu飙升异常问题">
+                        <img src="/medias/featureimages/17.jpg" class="responsive-img" alt="elasticsearch升级-transportClient转HighLevelRestClient">
                         
-                        <span class="card-title">记一次上线后服务器cpu飙升异常问题</span>
+                        <span class="card-title">elasticsearch升级-transportClient转HighLevelRestClient</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
                     <div class="summary block-with-text">
                         
-                            今天记录分享一次服务上线后cpu飙升问题
-问题经过和分析
-项目的场景是接收各个系统的消息进行处理，
-项目消费上线前，一些发消息的业务逻辑先上线，消息在消息队列内大量挤压
-服务上线，没有对消息队列内消息reset处理，大量消息涌入
-服务内部并
+                            今天分享下项目中进行elasticsearch升级，同时伴随着transport Client转换位High Level Rest Client.
+升级迁移步骤
+es 集群升级（DBA操作）
+数据全量迁移
+使用High Level Rest
                         
                     </div>
                     <div class="publish-info">
                         <span class="publish-date">
-                            <i class="far fa-clock fa-fw icon-date"></i>2020-01-11
+                            <i class="far fa-clock fa-fw icon-date"></i>2020-01-02
                         </span>
                         <span class="publish-author">
                             
                             <i class="fas fa-bookmark fa-fw icon-category"></i>
                             
-                            <a href="/categories/java/" class="post-category">
-                                    java
+                            <a href="/categories/elasticsearch/" class="post-category">
+                                    elasticsearch
                                 </a>
                             
                             
@@ -788,12 +787,8 @@
                 
                 <div class="card-action article-tags">
                     
-                    <a href="/tags/问题记录/">
-                        <span class="chip bg-color">问题记录</span>
-                    </a>
-                    
-                    <a href="/tags/java/">
-                        <span class="chip bg-color">java</span>
+                    <a href="/tags/elasticsearch/">
+                        <span class="chip bg-color">elasticsearch</span>
                     </a>
                     
                 </div>

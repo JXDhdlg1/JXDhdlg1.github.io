@@ -106,6 +106,31 @@
     
     
     <entry>
+      <title>elasticsearch升级-transportClient转HighLevelRestClient</title>
+      <link href="/2020/01/02/elasticsearch-sheng-ji-transportclient-zhuan-highlevelrestclient/"/>
+      <url>/2020/01/02/elasticsearch-sheng-ji-transportclient-zhuan-highlevelrestclient/</url>
+      
+        <content type="html"><![CDATA[<p>今天分享下项目中进行elasticsearch升级，同时伴随着transport Client转换位High Level Rest Client.</p><h3 id="升级迁移步骤"><a href="#升级迁移步骤" class="headerlink" title="升级迁移步骤"></a>升级迁移步骤</h3><ul><li>es 集群升级（DBA操作）</li><li>数据全量迁移</li><li>使用High Level Rest Client和transport Client对新老集群双写；</li><li>数据全量迁移</li><li>读改到升级后新集群</li><li>老集群断写入</li></ul><h3 id="架构"><a href="#架构" class="headerlink" title="架构"></a>架构</h3><p><img src="/images/es_jg.jpeg" alt="架构简介"></p><h3 id="注意事项"><a href="#注意事项" class="headerlink" title="注意事项"></a>注意事项</h3><ul><li>数据迁移过程中双写，并建立补偿机制，避免数据丢失</li><li>核心业务部署双集群，封装DR</li><li>建立db数据和es数据的全量同步流程，修复数据不一致</li></ul>]]></content>
+      
+      
+      <categories>
+          
+          <category> elasticsearch </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> elasticsearch </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>java虚拟机内存区域介绍</title>
       <link href="/2019/12/22/java-xu-ni-ji-nei-cun-qu-yu-jie-shao/"/>
       <url>/2019/12/22/java-xu-ni-ji-nei-cun-qu-yu-jie-shao/</url>
@@ -150,31 +175,6 @@
             <tag> java </tag>
             
             <tag> 并发 </tag>
-            
-        </tags>
-      
-    </entry>
-    
-    
-    
-    <entry>
-      <title>elasticsearch升级-transportClient转HighLevelRestClient</title>
-      <link href="/2019/12/02/elasticsearch-sheng-ji-transportclient-zhuan-highlevelrestclient/"/>
-      <url>/2019/12/02/elasticsearch-sheng-ji-transportclient-zhuan-highlevelrestclient/</url>
-      
-        <content type="html"><![CDATA[<p>今天分享下项目中进行elasticsearch升级，同时伴随着transport Client转换位High Level Rest Client.</p><h3 id="升级迁移步骤"><a href="#升级迁移步骤" class="headerlink" title="升级迁移步骤"></a>升级迁移步骤</h3><ul><li>es 集群升级（DBA操作）</li><li>数据全量迁移</li><li>使用High Level Rest Client和transport Client对新老集群双写；</li><li>数据全量迁移</li><li>读改到升级后新集群</li><li>老集群断写入</li></ul><h3 id="架构"><a href="#架构" class="headerlink" title="架构"></a>架构</h3><p><img src="/images/es_jg.png" alt="架构简介"></p><h3 id="注意事项"><a href="#注意事项" class="headerlink" title="注意事项"></a>注意事项</h3><ul><li>数据迁移过程中双写，并建立补偿机制，避免数据丢失</li><li>核心业务部署双集群，封装DR</li><li>建立db数据和es数据的全量同步流程，修复数据不一致</li></ul>]]></content>
-      
-      
-      <categories>
-          
-          <category> elasticsearch </category>
-          
-      </categories>
-      
-      
-        <tags>
-            
-            <tag> elasticsearch </tag>
             
         </tags>
       

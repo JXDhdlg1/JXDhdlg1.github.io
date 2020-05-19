@@ -4,12 +4,12 @@
 
 <head><meta name="generator" content="Hexo 3.9.0">
     <meta charset="utf-8">
-    <meta name="keywords" content="java并发专题-线程池介绍, Hexo">
-    <meta name="description" content="今天介绍下java中的线程池应用，主要介绍java中的Excutor框架
-线程池的好处
-提高响应速度，处理任务时无需等待线程创建；
-提高线程管理性，对线程池内线程统一分配、调度、管理；
-降低资源消耗，通过重复利用已创建的线程降低线程创建和销">
+    <meta name="keywords" content="elasticsearch升级-transportClient转HighLevelRestClient, Hexo">
+    <meta name="description" content="今天分享下项目中进行elasticsearch升级，同时伴随着transport Client转换位High Level Rest Client.
+升级迁移步骤
+es 集群升级（DBA操作）
+数据全量迁移
+使用High Level Rest">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <meta name="renderer" content="webkit|ie-stand|ie-comp">
@@ -17,7 +17,7 @@
     <meta name="format-detection" content="telephone=no">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>java并发专题-线程池介绍 | Hexo</title>
+    <title>elasticsearch升级-transportClient转HighLevelRestClient | Hexo</title>
     <link rel="icon" type="image/png" href="/favicon.png">
 
     <link rel="stylesheet" type="text/css" href="/libs/awesome/css/all.css">
@@ -307,12 +307,12 @@
 
 
 
-<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/13.jpg')">
+<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/17.jpg')">
     <div class="container" style="right: 0px;left: 0px;">
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
-                    <h1 class="description center-align post-title">java并发专题-线程池介绍</h1>
+                    <h1 class="description center-align post-title">elasticsearch升级-transportClient转HighLevelRestClient</h1>
                 </div>
             </div>
         </div>
@@ -429,12 +429,8 @@
                     
                     <div class="article-tag">
                         
-                            <a href="/tags/java/">
-                                <span class="chip bg-color">java</span>
-                            </a>
-                        
-                            <a href="/tags/并发/">
-                                <span class="chip bg-color">并发</span>
+                            <a href="/tags/elasticsearch/">
+                                <span class="chip bg-color">elasticsearch</span>
                             </a>
                         
                     </div>
@@ -445,8 +441,8 @@
                     <div class="post-cate">
                         <i class="fas fa-bookmark fa-fw icon-category"></i>
                         
-                            <a href="/categories/java/" class="post-category">
-                                java
+                            <a href="/categories/elasticsearch/" class="post-category">
+                                elasticsearch
                             </a>
                         
                     </div>
@@ -458,7 +454,7 @@
                 
                 <div class="post-date info-break-policy">
                     <i class="far fa-calendar-minus fa-fw"></i>发布日期:&nbsp;&nbsp;
-                    2019-12-08
+                    2020-01-02
                 </div>
                 
 
@@ -475,100 +471,20 @@
         <hr class="clearfix">
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <p>今天介绍下java中的线程池应用，主要介绍java中的Excutor框架</p>
-<h3 id="线程池的好处"><a href="#线程池的好处" class="headerlink" title="线程池的好处"></a>线程池的好处</h3><ul>
-<li>提高响应速度，处理任务时无需等待线程创建；</li>
-<li>提高线程管理性，对线程池内线程统一分配、调度、管理；</li>
-<li>降低资源消耗，通过重复利用已创建的线程降低线程创建和销毁造成的消耗；</li>
+                <p>今天分享下项目中进行elasticsearch升级，同时伴随着transport Client转换位High Level Rest Client.</p>
+<h3 id="升级迁移步骤"><a href="#升级迁移步骤" class="headerlink" title="升级迁移步骤"></a>升级迁移步骤</h3><ul>
+<li>es 集群升级（DBA操作）</li>
+<li>数据全量迁移</li>
+<li>使用High Level Rest Client和transport Client对新老集群双写；</li>
+<li>数据全量迁移</li>
+<li>读改到升级后新集群</li>
+<li>老集群断写入</li>
 </ul>
-<h3 id="线程池的处理流程"><a href="#线程池的处理流程" class="headerlink" title="线程池的处理流程"></a>线程池的处理流程</h3><ul>
-<li>线程池判断核心线程池里的线程是否都在执行任务。如果不是，则创建一个新的工作线程来执行任务。如果核心线程池里的线程都在执行任务，则进入下个流程</li>
-<li>线程池判断工作队列是否已经满。如果工作队列没有满，则将新提交的任务存储在这个工作队列里。如果工作队列满了，则进入下个流程</li>
-<li>线程池判断线程池的线程是否都处于工作状态。如果没有，则创建一个新的工作线程来执行</li>
-</ul>
-<h3 id="ThreadPoolExecutor详解"><a href="#ThreadPoolExecutor详解" class="headerlink" title="ThreadPoolExecutor详解"></a>ThreadPoolExecutor详解</h3><ul>
-<li>ThreadPoolExecutor：<pre><code>new ThreadPoolExecutor(int corePoolSize,
-                int maximumPoolSize,
-                long keepAliveTime,
-                TimeUnit unit,
-                BlockingQueue&lt;Runnable&gt; workQueue,
-                ThreadFactory threadFactory,
-                RejectedExecutionHandler handler)
-</code></pre><ul>
-<li>corePoolSize: 当提交一个任务到线程池时，线程池会创建一个线程来执行任务，即使其他空闲的基本线程能够执行新任务也会创建线程，等到需要执行的任务数大于线程池corePoolSize大小时就不再创建；</li>
-<li>maximumPoolSize： 线程池允许创建的最大线程数。如果队列满了，并且已创建的线程数小于最大线程数，则线程池会再创建新的线程执行任务。值得注意的是，如果使用了无界的任务队列这个参数就没什么效果;</li>
-<li>keepAliveTime：线程最大空闲时间</li>
-<li>TimeUnit：时间单位</li>
-<li>workQueue：用于保存等待执行的任务队列；（下方详细介绍）</li>
-<li>threadFactory： 用于设置创建线程的工厂，可以通过线程工厂给每个创建出来的线程设置更有意义的名字；</li>
-<li>handler：当队列和线程池都满了，说明线程池处于饱和状态，那么必须采取一种策略处理提交的新任务（下方详细介绍）</li>
-</ul>
-</li>
-<li>FixedThreadPool<pre><code>   new ThreadPoolExecutor(nThreads, nThreads, 0L, TimeUnit.MILLISECONDS, new LinkedBlockingQueue&lt;Runnable&gt;())
-</code></pre><ul>
-<li>FixedThreadPool的corePoolSize和maximumPoolSize都被设置为创建FixedThreadPool时指定的参数nThreads</li>
-<li>如果当前运行的线程数少于corePoolSize，则创建新线程来执行任务</li>
-<li>在线程池完成预热之后（当前运行的线程数等于corePoolSize），将任务加入LinkedBlockingQueue</li>
-<li>线程执行完1中的任务后，会在循环中反复从LinkedBlockingQueue获取任务来执行</li>
-<li>FixedThreadPool使用无界队列LinkedBlockingQueue作为线程池的工作队列（队列的容量为Integer.MAX_VALUE）,所以maximumPoolSize是一个无效参数，线程池的线程数量不超过corePoolSize，有oom风险</li>
-</ul>
-</li>
-<li>SingleThreadExecutor<pre><code>new ThreadPoolExecutor(1, 1, 0L, TimeUnit.MILLISECONDS, new LinkedBlockingQueue&lt;Runnable&gt;())
-</code></pre><ul>
-<li>SingleThreadExecutor的corePoolSize和maximumPoolSize被设置为1</li>
-<li>其他参数与FixedThreadPool相同</li>
-</ul>
-</li>
-<li>CachedThreadPool<pre><code>new ThreadPoolExecutor(0, Integer.MAX_VALUE, 60L, TimeUnit.SECONDS, new SynchronousQueue&lt;Runnable&gt;())
-</code></pre><ul>
-<li>CachedThreadPool的corePoolSize被设置为0，即corePool为空；maximumPoolSize被设置为Integer.MAX_VALUE，即maximumPool是无界的</li>
-<li>keepAliveTime设置为60L，意味着CachedThreadPool中的空闲线程等待新任务的最长时间为60秒，空闲线程超过60秒后将会被终止</li>
-<li>CachedThreadPool使用没有容量的SynchronousQueue作为线程池的工作队列，但CachedThreadPool的maximumPool是无界的。这意味着，如果主线程提交任务的速度高于maximumPool中线程处理任务的速度时，CachedThreadPool会不断创建新线程(极端情况下，CachedThreadPool会因为创建过多线程而耗尽CPU和内存资源)</li>
-</ul>
-</li>
-<li>线程等待队列<ul>
-<li>直接提交： 工作队列的默认选项是 SynchronousQueue，它将任务直接提交给线程而不保持它们。在此，如果不存在可用于立即运行任务的线程，则试图把任务加入队列将失败，因此会构造一个新的线程。此策略可以避免在处理可能具有内部依赖性的请求集时出现锁。直接提交通常要求无界 maximumPoolSizes 以避免拒绝新提交的任务。当命令以超过队列所能处理的平均数连续到达时，此策略允许无界线程具有增长的可能性；</li>
-<li>无界队列： 使用无界队列（例如，不具有预定义容量的 LinkedBlockingQueue）将导致在所有 corePoolSize 线程都忙时新任务在队列中等待。这样，创建的线程就不会超过 corePoolSize。（因此，maximumPoolSize 的值也就无效了。）当每个任务完全独立于其他任务，即任务执行互不影响时，适合于使用无界队列；例如，在 Web 页服务器中。这种排队可用于处理瞬态突发请求，当命令以超过队列所能处理的平均数连续到达时，此策略允许无界线程具有增长的可能性</li>
-<li>有界队列：当使用有限的 maximumPoolSizes 时，有界队列（如 ArrayBlockingQueue）有助于防止资源耗尽，但是可能较难调整和控制。队列大小和最大池大小可能需要相互折衷：使用大型队列和小型池可以最大限度地降低 CPU 使用率、操作系统资源和上下文切换开销，但是可能导致人工降低吞吐量。如果任务频繁阻塞（例如，如果它们是 I/O 边界），则系统可能为超过您许可的更多线程安排时间。使用小型队列通常要求较大的池大小，CPU 使用率较高，但是可能遇到不可接受的调度开销，这样也会降低吞吐量</li>
-</ul>
-</li>
-<li>决绝策略<ul>
-<li>AbortPolicy：直接抛出异常；</li>
-<li>CallerRunsPolicy：只用调用者所在线程来运行任务；</li>
-<li>DiscardPolicy：不处理，丢弃掉；</li>
-<li>DiscardOldestPolicy：丢弃队列里最近的一个任务，并执行当前任务；</li>
-</ul>
-</li>
-</ul>
-<h3 id="ScheduledThreadPoolExecutor介绍"><a href="#ScheduledThreadPoolExecutor介绍" class="headerlink" title="ScheduledThreadPoolExecutor介绍"></a>ScheduledThreadPoolExecutor介绍</h3><ul>
-<li>ScheduledThreadPoolExecutor运动介绍<ul>
-<li>使用DelayQueue是一个无界队列，所以ThreadPoolExecutor的maximumPoolSize在Scheduled-ThreadPoolExecutor中没有意义;</li>
-<li>当调用ScheduledThreadPoolExecutor的scheduleAtFixedRate()方法或者scheduleWith-FixedDelay()方法时，会向ScheduledThreadPoolExecutor的DelayQueue添加一个实现了RunnableScheduledFutur接口的ScheduledFutureTask</li>
-<li>线程池中的线程从DelayQueue中获取ScheduledFutureTask，然后执行任务</li>
-</ul>
-</li>
-<li>ScheduledThreadPoolExecutor实现<ul>
-<li>DelayQueue封装了一个PriorityQueue，这个PriorityQueue会对队列中的Scheduled-FutureTask进行排序。排序时，time小的排在前面（时间早的任务将被先执行）。如果两个ScheduledFutureTask的time相同，就比较sequenceNumber，sequenceNumber小的排在前面</li>
-<li>线程执行周期任务<ul>
-<li>线程从DelayQueue中获取已到期的ScheduledFutureTask（DelayQueue. take()）。到期任务是指ScheduledFutureTask的time大于等于当前时间</li>
-<li>线程执行这个ScheduledFutureTask</li>
-<li>线程修改ScheduledFutureTask的time变量为下次将要被执行的时间</li>
-<li>线程把这个修改time之后的ScheduledFutureTask放回DelayQueue中（Delay-Queue.add())</li>
-</ul>
-</li>
-<li>获取任务<ul>
-<li>获取Lock</li>
-<li>获取周期任务</li>
-<li>释放Lock</li>
-</ul>
-</li>
-<li>添加任务 类似获取任务</li>
-</ul>
-</li>
-</ul>
-<h3 id="特别提醒"><a href="#特别提醒" class="headerlink" title="特别提醒"></a>特别提醒</h3><ul>
-<li>使用new ThreadPoolExecutor自行创建线程池，更好的管理线程数，队列，避免使用中存在无界问题导致oom；</li>
-<li>线程池消耗一定的系统资源，结合实际避免创建过多线程池，如创建static 线程池</li>
+<h3 id="架构"><a href="#架构" class="headerlink" title="架构"></a>架构</h3><p><img src="/images/es_jg.jpeg" alt="架构简介"></p>
+<h3 id="注意事项"><a href="#注意事项" class="headerlink" title="注意事项"></a>注意事项</h3><ul>
+<li>数据迁移过程中双写，并建立补偿机制，避免数据丢失</li>
+<li>核心业务部署双集群，封装DR</li>
+<li>建立db数据和es数据的全量同步流程，修复数据不一致</li>
 </ul>
 
             </div>
@@ -595,7 +511,7 @@
                     </i>
                 </span>
                 <span class="reprint-info">
-                    <a href="http://localhost:4000/2019/12/08/java-bing-fa-zhuan-ti-xian-cheng-chi-xiang-jie/">http://localhost:4000/2019/12/08/java-bing-fa-zhuan-ti-xian-cheng-chi-xiang-jie/</a>
+                    <a href="http://localhost:4000/2020/01/02/elasticsearch-sheng-ji-transportclient-zhuan-highlevelrestclient/">http://localhost:4000/2020/01/02/elasticsearch-sheng-ji-transportclient-zhuan-highlevelrestclient/</a>
                 </span>
             </div>
             <div class="reprint__notice">
@@ -633,12 +549,8 @@
                     
                         <div class="article-tag">
                             
-                                <a href="/tags/java/">
-                                    <span class="chip bg-color">java</span>
-                                </a>
-                            
-                                <a href="/tags/并发/">
-                                    <span class="chip bg-color">并发</span>
+                                <a href="/tags/elasticsearch/">
+                                    <span class="chip bg-color">elasticsearch</span>
                                 </a>
                             
                         </div>
@@ -808,75 +720,30 @@
             <div class="article-badge left-badge text-color">
                 <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
             <div class="card">
-                <a href="/2019/12/22/java-xu-ni-ji-nei-cun-qu-yu-jie-shao/">
+                <a href="/2020/01/11/ji-yi-ci-shang-xian-hou-fu-wu-qi-cpu-biao-sheng-yi-chang-wen-ti/">
                     <div class="card-image">
                         
                         
-                        <img src="/medias/featureimages/21.jpg" class="responsive-img" alt="java虚拟机内存区域介绍">
+                        <img src="/medias/featureimages/18.jpg" class="responsive-img" alt="记一次上线后服务器cpu飙升异常问题">
                         
-                        <span class="card-title">java虚拟机内存区域介绍</span>
+                        <span class="card-title">记一次上线后服务器cpu飙升异常问题</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
                     <div class="summary block-with-text">
                         
-                            本文将简单介绍下java内存区域，借此加深对java虚拟机的理解；希望对入门者有一定的引导作用，同时也作为记录帮助自己记忆，若有错误，希望大牛指点一二；
-简述java虚拟机所管理的内存包括这几个运行时数据区：程序计数器、java虚拟机栈、本
+                            今天记录分享一次服务上线后cpu飙升问题
+问题经过和分析
+项目的场景是接收各个系统的消息进行处理，
+项目消费上线前，一些发消息的业务逻辑先上线，消息在消息队列内大量挤压
+服务上线，没有对消息队列内消息reset处理，大量消息涌入
+服务内部并
                         
                     </div>
                     <div class="publish-info">
                         <span class="publish-date">
-                            <i class="far fa-clock fa-fw icon-date"></i>2019-12-22
+                            <i class="far fa-clock fa-fw icon-date"></i>2020-01-11
                         </span>
-                        <span class="publish-author">
-                            
-                            <i class="fas fa-bookmark fa-fw icon-category"></i>
-                            
-                            <a href="/categories/java/" class="post-category">
-                                    java
-                                </a>
-                            
-                            
-                        </span>
-                    </div>
-                </div>
-                
-                <div class="card-action article-tags">
-                    
-                    <a href="/tags/java/">
-                        <span class="chip bg-color">java</span>
-                    </a>
-                    
-                </div>
-                
-            </div>
-        </div>
-        
-        
-        <div class="article col s12 m6" data-aos="fade-up">
-            <div class="article-badge right-badge text-color">
-                下一篇&nbsp;<i class="fas fa-chevron-right"></i>
-            </div>
-            <div class="card">
-                <a href="/2019/11/08/ji-yi-ci-xian-shang-wen-ti-java-nei-cun-yi-chu/">
-                    <div class="card-image">
-                        
-                        
-                        <img src="/medias/featureimages/20.jpg" class="responsive-img" alt="记一次线上问题-java内存溢出">
-                        
-                        <span class="card-title">记一次线上问题-java内存溢出</span>
-                    </div>
-                </a>
-                <div class="card-content article-content">
-                    <div class="summary block-with-text">
-                        
-                            这里分享一个线上问题案例及解决过程。小k来到新公司不久，一天早上，小K收到一封报警邮件，提示某项目出现较多异常。小k点击邮件查看详情，发现提示out of menery错误。此时同事们还没来，小k暗自吐槽：“怎么都没来，这个项目代码自己也还
-                        
-                    </div>
-                    <div class="publish-info">
-                            <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2019-11-08
-                            </span>
                         <span class="publish-author">
                             
                             <i class="fas fa-bookmark fa-fw icon-category"></i>
@@ -895,6 +762,56 @@
                     <a href="/tags/问题记录/">
                         <span class="chip bg-color">问题记录</span>
                     </a>
+                    
+                    <a href="/tags/java/">
+                        <span class="chip bg-color">java</span>
+                    </a>
+                    
+                </div>
+                
+            </div>
+        </div>
+        
+        
+        <div class="article col s12 m6" data-aos="fade-up">
+            <div class="article-badge right-badge text-color">
+                下一篇&nbsp;<i class="fas fa-chevron-right"></i>
+            </div>
+            <div class="card">
+                <a href="/2019/12/22/java-xu-ni-ji-nei-cun-qu-yu-jie-shao/">
+                    <div class="card-image">
+                        
+                        
+                        <img src="/medias/featureimages/21.jpg" class="responsive-img" alt="java虚拟机内存区域介绍">
+                        
+                        <span class="card-title">java虚拟机内存区域介绍</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary block-with-text">
+                        
+                            本文将简单介绍下java内存区域，借此加深对java虚拟机的理解；希望对入门者有一定的引导作用，同时也作为记录帮助自己记忆，若有错误，希望大牛指点一二；
+简述java虚拟机所管理的内存包括这几个运行时数据区：程序计数器、java虚拟机栈、本
+                        
+                    </div>
+                    <div class="publish-info">
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2019-12-22
+                            </span>
+                        <span class="publish-author">
+                            
+                            <i class="fas fa-bookmark fa-fw icon-category"></i>
+                            
+                            <a href="/categories/java/" class="post-category">
+                                    java
+                                </a>
+                            
+                            
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="card-action article-tags">
                     
                     <a href="/tags/java/">
                         <span class="chip bg-color">java</span>
